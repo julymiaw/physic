@@ -37,17 +37,15 @@ def crop_to_bbox(frame, bbox):
     return frame[y : y + h, x : x + w]
 
 
-def process_frame(frame, previous_bbox_area):
+def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     red_channel = frame[:, :, 2]
     threshold = calculate_threshold(red_channel)
 
-    kernel_size = (5, 5)
-    bbox, mask = segment_image(red_channel, threshold, kernel_size)
+    bbox, mask = segment_image(red_channel, threshold, (5, 5))
     current_bbox_area = bbox[2] * bbox[3]
 
     if previous_bbox_area > 0 and current_bbox_area > previous_bbox_area * 1.5:
-        kernel_size = (7, 7)
-        bbox, mask = segment_image(red_channel, threshold, kernel_size)
+        bbox, mask = segment_image(red_channel, threshold, (7, 7))
         current_bbox_area = bbox[2] * bbox[3]
 
     if current_bbox_area == 0:
@@ -58,29 +56,25 @@ def process_frame(frame, previous_bbox_area):
     threshold = calculate_threshold(red_channel, mask)
     _, binary_image = cv.threshold(red_channel, threshold, 255, cv.THRESH_BINARY_INV)
 
-    # 一次13x13处理
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, (13, 13))
-    processed_image_13x13 = cv.morphologyEx(binary_image, cv.MORPH_OPEN, kernel)
-    processed_image_13x13 = cv.morphologyEx(
-        processed_image_13x13, cv.MORPH_CLOSE, kernel
-    )
-
-    # 使用Canny边缘检测算法
-    median = np.median(processed_image_13x13)
-    edges = cv.Canny(processed_image_13x13, 0.66 * median, 1.33 * median)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
+    processed_image = cv.morphologyEx(binary_image, cv.MORPH_OPEN, kernel)
+    processed_image = cv.morphologyEx(processed_image, cv.MORPH_CLOSE, kernel)
 
     # 轮廓发现
-    contours, _ = cv.findContours(edges, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    edges = cv.Canny(processed_image, 50, 150)
+    contours, _ = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
     # 计算每个轮廓的面积和圆形度
     min_length = 500  # 设置最小长度阈值
+    max_radius = min(bbox[2:]) // 2
+    max_area = np.pi * (max_radius**2)
     circularity_threshold = 0.7  # 设置圆形度阈值
 
     filtered_contours = []
     for contour in contours:
         area = cv.contourArea(contour)
         perimeter = cv.arcLength(contour, True)
-        if perimeter < min_length:
+        if perimeter < min_length or area > max_area:
             continue
         circularity = 4 * np.pi * (area / (perimeter * perimeter))
         if circularity >= circularity_threshold:
@@ -151,10 +145,10 @@ def process_video(input_path, output_path, fps=24):
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
     gif_path = "/home/july/physic/test/红色扩张版.gif"
-    output_path = "圆识别_24.mp4"
+    output_path = "圆识别.mp4"
 
     # 处理视频文件
-    process_video(video_path, output_path, 24)
+    process_video(video_path, output_path, 10)
 
     # 处理GIF文件
     # process_gif(gif_path, "圆识别_gif.mp4", 10)
