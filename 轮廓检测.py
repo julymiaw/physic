@@ -36,6 +36,33 @@ def crop_to_bbox(frame, bbox):
     return frame[y : y + h, x : x + w]
 
 
+def classify_contour(contour, binary_image, thickness=20):
+    # 创建与 binary_image 大小相同的掩码
+    mask = np.zeros_like(binary_image)
+    cv.drawContours(mask, [contour], -1, 255, thickness)
+
+    # 创建轮廓内涂满的图像
+    filled_contour_image = np.zeros_like(binary_image)
+    cv.drawContours(filled_contour_image, [contour], -1, 255, thickness=cv.FILLED)
+
+    # 获取在掩码图像和轮廓内涂满的图像中都为255的点
+    combined_mask = cv.bitwise_and(mask, filled_contour_image)
+
+    # 获取这些点在原来的二值化图像中的颜色
+    masked_points = binary_image[combined_mask == 255]
+
+    # 计算这些点的像素平均值
+    avg_color = np.mean(masked_points)
+
+    # 根据平均值分类
+    if avg_color < 128:
+        color = (0, 255, 0)  # 绿色
+    else:
+        color = (255, 0, 0)  # 蓝色
+
+    return color
+
+
 def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     red_channel = frame[:, :, 2]
     threshold = calculate_threshold(red_channel)
@@ -52,6 +79,8 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
 
     red_channel = crop_to_bbox(red_channel, bbox)
     mask = crop_to_bbox(mask, bbox)
+    cropped_frame = crop_to_bbox(frame, bbox)
+
     threshold = calculate_threshold(red_channel, mask)
     _, binary_image = cv.threshold(red_channel, threshold, 255, cv.THRESH_BINARY_INV)
 
@@ -78,10 +107,8 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
         circularity = 4 * np.pi * (area / (perimeter * perimeter))
         if circularity >= circularity_threshold:
             filtered_contours.append(contour)
-
-    # 在 cropped_frame 上绘制过滤后的轮廓
-    cropped_frame = crop_to_bbox(frame, bbox)
-    cv.drawContours(cropped_frame, filtered_contours, -1, (0, 255, 0), 2)  # 绿色轮廓
+            color = classify_contour(contour, binary_image)
+            cv.drawContours(cropped_frame, [contour], -1, color, 2)
 
     return cropped_frame, current_bbox_area
 
