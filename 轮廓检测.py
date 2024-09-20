@@ -2,7 +2,6 @@ import cv2 as cv
 import numpy as np
 from tqdm import tqdm
 from scipy.signal import find_peaks
-import imageio
 
 
 def calculate_threshold(red_channel, mask=None):
@@ -87,38 +86,8 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     return cropped_frame, current_bbox_area
 
 
-def process_gif(input_path, output_path, fps=24):
-    # 读取GIF文件的所有帧
-    gif_frames = imageio.mimread(input_path)
-    frames = []
-    previous_bbox_area = 0
-
-    for frame in tqdm(gif_frames, desc="Processing GIF"):
-        # 将帧从RGBA转换为BGR
-        frame = cv.cvtColor(frame, cv.COLOR_RGBA2BGR)
-        # 处理帧
-        processed_frame, previous_bbox_area = process_frame(frame, previous_bbox_area)
-        frames.append(processed_frame)
-
-    # 获取帧的宽度和高度
-    height, width, _ = frames[0].shape
-    # 定义视频编写器
-    fourcc = cv.VideoWriter_fourcc(*"mp4v")
-    out = cv.VideoWriter(output_path, fourcc, fps, (width, height))
-
-    # 将处理后的帧写入视频文件
-    for frame in frames:
-        out.write(frame)
-
-    out.release()
-
-
 def process_video(input_path, output_path, fps=24):
     cap = cv.VideoCapture(input_path)
-    if not cap.isOpened():
-        print("Error: Could not open video.")
-        return
-
     ret, frame = cap.read()
     target_height, target_width = 2000, 1400
     fourcc = cv.VideoWriter_fourcc(*"mp4v")
@@ -129,9 +98,6 @@ def process_video(input_path, output_path, fps=24):
     cap.set(cv.CAP_PROP_POS_FRAMES, 0)
     for i in tqdm(range(frame_count), desc="Processing video"):
         ret, frame = cap.read()
-        if not ret:
-            print(f"Error: Could not read frame {i}.")
-            break
         processed_frame, previous_bbox_area = process_frame(frame, previous_bbox_area)
 
         # 调整帧大小到目标大小
@@ -144,14 +110,10 @@ def process_video(input_path, output_path, fps=24):
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
-    gif_path = "/home/july/physic/test/红色扩张版.gif"
-    output_path = "圆识别.mp4"
+    output_path = "轮廓检测.mp4"
 
     # 处理视频文件
     process_video(video_path, output_path, 10)
-
-    # 处理GIF文件
-    # process_gif(gif_path, "圆识别_gif.mp4", 10)
 
 
 if __name__ == "__main__":
