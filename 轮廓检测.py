@@ -75,7 +75,7 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
         current_bbox_area = bbox[2] * bbox[3]
 
     if current_bbox_area == 0:
-        return frame, previous_bbox_area
+        return frame, previous_bbox_area, []
 
     red_channel = crop_to_bbox(red_channel, bbox)
     mask = crop_to_bbox(mask, bbox)
@@ -97,8 +97,13 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     max_radius = min(bbox[2:]) // 2
     max_area = np.pi * (max_radius**2)
     circularity_threshold = 0.7  # 设置圆形度阈值
+    area_threshold = 1000  # 面积差距阈值
 
-    filtered_contours = []
+    # 按照面积顺序处理轮廓
+    contours = sorted(contours, key=cv.contourArea)
+
+    contours_info = []
+    pre_area = 0
     for contour in contours:
         area = cv.contourArea(contour)
         perimeter = cv.arcLength(contour, True)
@@ -106,11 +111,14 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
             continue
         circularity = 4 * np.pi * (area / (perimeter * perimeter))
         if circularity >= circularity_threshold:
-            filtered_contours.append(contour)
+            if pre_area != 0 and abs(area - pre_area) < area_threshold:
+                continue
+            pre_area = area
             color = classify_contour(contour, binary_image)
+            contours_info.append((area, color))
             cv.drawContours(cropped_frame, [contour], -1, color, 2)
 
-    return cropped_frame, current_bbox_area
+    return cropped_frame, current_bbox_area, contours_info
 
 
 def process_video(input_path, output_path, fps=24):
@@ -121,18 +129,72 @@ def process_video(input_path, output_path, fps=24):
     out = cv.VideoWriter(output_path, fourcc, fps, (target_width, target_height))
     frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
 
-    previous_bbox_area = 0
+    bbox_area = 0
+    previous_contours_info = []
     cap.set(cv.CAP_PROP_POS_FRAMES, 0)
+
+    # 初始化计数器
+    green_count = 0
+    blue_count = 0
+    white_count = 0
+
     for i in tqdm(range(frame_count), desc="Processing video"):
-        ret, frame = cap.read()
-        processed_frame, previous_bbox_area = process_frame(frame, previous_bbox_area)
+        _, frame = cap.read()
+        processed_frame, bbox_area, current_contours_info = process_frame(
+            frame, bbox_area
+        )
+
+        # 匹配轮廓并判断放大或缩小
+        scale_count = 0
+        area_threshold = 50000  # 面积变化阈值
+        if previous_contours_info and current_contours_info:
+            for prev_area, prev_color in previous_contours_info:
+                for curr_area, curr_color in current_contours_info:
+                    if (
+                        prev_color == curr_color
+                        and abs(curr_area - prev_area) < area_threshold
+                    ):
+                        if curr_area > prev_area:
+                            scale_count += 1
+                        else:
+                            scale_count -= 1
+        if scale_count > 0:
+            border_color = (0, 255, 0)  # 绿色
+            green_count += 1
+        elif scale_count < 0:
+            border_color = (255, 0, 0)  # 蓝色
+            blue_count += 1
+        else:
+            border_color = (255, 255, 255)  # 默认白色
+            white_count += 1
+
+        border_thickness = min(10 + abs(scale_count), 50)
+
+        # 给画面增加边框
+        processed_frame = cv.copyMakeBorder(
+            processed_frame,
+            border_thickness,
+            border_thickness,
+            border_thickness,
+            border_thickness,
+            cv.BORDER_CONSTANT,
+            value=border_color,
+        )
 
         # 调整帧大小到目标大小
         resized_frame = cv.resize(processed_frame, (target_width, target_height))
         out.write(resized_frame)
 
+        previous_contours_info = current_contours_info
+
     cap.release()
     out.release()
+
+    # 打印统计信息
+    total_frames = green_count + blue_count + white_count
+    print(f"绿色边框帧数: {green_count} ({green_count / total_frames * 100:.2f}%)")
+    print(f"蓝色边框帧数: {blue_count} ({blue_count / total_frames * 100:.2f}%)")
+    print(f"白色边框帧数: {white_count} ({white_count / total_frames * 100:.2f}%)")
 
 
 def main():
