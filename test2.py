@@ -1,14 +1,15 @@
 import cv2 as cv
 import numpy as np
-import math
 from tqdm import tqdm
 from scipy.signal import find_peaks
-from sklearn.cluster import DBSCAN
-import matplotlib.pyplot as plt
+import imageio
 
 
-def calculate_threshold(red_channel):
+def calculate_threshold(red_channel, mask=None):
+    if mask is not None:
+        red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
     hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+    hist[0] = 0
     peaks, _ = find_peaks(hist)
     sorted_peaks = sorted(peaks, key=lambda x: hist[x], reverse=True)
     second_peak_index = sorted_peaks[1]
@@ -22,7 +23,13 @@ def segment_image(src, threshold, kernel_size):
     src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
     src_bin = cv.morphologyEx(src_bin, cv.MORPH_CLOSE, kernel)
     coords = cv.findNonZero(src_bin)
-    return cv.boundingRect(coords)
+    contours, _ = cv.findContours(src_bin, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return cv.boundingRect(coords), None
+    contour = max(contours, key=cv.contourArea)
+    mask = np.zeros(src.shape, dtype=np.uint8)
+    cv.drawContours(mask, [contour], -1, 1, thickness=cv.FILLED)
+    return cv.boundingRect(coords), mask
 
 
 def crop_to_bbox(frame, bbox):
@@ -33,21 +40,23 @@ def crop_to_bbox(frame, bbox):
 def process_frame(frame, previous_bbox_area):
     red_channel = frame[:, :, 2]
     threshold = calculate_threshold(red_channel)
+
     kernel_size = (5, 5)
-    bbox = segment_image(red_channel, threshold, kernel_size)
+    bbox, mask = segment_image(red_channel, threshold, kernel_size)
     current_bbox_area = bbox[2] * bbox[3]
 
     if previous_bbox_area > 0 and current_bbox_area > previous_bbox_area * 1.5:
         kernel_size = (7, 7)
-        bbox = segment_image(red_channel, threshold, kernel_size)
+        bbox, mask = segment_image(red_channel, threshold, kernel_size)
+        current_bbox_area = bbox[2] * bbox[3]
 
-    cropped_frame = crop_to_bbox(frame, bbox)
+    if current_bbox_area == 0:
+        return frame, previous_bbox_area
 
-    # 提取红色频道
-    red_channel = cropped_frame[:, :, 2]
-
-    # 二值化处理
-    binary_image = (red_channel != 255).astype(np.uint8) * 255
+    red_channel = crop_to_bbox(red_channel, bbox)
+    mask = crop_to_bbox(mask, bbox)
+    threshold = calculate_threshold(red_channel, mask)
+    _, binary_image = cv.threshold(red_channel, threshold, 255, cv.THRESH_BINARY_INV)
 
     # 一次13x13处理
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (13, 13))
@@ -65,7 +74,7 @@ def process_frame(frame, previous_bbox_area):
 
     # 计算每个轮廓的面积和圆形度
     min_length = 500  # 设置最小长度阈值
-    circularity_threshold = 0.5  # 设置圆形度阈值
+    circularity_threshold = 0.7  # 设置圆形度阈值
 
     filtered_contours = []
     for contour in contours:
@@ -78,9 +87,36 @@ def process_frame(frame, previous_bbox_area):
             filtered_contours.append(contour)
 
     # 在 cropped_frame 上绘制过滤后的轮廓
+    cropped_frame = crop_to_bbox(frame, bbox)
     cv.drawContours(cropped_frame, filtered_contours, -1, (0, 255, 0), 2)  # 绿色轮廓
 
     return cropped_frame, current_bbox_area
+
+
+def process_gif(input_path, output_path, fps=24):
+    # 读取GIF文件的所有帧
+    gif_frames = imageio.mimread(input_path)
+    frames = []
+    previous_bbox_area = 0
+
+    for frame in tqdm(gif_frames, desc="Processing GIF"):
+        # 将帧从RGBA转换为BGR
+        frame = cv.cvtColor(frame, cv.COLOR_RGBA2BGR)
+        # 处理帧
+        processed_frame, previous_bbox_area = process_frame(frame, previous_bbox_area)
+        frames.append(processed_frame)
+
+    # 获取帧的宽度和高度
+    height, width, _ = frames[0].shape
+    # 定义视频编写器
+    fourcc = cv.VideoWriter_fourcc(*"mp4v")
+    out = cv.VideoWriter(output_path, fourcc, fps, (width, height))
+
+    # 将处理后的帧写入视频文件
+    for frame in frames:
+        out.write(frame)
+
+    out.release()
 
 
 def process_video(input_path, output_path, fps=24):
@@ -114,9 +150,14 @@ def process_video(input_path, output_path, fps=24):
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
-    test_path = "/home/july/physic/test/红色扩张版.gif"
-    output_path = "圆识别.mp4"
-    process_video(video_path, output_path, 10)
+    gif_path = "/home/july/physic/test/红色扩张版.gif"
+    output_path = "圆识别_24.mp4"
+
+    # 处理视频文件
+    process_video(video_path, output_path, 24)
+
+    # 处理GIF文件
+    # process_gif(gif_path, "圆识别_gif.mp4", 10)
 
 
 if __name__ == "__main__":
