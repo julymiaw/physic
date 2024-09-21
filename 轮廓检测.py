@@ -144,17 +144,17 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
         # 画出公共中心
         cv.circle(cropped_frame, (cx, cy), 50, border_color, 2)
 
-        return cropped_frame, current_bbox_area, contours_info, (cx, cy), center_color
+        return cropped_frame, current_bbox_area, contours_info, center_color
 
-    return cropped_frame, current_bbox_area, contours_info, None, None
+    return cropped_frame, current_bbox_area, contours_info, None
 
 
 def process_video(input_path, output_path, fps=24, mode="zoom_in"):
     cap = cv.VideoCapture(input_path)
     ret, frame = cap.read()
-    target_height, target_width = 2000, 1400
+    original_height, original_width = frame.shape[:2]
     fourcc = cv.VideoWriter_fourcc(*"mp4v")
-    out = cv.VideoWriter(output_path, fourcc, fps, (target_width, target_height))
+    out = cv.VideoWriter(output_path, fourcc, fps, (original_width, original_height))
     frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
 
     bbox_area = 0
@@ -175,7 +175,6 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
             processed_frame,
             bbox_area,
             current_contours_info,
-            current_center,
             current_center_color,
         ) = process_frame(frame, bbox_area)
 
@@ -237,21 +236,21 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
             value=border_color,
         )
 
-        # 在圆心处打印计数值
-        if current_center is not None:
-            cv.putText(
-                processed_frame,
-                str(count_value),
-                current_center,
-                cv.FONT_HERSHEY_SIMPLEX,
-                1,
-                (255, 255, 255),
-                2,
-            )
+        frame[: processed_frame.shape[0], : processed_frame.shape[1]] = processed_frame
 
-        # 调整帧大小到目标大小
-        resized_frame = cv.resize(processed_frame, (target_width, target_height))
-        out.write(resized_frame)
+        # 在整体的右上角打印计数值
+        cv.putText(
+            frame,
+            str(count_value),
+            (original_width - 400, 300),  # 右上角位置
+            cv.FONT_HERSHEY_SIMPLEX,
+            5,
+            (255, 255, 255),
+            10,
+        )
+
+        # 写入输出视频
+        out.write(frame)
 
         previous_contours_info = current_contours_info
         previous_center_color = current_center_color
@@ -268,7 +267,7 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
-    output_path = "轮廓检测_test.mp4"
+    output_path = "轮廓检测+计数（原始图像版）.mp4"
 
     # 处理视频文件
     process_video(video_path, output_path, 10)
