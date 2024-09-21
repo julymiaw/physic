@@ -56,9 +56,9 @@ def classify_contour(contour, binary_image, thickness=20):
 
     # 根据平均值分类
     if avg_color < 128:
-        color = (0, 255, 0)  # 绿色
+        color = (0, 255, 0)  # 圆心为红色时绿色
     else:
-        color = (255, 0, 0)  # 蓝色
+        color = (255, 0, 0)  # 圆心为黑色时蓝色
 
     return color
 
@@ -103,6 +103,7 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     contours = sorted(contours, key=cv.contourArea)
 
     contours_info = []
+    filtered_contours = []
     pre_area = 0
     for contour in contours:
         area = cv.contourArea(contour)
@@ -116,12 +117,39 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
             pre_area = area
             color = classify_contour(contour, binary_image)
             contours_info.append((area, color))
+            filtered_contours.append(contour)
             cv.drawContours(cropped_frame, [contour], -1, color, 2)
 
-    return cropped_frame, current_bbox_area, contours_info
+    # 计算公共中心
+    if filtered_contours:
+        centers = [cv.moments(contour) for contour in filtered_contours]
+        cx = int(sum(m["m10"] / m["m00"] for m in centers) / len(centers))
+        cy = int(sum(m["m01"] / m["m00"] for m in centers) / len(centers))
+
+        # 判断公共中心领域范围内的像素点颜色
+        region_size = 10  # 定义领域范围大小
+        region = binary_image[
+            max(0, cy - region_size) : min(binary_image.shape[0], cy + region_size),
+            max(0, cx - region_size) : min(binary_image.shape[1], cx + region_size),
+        ]
+        avg_color = np.mean(region)
+
+        if avg_color < 128:
+            center_color = 255  # 红色
+            border_color = (0, 255, 0)  # 绿色
+        else:
+            center_color = 0  # 黑色
+            border_color = (255, 0, 0)  # 蓝色
+
+        # 画出公共中心
+        cv.circle(cropped_frame, (cx, cy), 50, border_color, 2)
+
+        return cropped_frame, current_bbox_area, contours_info, (cx, cy), center_color
+
+    return cropped_frame, current_bbox_area, contours_info, None, None
 
 
-def process_video(input_path, output_path, fps=24):
+def process_video(input_path, output_path, fps=24, mode="zoom_in"):
     cap = cv.VideoCapture(input_path)
     ret, frame = cap.read()
     target_height, target_width = 2000, 1400
@@ -131,18 +159,25 @@ def process_video(input_path, output_path, fps=24):
 
     bbox_area = 0
     previous_contours_info = []
+    previous_center_color = None
+    status = None
     cap.set(cv.CAP_PROP_POS_FRAMES, 0)
 
     # 初始化计数器
     green_count = 0
     blue_count = 0
     white_count = 0
+    count_value = 0
 
     for i in tqdm(range(frame_count), desc="Processing video"):
         _, frame = cap.read()
-        processed_frame, bbox_area, current_contours_info = process_frame(
-            frame, bbox_area
-        )
+        (
+            processed_frame,
+            bbox_area,
+            current_contours_info,
+            current_center,
+            current_center_color,
+        ) = process_frame(frame, bbox_area)
 
         # 匹配轮廓并判断放大或缩小
         scale_count = 0
@@ -161,14 +196,35 @@ def process_video(input_path, output_path, fps=24):
         if scale_count > 0:
             border_color = (0, 255, 0)  # 绿色
             green_count += 1
+            status = "zoom_out"
         elif scale_count < 0:
             border_color = (255, 0, 0)  # 蓝色
             blue_count += 1
+            status = "zoom_in"
         else:
             border_color = (255, 255, 255)  # 默认白色
             white_count += 1
 
         border_thickness = min(10 + abs(scale_count), 50)
+
+        # 判断计数模式和更新计数值
+        if (
+            previous_center_color is not None
+            and current_center_color is not None
+            and status is not None
+        ):
+            if (
+                previous_center_color == 255
+                and current_center_color == 0
+                and mode == status
+            ):
+                count_value += 1
+            if (
+                previous_center_color == 0
+                and current_center_color == 255
+                and mode != status
+            ):
+                count_value -= 1
 
         # 给画面增加边框
         processed_frame = cv.copyMakeBorder(
@@ -181,11 +237,24 @@ def process_video(input_path, output_path, fps=24):
             value=border_color,
         )
 
+        # 在圆心处打印计数值
+        if current_center is not None:
+            cv.putText(
+                processed_frame,
+                str(count_value),
+                current_center,
+                cv.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255, 255, 255),
+                2,
+            )
+
         # 调整帧大小到目标大小
         resized_frame = cv.resize(processed_frame, (target_width, target_height))
         out.write(resized_frame)
 
         previous_contours_info = current_contours_info
+        previous_center_color = current_center_color
 
     cap.release()
     out.release()
@@ -199,7 +268,7 @@ def process_video(input_path, output_path, fps=24):
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
-    output_path = "轮廓检测.mp4"
+    output_path = "轮廓检测_test.mp4"
 
     # 处理视频文件
     process_video(video_path, output_path, 10)
