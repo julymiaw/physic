@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Contour Detection</title>
+    <script src="轮廓检测.js"></script>
+</head>
+
+<body>
+    <video id="video" controls>
+        <source src="真实场景.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <canvas id="canvas"></canvas>
+    <button id="processFrameButton">处理当前帧</button>
+    <script>
+        Module.onRuntimeInitialized = () => {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const button = document.getElementById('processFrameButton');
+
+            // 创建 Emscripten 绑定的 MapStringInt 对象
+            const settings = new Module.MapStringInt();
+            settings.set("kernel_size", 9);
+            settings.set("center_color_threshold", 0);
+            settings.set("min_length", 500);
+            settings.set("circularity_threshold", 70);
+            settings.set("area_threshold", 1000);
+            settings.set("region_size", 10);
+            settings.set("center_circle_diameter", 50);
+            settings.set("center_circle_thickness", 2);
+            settings.set("mode", 0);
+
+            // 创建 ContourDetection 实例
+            const contourDetection = new Module.ContourDetection(settings);
+
+            video.addEventListener('loadeddata', function () {
+                console.log("Video loaded");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+            });
+
+            button.addEventListener('click', function () {
+                // 获取视频的当前帧
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                console.log("ImageData:", imageData);
+
+                // 将 ImageData 转换为 Uint8Array
+                const rgbaData = imageData.data;
+                const bgrData = new Uint8Array(canvas.width * canvas.height * 3);
+                const frameData = new Module.VectorUint8();
+                frameData.resize(bgrData.length, 0);
+
+                // 将 RGBA 转换为 BGR
+                for (let i = 0, j = 0; i < rgbaData.length; i += 4, j += 3) {
+                    frameData.set(j, rgbaData[i + 2]);
+                    frameData.set(j + 1, rgbaData[i + 1]);
+                    frameData.set(j + 2, rgbaData[i]);
+                }
+
+                // 调用 update 方法处理帧
+                const processedFrameData = contourDetection.update(frameData, canvas.width, canvas.height);
+
+                // 将处理后的 BGR 转换回 RGBA
+                const processedRgbaData = new Uint8ClampedArray(canvas.width * canvas.height * 4);
+                for (let i = 0; i < canvas.width * canvas.height; i++) {
+                    processedRgbaData[i * 4] = processedFrameData.get(i * 3 + 2);     // R
+                    processedRgbaData[i * 4 + 1] = processedFrameData.get(i * 3 + 1); // G
+                    processedRgbaData[i * 4 + 2] = processedFrameData.get(i * 3);     // B
+                    processedRgbaData[i * 4 + 3] = 255;                           // A
+                }
+
+                // 将处理后的 Uint8Array 转换回 ImageData
+                const processedImageData = new ImageData(processedRgbaData, canvas.width, canvas.height);
+                context.putImageData(processedImageData, 0, 0);
+            });
+        };
+    </script>
+</body>
+
+</html>

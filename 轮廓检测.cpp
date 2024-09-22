@@ -5,22 +5,6 @@
 #include <numeric>
 #include <iostream>
 
-void print_progress(float progress, int current_frame, int total_frames, double elapsed_time, double estimated_time) {
-    int bar_width = 50;
-    std::cout << "\rProcessing video: ";
-    std::cout << std::fixed << std::setprecision(2) << progress << "% [";
-    int pos = bar_width * progress / 100.0;
-    for (int i = 0; i < bar_width; ++i) {
-        if (i < pos)
-            std::cout << "#";
-        else
-            std::cout << "-";
-    }
-    std::cout << "] " << current_frame << "/" << total_frames;
-    std::cout << " [" << std::fixed << std::setprecision(2) << elapsed_time << "s<" << estimated_time << "s, " << (elapsed_time / current_frame) << "s/it]";
-    std::cout.flush();
-}
-
 // 计算阈值函数
 int calculate_threshold(const cv::Mat &red_channel, const cv::Mat &mask = cv::Mat()) {
     cv::Mat masked_red_channel;
@@ -234,8 +218,7 @@ public:
     ContourDetection(const std::map<std::string, int> &settings = DEFAULT_SETTINGS);
     void reset_counters();
     void reset_state();
-    cv::Mat update(const cv::Mat &frame);
-    void process_video(const std::string &input_path, const std::string &output_path);
+    std::vector<uint8_t> update(const std::vector<uint8_t> &frame_data, int width, int height);
 
 private:
     std::map<std::string, int> settings;
@@ -262,7 +245,6 @@ const std::map<std::string, int> ContourDetection::DEFAULT_SETTINGS = {
     {"region_size", 10},
     {"center_circle_diameter", 50},
     {"center_circle_thickness", 2},
-    {"fps", 24},
     {"mode", 0} // 0 for "zoom_in", 1 for "zoom_out"
 };
 
@@ -290,8 +272,9 @@ void ContourDetection::reset_state() {
     status = -1;
 }
 
-cv::Mat ContourDetection::update(const cv::Mat &frame) {
+std::vector<uint8_t> ContourDetection::update(const std::vector<uint8_t> &frame_data, int width, int height) {
     total_frames++;
+    cv::Mat frame(height, width, CV_8UC3, const_cast<uint8_t *>(frame_data.data()));
     auto [processed_frame, current_bbox_area, current_contours_info, current_center_color] = process_frame(
         frame,
         previous_bbox_area,
@@ -359,67 +342,13 @@ cv::Mat ContourDetection::update(const cv::Mat &frame) {
     previous_contours_info = current_contours_info;
     previous_center_color = current_center_color;
 
-    return frame;
-}
+    std::vector<uint8_t> output_data(frame.total() * frame.elemSize());
+    std::memcpy(output_data.data(), frame.data, output_data.size());
 
-void ContourDetection::process_video(const std::string &input_path, const std::string &output_path) {
-    cv::VideoCapture cap(input_path);
-    if (!cap.isOpened()) {
-        std::cerr << "Error opening video stream or file" << std::endl;
-        return;
-    }
-
-    cv::Mat frame;
-    cap >> frame;
-    int original_height = frame.rows;
-    int original_width = frame.cols;
-    cv::VideoWriter out(output_path, cv::VideoWriter::fourcc('m', 'p', '4', 'v'), settings["fps"], cv::Size(original_width, original_height));
-    int frame_count = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_COUNT));
-
-    reset_counters();
-    reset_state();
-
-    auto start_time = std::chrono::steady_clock::now();
-
-    for (int i = 0; i < frame_count; ++i) {
-        cap >> frame;
-        if (frame.empty()) {
-            break;
-        }
-        frame = update(frame);
-        out.write(frame);
-
-        // 更新进度条
-        float progress = (i + 1) / static_cast<float>(frame_count) * 100;
-        auto current_time = std::chrono::steady_clock::now();
-        double elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
-        double estimated_time = (elapsed_time / (i + 1)) * (frame_count - (i + 1));
-        print_progress(progress, i + 1, frame_count, elapsed_time, estimated_time);
-    }
-
-    std::cout << std::endl;
-
-    cap.release();
-    out.release();
-
-    // 打印统计信息
-    int total_frames = green_count + blue_count + white_count;
-    std::cout << "绿色边框帧数: " << green_count << " (" << (green_count / static_cast<float>(total_frames) * 100) << "%)" << std::endl;
-    std::cout << "蓝色边框帧数: " << blue_count << " (" << (blue_count / static_cast<float>(total_frames) * 100) << "%)" << std::endl;
-    std::cout << "白色边框帧数: " << white_count << " (" << (white_count / static_cast<float>(total_frames) * 100) << "%)" << std::endl;
-    std::cout << "总圈数: " << count_value << std::endl;
+    return output_data;
 }
 
 int main() {
-    std::string video_path = "/home/july/physic/test/真实场景.mp4";
-    std::string output_path = "轮廓检测+计数（c++版）.mp4";
-
-    // 创建 ContourDetection 实例
-    ContourDetection contour_detection;
-
-    // 处理视频文件
-    contour_detection.process_video(video_path, output_path);
-
     return 0;
 }
 
@@ -429,9 +358,7 @@ EMSCRIPTEN_BINDINGS(my_module) {
         .constructor<const std::map<std::string, int> &>()
         .function("reset_counters", &ContourDetection::reset_counters)
         .function("reset_state", &ContourDetection::reset_state)
-        .function("update", &ContourDetection::update)
-        .function("process_video", &ContourDetection::process_video);
+        .function("update", &ContourDetection::update);
 
-    emscripten::register_vector<std::pair<float, cv::Scalar>>("VectorPairFloatScalar");
     emscripten::register_map<std::string, int>("MapStringInt");
 }
