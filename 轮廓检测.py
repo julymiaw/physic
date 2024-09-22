@@ -246,40 +246,83 @@ def process_frame(
     return cropped_frame, current_bbox_area, contours_info, None
 
 
-def process_video(input_path, output_path, fps=24, mode="zoom_in"):
-    cap = cv.VideoCapture(input_path)
-    ret, frame = cap.read()
-    original_height, original_width = frame.shape[:2]
-    fourcc = cv.VideoWriter_fourcc(*"mp4v")
-    out = cv.VideoWriter(output_path, fourcc, fps, (original_width, original_height))
-    frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+class ContourDetection:
+    DEFAULT_SETTINGS = {
+        "kernel_size": (9, 9),
+        "center_color_threshold": 0,
+        "min_length": 500,
+        "circularity_threshold": 0.7,
+        "area_threshold": 1000,
+        "region_size": 10,
+        "center_circle_diameter": 50,
+        "center_circle_thickness": 2,
+        "fps": 24,
+        "mode": "zoom_in",
+    }
 
-    bbox_area = 0
-    previous_contours_info = []
-    previous_center_color = None
-    status = None
-    cap.set(cv.CAP_PROP_POS_FRAMES, 0)
+    def __init__(self, settings=None):
+        """
+        初始化 ContourDetection 类。
 
-    # 初始化计数器
-    green_count = 0
-    blue_count = 0
-    white_count = 0
-    count_value = 0
+        参数:
+        settings (dict, optional): 包含设置参数的字典。默认值为 None。
+        """
+        self.settings = self.DEFAULT_SETTINGS.copy()
+        if settings:
+            self.settings.update(settings)
+        self.reset_counters()
+        self.reset_state()
 
-    for i in tqdm(range(frame_count), desc="Processing video"):
-        _, frame = cap.read()
+    def reset_counters(self):
+        """
+        重置计数器。
+        """
+        self.green_count = 0
+        self.blue_count = 0
+        self.white_count = 0
+        self.count_value = 0
+        self.total_frames = 0
+
+    def reset_state(self):
+        """
+        重置状态属性。
+        """
+        self.previous_bbox_area = 0
+        self.previous_contours_info = []
+        self.previous_center_color = None
+        self.status = None
+
+    def update(self, frame):
+        """
+        更新并处理当前帧。
+
+        参数:
+        frame (numpy.ndarray): 当前最新的帧。
+        """
+        self.total_frames += 1
         (
             processed_frame,
-            bbox_area,
+            self.previous_bbox_area,
             current_contours_info,
             current_center_color,
-        ) = process_frame(frame, bbox_area)
+        ) = process_frame(
+            frame,
+            self.previous_bbox_area,
+            self.settings["kernel_size"],
+            self.settings["center_color_threshold"],
+            self.settings["min_length"],
+            self.settings["circularity_threshold"],
+            self.settings["area_threshold"],
+            self.settings["region_size"],
+            self.settings["center_circle_diameter"],
+            self.settings["center_circle_thickness"],
+        )
 
         # 匹配轮廓并判断放大或缩小
         scale_count = 0
         area_threshold = 50000  # 面积变化阈值
-        if previous_contours_info and current_contours_info:
-            for prev_area, prev_color in previous_contours_info:
+        if self.previous_contours_info and current_contours_info:
+            for prev_area, prev_color in self.previous_contours_info:
                 for curr_area, curr_color in current_contours_info:
                     if (
                         prev_color == curr_color
@@ -291,36 +334,36 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
                             scale_count -= 1
         if scale_count > 0:
             border_color = (0, 255, 0)  # 绿色
-            green_count += 1
-            status = "zoom_out"
+            self.green_count += 1
+            self.status = "zoom_out"
         elif scale_count < 0:
             border_color = (255, 0, 0)  # 蓝色
-            blue_count += 1
-            status = "zoom_in"
+            self.blue_count += 1
+            self.status = "zoom_in"
         else:
             border_color = (255, 255, 255)  # 默认白色
-            white_count += 1
+            self.white_count += 1
 
         border_thickness = min(10 + abs(scale_count), 50)
 
         # 判断计数模式和更新计数值
         if (
-            previous_center_color is not None
+            self.previous_center_color is not None
             and current_center_color is not None
-            and status is not None
+            and self.status is not None
         ):
             if (
-                previous_center_color == 255
+                self.previous_center_color == 255
                 and current_center_color == 0
-                and mode == status
+                and self.settings["mode"] == self.status
             ):
-                count_value += 1
+                self.count_value += 1
             if (
-                previous_center_color == 0
+                self.previous_center_color == 0
                 and current_center_color == 255
-                and mode != status
+                and self.settings["mode"] != self.status
             ):
-                count_value -= 1
+                self.count_value -= 1
 
         # 给画面增加边框
         processed_frame = cv.copyMakeBorder(
@@ -338,37 +381,72 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
         # 在整体的右上角打印计数值
         cv.putText(
             frame,
-            str(count_value),
-            (original_width - 400, 300),  # 右上角位置
+            str(self.count_value),
+            (frame.shape[1] - 400, 300),  # 右上角位置
             cv.FONT_HERSHEY_SIMPLEX,
             5,
             (255, 255, 255),
             10,
         )
 
-        # 写入输出视频
-        out.write(frame)
+        self.previous_contours_info = current_contours_info
+        self.previous_center_color = current_center_color
 
-        previous_contours_info = current_contours_info
-        previous_center_color = current_center_color
+        return frame
 
-    cap.release()
-    out.release()
+    def process_video(self, input_path, output_path):
+        """
+        处理视频文件，用于测试效果。
 
-    # 打印统计信息
-    total_frames = green_count + blue_count + white_count
-    print(f"绿色边框帧数: {green_count} ({green_count / total_frames * 100:.2f}%)")
-    print(f"蓝色边框帧数: {blue_count} ({blue_count / total_frames * 100:.2f}%)")
-    print(f"白色边框帧数: {white_count} ({white_count / total_frames * 100:.2f}%)")
-    print(f"总圈数: {count_value}")
+        参数:
+        input_path (str): 输入视频文件路径。
+        output_path (str): 输出视频文件路径。
+        """
+        cap = cv.VideoCapture(input_path)
+        ret, frame = cap.read()
+        original_height, original_width = frame.shape[:2]
+        fourcc = cv.VideoWriter_fourcc(*"mp4v")
+        out = cv.VideoWriter(
+            output_path, fourcc, self.settings["fps"], (original_width, original_height)
+        )
+        frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
+
+        self.reset_counters()
+        self.reset_state()
+
+        for i in tqdm(range(frame_count), desc="Processing video"):
+            ret, frame = cap.read()
+            if not ret:
+                break
+            frame = self.update(frame)
+            out.write(frame)
+
+        cap.release()
+        out.release()
+
+        # 打印统计信息
+        total_frames = self.green_count + self.blue_count + self.white_count
+        print(
+            f"绿色边框帧数: {self.green_count} ({self.green_count / total_frames * 100:.2f}%)"
+        )
+        print(
+            f"蓝色边框帧数: {self.blue_count} ({self.blue_count / total_frames * 100:.2f}%)"
+        )
+        print(
+            f"白色边框帧数: {self.white_count} ({self.white_count / total_frames * 100:.2f}%)"
+        )
+        print(f"总圈数: {self.count_value}")
 
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
     output_path = "轮廓检测+计数（原始图像版）.mp4"
 
+    # 创建 ContourDetection 实例
+    contour_detection = ContourDetection()
+
     # 处理视频文件
-    process_video(video_path, output_path, 10)
+    contour_detection.process_video(video_path, output_path)
 
 
 if __name__ == "__main__":
