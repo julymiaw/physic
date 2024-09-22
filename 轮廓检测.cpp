@@ -218,7 +218,7 @@ public:
     ContourDetection(const std::map<std::string, int> &settings = DEFAULT_SETTINGS);
     void reset_counters();
     void reset_state();
-    std::vector<uint8_t> update(const std::vector<uint8_t> &frame_data, int width, int height);
+    uint8_t *update(const uint8_t *frame_data, int width, int height);
 
 private:
     std::map<std::string, int> settings;
@@ -272,9 +272,11 @@ void ContourDetection::reset_state() {
     status = -1;
 }
 
-std::vector<uint8_t> ContourDetection::update(const std::vector<uint8_t> &frame_data, int width, int height) {
+uint8_t *ContourDetection::update(const uint8_t *frame_data, int width, int height) {
     total_frames++;
-    cv::Mat frame(height, width, CV_8UC3, const_cast<uint8_t *>(frame_data.data()));
+    cv::Mat rgba_frame(height, width, CV_8UC4, const_cast<uint8_t *>(frame_data));
+    cv::Mat frame;
+    cv::cvtColor(rgba_frame, frame, cv::COLOR_RGBA2BGR);
     auto [processed_frame, current_bbox_area, current_contours_info, current_center_color] = process_frame(
         frame,
         previous_bbox_area,
@@ -339,11 +341,15 @@ std::vector<uint8_t> ContourDetection::update(const std::vector<uint8_t> &frame_
     // 将处理后的帧复制回原始帧
     processed_frame.copyTo(frame(cv::Rect(0, 0, processed_frame.cols, processed_frame.rows)));
 
+    // 转换为 RGBA 格式
+    cv::cvtColor(frame, rgba_frame, cv::COLOR_BGR2RGBA);
+
+    // 分配内存并将数据复制到 Emscripten 堆中
+    uint8_t *output_data = new uint8_t[rgba_frame.total() * rgba_frame.elemSize()];
+    std::memcpy(output_data, rgba_frame.data, rgba_frame.total() * rgba_frame.elemSize());
+
     previous_contours_info = current_contours_info;
     previous_center_color = current_center_color;
-
-    std::vector<uint8_t> output_data(frame.total() * frame.elemSize());
-    std::memcpy(output_data.data(), frame.data, output_data.size());
 
     return output_data;
 }
@@ -358,7 +364,7 @@ EMSCRIPTEN_BINDINGS(my_module) {
         .constructor<const std::map<std::string, int> &>()
         .function("reset_counters", &ContourDetection::reset_counters)
         .function("reset_state", &ContourDetection::reset_state)
-        .function("update", &ContourDetection::update);
+        .function("update", &ContourDetection::update, emscripten::allow_raw_pointers());
 
     emscripten::register_map<std::string, int>("MapStringInt");
 }
