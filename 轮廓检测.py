@@ -5,18 +5,52 @@ from scipy.signal import find_peaks
 
 
 def calculate_threshold(red_channel, mask=None):
-    if mask is not None:
+    """
+    计算阈值，阈值为出现频率最高的两个峰值之间的最低值。
+
+    参数:
+    red_channel (numpy.ndarray): 输入的红色通道图像。
+    mask (numpy.ndarray, optional): 可选的掩码图像，用于指定计算阈值的区域，形状必须与 red_channel 相同。
+
+    返回:
+    int: 计算得到的阈值。
+
+    异常:
+    ValueError: 如果无法找到两个峰值，则抛出此异常。
+    """
+    if mask is not None and mask.shape == red_channel.shape:
         red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
     hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
     hist[0] = 0
     peaks, _ = find_peaks(hist)
     sorted_peaks = sorted(peaks, key=lambda x: hist[x], reverse=True)
-    second_peak_index = sorted_peaks[1]
+
+    # 找到出现频率最高的两个峰值
+    if len(sorted_peaks) < 2:
+        raise ValueError("无法找到两个峰值")
+
+    second_peak_index = min(sorted_peaks[:2])
     min_val_after_peak = np.argmin(hist[second_peak_index:]) + second_peak_index
     return min_val_after_peak
 
 
 def segment_image(src, threshold, kernel_size):
+    """
+    对图像进行分割，并返回分割后的边界框和掩码。
+
+    参数:
+    src (numpy.ndarray): 输入的源图像。
+    threshold (int): 用于二值化的阈值。
+    kernel_size (tuple): 用于形态学操作的内核大小。
+
+    返回:
+    tuple: 包含两个元素的元组：
+        - (x, y, w, h) (tuple): 分割后的边界框，包含左上角坐标 (x, y) 和宽度、高度 (w, h)。
+        - mask (numpy.ndarray or None): 分割后的掩码图像，如果没有找到轮廓则为 None。
+
+    异常:
+    无
+    """
     _, src_bin = cv.threshold(src, threshold, 255, cv.THRESH_BINARY)
     kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
     src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
@@ -32,11 +66,32 @@ def segment_image(src, threshold, kernel_size):
 
 
 def crop_to_bbox(frame, bbox):
+    """
+    根据给定的边界框裁剪图像。
+
+    参数:
+    frame (numpy.ndarray): 输入的图像。
+    bbox (tuple): 边界框，包含左上角坐标 (x, y) 和宽度、高度 (w, h)。
+
+    返回:
+    numpy.ndarray: 裁剪后的图像（深拷贝）。
+    """
     x, y, w, h = bbox
-    return frame[y : y + h, x : x + w]
+    return frame[y : y + h, x : x + w].copy()
 
 
 def classify_contour(contour, binary_image, thickness=20):
+    """
+    根据轮廓内像素的平均值对轮廓进行分类。
+
+    参数:
+    contour (numpy.ndarray): 输入的轮廓。
+    binary_image (numpy.ndarray): 输入的二值化图像。
+    thickness (int, optional): 用于绘制轮廓的厚度。默认值为 20。
+
+    返回:
+    tuple: 轮廓的颜色，根据平均值分类为绿色 (0, 255, 0) 或蓝色 (255, 0, 0)。
+    """
     # 创建与 binary_image 大小相同的掩码
     mask = np.zeros_like(binary_image)
     cv.drawContours(mask, [contour], -1, 255, thickness)
@@ -54,16 +109,53 @@ def classify_contour(contour, binary_image, thickness=20):
     # 计算这些点的像素平均值
     avg_color = np.mean(masked_points)
 
-    # 根据平均值分类
+    # 根据平均值对边缘分类
     if avg_color < 128:
-        color = (0, 255, 0)  # 圆心为红色时绿色
+        color = (0, 255, 0)  # 红色圆环外侧边缘为绿色
     else:
-        color = (255, 0, 0)  # 圆心为黑色时蓝色
-
+        color = (255, 0, 0)  # 红色圆环内侧边缘为蓝色
     return color
 
 
-def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
+def process_frame(
+    frame,
+    previous_bbox_area=0,
+    kernel_size=(9, 9),
+    center_color_threshold=0,
+    min_length=500,
+    circularity_threshold=0.7,
+    area_threshold=1000,
+    region_size=10,
+    center_circle_diameter=50,
+    center_circle_thickness=2,
+):
+    """
+    处理单帧图像，检测轮廓并计算公共中心。
+
+    必填参数:
+    frame (numpy.ndarray): 输入的图像帧。
+
+    可选参数:
+    计算相关:
+    previous_bbox_area (float): 前一帧的边界框面积。默认值为 0。
+    kernel_size (tuple): 用于形态学操作的内核大小。默认值为 (9, 9)。
+    center_color_threshold (int): 判断中心颜色的阈值。默认值为 0。
+    min_length (int): 轮廓的最小长度阈值。默认值为 500。
+    circularity_threshold (float): 轮廓的圆形度阈值。默认值为 0.7。
+    area_threshold (int): 视为同一轮廓的最大面积差距阈值。默认值为 1000。
+    region_size (int): 判断中心颜色的判定区域大小。默认值为 10。
+
+    绘图相关:
+    center_circle_diameter (int): 画出公共中心时的直径。默认值为 50。
+    center_circle_thickness (int): 画出公共中心时的线宽。默认值为 2。
+
+    返回:
+    tuple: 包含四个元素的元组：
+        - processed_frame (numpy.ndarray): 处理后的图像帧。
+        - current_bbox_area (float): 当前帧的边界框面积。
+        - contours_info (list): 包含轮廓面积和颜色信息的列表。
+        - center_color (int or None): 公共中心的颜色，红色为 255，黑色为 0，无效为 None。
+    """
     red_channel = frame[:, :, 2]
     threshold = calculate_threshold(red_channel)
 
@@ -75,7 +167,7 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
         current_bbox_area = bbox[2] * bbox[3]
 
     if current_bbox_area == 0:
-        return frame, previous_bbox_area, []
+        return frame, previous_bbox_area, [], None
 
     red_channel = crop_to_bbox(red_channel, bbox)
     mask = crop_to_bbox(mask, bbox)
@@ -93,11 +185,8 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
     contours, _ = cv.findContours(edges, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
     # 计算每个轮廓的面积和圆形度
-    min_length = 500  # 设置最小长度阈值
     max_radius = min(bbox[2:]) // 2
     max_area = np.pi * (max_radius**2)
-    circularity_threshold = 0.7  # 设置圆形度阈值
-    area_threshold = 1000  # 面积差距阈值
 
     # 按照面积顺序处理轮廓
     contours = sorted(contours, key=cv.contourArea)
@@ -126,23 +215,31 @@ def process_frame(frame, previous_bbox_area, kernel_size=(9, 9)):
         cx = int(sum(m["m10"] / m["m00"] for m in centers) / len(centers))
         cy = int(sum(m["m01"] / m["m00"] for m in centers) / len(centers))
 
-        # 判断公共中心领域范围内的像素点颜色
-        region_size = 10  # 定义领域范围大小
+        # 判断公共中心邻域范围内的像素点颜色
         region = binary_image[
             max(0, cy - region_size) : min(binary_image.shape[0], cy + region_size),
             max(0, cx - region_size) : min(binary_image.shape[1], cx + region_size),
         ]
         avg_color = np.mean(region)
 
-        if avg_color < 128:
+        if avg_color < 128 - center_color_threshold:
             center_color = 255  # 红色
             border_color = (0, 255, 0)  # 绿色
-        else:
+        elif avg_color > 128 + center_color_threshold:
             center_color = 0  # 黑色
             border_color = (255, 0, 0)  # 蓝色
+        else:
+            center_color = None  # 无效
+            border_color = (255, 255, 255)  # 白色
 
         # 画出公共中心
-        cv.circle(cropped_frame, (cx, cy), 50, border_color, 2)
+        cv.circle(
+            cropped_frame,
+            (cx, cy),
+            center_circle_diameter // 2,
+            border_color,
+            center_circle_thickness,
+        )
 
         return cropped_frame, current_bbox_area, contours_info, center_color
 
@@ -263,6 +360,7 @@ def process_video(input_path, output_path, fps=24, mode="zoom_in"):
     print(f"绿色边框帧数: {green_count} ({green_count / total_frames * 100:.2f}%)")
     print(f"蓝色边框帧数: {blue_count} ({blue_count / total_frames * 100:.2f}%)")
     print(f"白色边框帧数: {white_count} ({white_count / total_frames * 100:.2f}%)")
+    print(f"总圈数: {count_value}")
 
 
 def main():
