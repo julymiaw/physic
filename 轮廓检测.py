@@ -242,7 +242,6 @@ def process_frame(
         )
 
         return cropped_frame, current_bbox_area, contours_info, center_color
-
     return cropped_frame, current_bbox_area, contours_info, None
 
 
@@ -256,7 +255,7 @@ class ContourDetection:
         "region_size": 10,
         "center_circle_diameter": 50,
         "center_circle_thickness": 2,
-        "fps": 24,
+        "fps": 10,
         "mode": "zoom_in",
     }
 
@@ -403,12 +402,12 @@ class ContourDetection:
         output_path (str): 输出视频文件路径。
         """
         cap = cv.VideoCapture(input_path)
-        ret, frame = cap.read()
-        original_height, original_width = frame.shape[:2]
-        fourcc = cv.VideoWriter_fourcc(*"mp4v")
-        out = cv.VideoWriter(
-            output_path, fourcc, self.settings["fps"], (original_width, original_height)
-        )
+        # ret, frame = cap.read()
+        # original_height, original_width = frame.shape[:2]
+        # fourcc = cv.VideoWriter_fourcc(*"mp4v")
+        # out = cv.VideoWriter(
+        # output_path, fourcc, self.settings["fps"], (original_width, original_height)
+        # )
         frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
 
         self.reset_counters()
@@ -419,10 +418,10 @@ class ContourDetection:
             if not ret:
                 break
             frame = self.update(frame)
-            out.write(frame)
+            # out.write(frame)
 
         cap.release()
-        out.release()
+        # out.release()
 
         # 打印统计信息
         total_frames = self.green_count + self.blue_count + self.white_count
@@ -440,7 +439,7 @@ class ContourDetection:
 
 def main():
     video_path = "/home/july/physic/test/真实场景.mp4"
-    output_path = "轮廓检测+计数（原始图像版）.mp4"
+    output_path = "轮廓检测+计数（python版）.mp4"
 
     # 创建 ContourDetection 实例
     contour_detection = ContourDetection()
