@@ -40,6 +40,7 @@ public:
     void reset_state();
     cv::Mat process_frame(const cv::Mat &frame);
     void print_result();
+    int get_count_value() const { return count_info.count_value; }
 
 private:
     std::map<std::string, int> settings;
@@ -71,7 +72,7 @@ void ContourDetection::reset_counters() {
 void ContourDetection::reset_state() {
     state_info.bbox_area = 0;
     state_info.contours_info.clear();
-    state_info.center_color = -1; // Use -1 to represent None
+    state_info.center_color = -1;
     state_info.status = -1;
     state_info.center = cv::Point(-1, -1);
 }
@@ -363,6 +364,8 @@ int main() {
 
     auto start_time = std::chrono::steady_clock::now();
 
+    std::vector<std::pair<int, double>> count_timestamps; // 记录计数值和时间戳
+
     for (int i = 0; i < frame_count; ++i) {
         cap >> frame;
         if (frame.empty()) {
@@ -376,11 +379,29 @@ int main() {
         double elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
         double estimated_time = (elapsed_time / (i + 1)) * (frame_count - (i + 1));
         print_progress(progress, i + 1, frame_count, elapsed_time, estimated_time);
+
+        // 记录当前计数值和时间戳
+        count_timestamps.emplace_back(contour_detection.get_count_value(), elapsed_time);
     }
 
     std::cout << std::endl;
 
     contour_detection.print_result();
+
+    // 计算最大速率
+    double max_rate = 0.0;
+    for (size_t i = 1; i < count_timestamps.size(); ++i) {
+        int count_diff = count_timestamps[i].first - count_timestamps[i - 1].first;
+        double time_diff = count_timestamps[i].second - count_timestamps[i - 1].second;
+        if (time_diff > 0) {
+            double rate = count_diff / time_diff;
+            if (rate > max_rate) {
+                max_rate = rate;
+            }
+        }
+    }
+
+    std::cout << "最大吞吐计数速率: " << max_rate << " 次/秒" << std::endl;
 
     cap.release();
 }
