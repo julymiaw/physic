@@ -3,6 +3,7 @@
 #include <string>
 #include <numeric>
 #include <iostream>
+#include <fstream>
 
 // 计数信息结构体
 struct CountInfo {
@@ -42,6 +43,9 @@ public:
     void print_result();
     int get_count_value() const { return count_info.count_value; }
 
+    std::vector<std::vector<int>> hist_data_no_mask;
+    std::vector<std::vector<int>> hist_data_with_mask;
+
 private:
     std::map<std::string, int> settings;
     CountInfo count_info;
@@ -79,20 +83,18 @@ void ContourDetection::reset_state() {
 
 // 计算阈值函数
 int ContourDetection::calculate_threshold(const cv::Mat &red_channel, const cv::Mat &mask) {
-    cv::Mat masked_red_channel;
-    if (!mask.empty() && mask.size() == red_channel.size()) {
-        cv::bitwise_and(red_channel, red_channel, masked_red_channel, mask);
-    } else {
-        masked_red_channel = red_channel;
-    }
-
     // 计算直方图
     int histSize = 256;
     float range[] = {0, 256};
     const float *histRange = {range};
     cv::Mat hist;
-    cv::calcHist(&masked_red_channel, 1, 0, cv::Mat(), hist, 1, &histSize, &histRange, true, false);
-    hist.at<float>(0) = 0; // 忽略第一个bin
+    cv::calcHist(&red_channel, 1, 0, mask, hist, 1, &histSize, &histRange, true, false);
+
+    // 将直方图数据存入列表
+    std::vector<int> hist_row(histSize);
+    for (int i = 0; i < histSize; ++i) {
+        hist_row[i] = static_cast<int>(hist.at<float>(i));
+    }
 
     // 找到峰值
     std::vector<int> peaks;
@@ -112,6 +114,16 @@ int ContourDetection::calculate_threshold(const cv::Mat &red_channel, const cv::
 
     int second_peak_index = std::min(peaks[0], peaks[1]);
     int min_val_after_peak = std::distance(hist.begin<float>(), std::min_element(hist.begin<float>() + second_peak_index, hist.end<float>()));
+
+    // 将阈值添加到直方图数据的最后一列
+    hist_row.push_back(min_val_after_peak);
+
+    if (!mask.empty() && mask.size() == red_channel.size()) {
+        hist_data_with_mask.push_back(hist_row);
+    } else {
+        hist_data_no_mask.push_back(hist_row);
+    }
+
     return min_val_after_peak;
 }
 
@@ -119,17 +131,12 @@ int ContourDetection::calculate_threshold(const cv::Mat &red_channel, const cv::
 std::pair<cv::Rect, cv::Mat> ContourDetection::segment_image(const cv::Mat &src, int threshold, const cv::Size &kernel_size) {
     cv::Mat src_bin;
     cv::threshold(src, src_bin, threshold, 255, cv::THRESH_BINARY);
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, kernel_size);
-    cv::morphologyEx(src_bin, src_bin, cv::MORPH_OPEN, kernel);
-    cv::morphologyEx(src_bin, src_bin, cv::MORPH_CLOSE, kernel);
 
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(src_bin, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
     if (contours.empty()) {
-        cv::Mat coords;
-        cv::findNonZero(src_bin, coords);
-        return {cv::boundingRect(coords), cv::Mat()};
+        return {cv::Rect(), cv::Mat()};
     }
 
     auto contour = *std::max_element(contours.begin(), contours.end(), [](const std::vector<cv::Point> &a, const std::vector<cv::Point> &b) {
@@ -170,12 +177,6 @@ cv::Mat ContourDetection::process_frame(const cv::Mat &frame) {
     int threshold = calculate_threshold(red_channel);
     auto [bbox, mask] = segment_image(red_channel, threshold, cv::Size(5, 5));
     float bbox_area = bbox.area();
-
-    // 动态控制形态学操作的核大小
-    if (state_info.bbox_area > 0 && bbox_area > state_info.bbox_area * 1.5) {
-        std::tie(bbox, mask) = segment_image(red_channel, threshold, cv::Size(7, 7));
-        bbox_area = bbox.area();
-    }
 
     // 如果没有有效区域，则当前帧无效(罕见情况！)
     if (bbox_area == 0) {
@@ -364,8 +365,6 @@ int main() {
 
     auto start_time = std::chrono::steady_clock::now();
 
-    std::vector<std::pair<int, double>> count_timestamps; // 记录计数值和时间戳
-
     for (int i = 0; i < frame_count; ++i) {
         cap >> frame;
         if (frame.empty()) {
@@ -379,29 +378,36 @@ int main() {
         double elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
         double estimated_time = (elapsed_time / (i + 1)) * (frame_count - (i + 1));
         print_progress(progress, i + 1, frame_count, elapsed_time, estimated_time);
-
-        // 记录当前计数值和时间戳
-        count_timestamps.emplace_back(contour_detection.get_count_value(), elapsed_time);
     }
 
     std::cout << std::endl;
 
     contour_detection.print_result();
 
-    // 计算最大速率
-    double max_rate = 0.0;
-    for (size_t i = 1; i < count_timestamps.size(); ++i) {
-        int count_diff = count_timestamps[i].first - count_timestamps[i - 1].first;
-        double time_diff = count_timestamps[i].second - count_timestamps[i - 1].second;
-        if (time_diff > 0) {
-            double rate = count_diff / time_diff;
-            if (rate > max_rate) {
-                max_rate = rate;
+    // 保存直方图数据到 CSV 文件
+    std::ofstream no_mask_file("hist_data_no_mask.csv");
+    for (const auto &row : contour_detection.hist_data_no_mask) {
+        for (size_t i = 0; i < row.size(); ++i) {
+            no_mask_file << row[i];
+            if (i < row.size() - 1) {
+                no_mask_file << ",";
             }
         }
+        no_mask_file << "\n";
     }
+    no_mask_file.close();
 
-    std::cout << "最大吞吐计数速率: " << max_rate << " 次/秒" << std::endl;
+    std::ofstream with_mask_file("hist_data_with_mask.csv");
+    for (const auto &row : contour_detection.hist_data_with_mask) {
+        for (size_t i = 0; i < row.size(); ++i) {
+            with_mask_file << row[i];
+            if (i < row.size() - 1) {
+                with_mask_file << ",";
+            }
+        }
+        with_mask_file << "\n";
+    }
+    with_mask_file.close();
 
     cap.release();
 }
