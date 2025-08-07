@@ -7,225 +7,525 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from scipy.signal import find_peaks
 from sklearn.mixture import GaussianMixture
+from abc import ABC, abstractmethod
+from typing import Optional, Dict, Any, Tuple
 
 
 # Set video path directly here
-# VIDEO_PATH = "test.mp4"  # Change to your video file path
-VIDEO_PATH = "真实场景.mp4"
+VIDEO_PATH = "test.mp4"  # Change to your video file path
+# VIDEO_PATH = "真实场景.mp4"
 
 
-def calculate_multiple_thresholds(red_channel, mask=None):
-    """
-    Calculate various thresholds using different methods.
-    """
-    if mask is not None and mask.shape == red_channel.shape:
-        red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+class SegmentThresholdMethod(ABC):
+    """分割阈值计算方法的抽象基类"""
 
-    hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
-    hist[0] = 0  # Remove zero values
+    def __init__(
+        self,
+        name: str,
+        color: str = "black",
+        category: str = "Other",
+        show_in_buttons: bool = True,
+    ):
+        self.name = name
+        self.color = color
+        self.category = category
+        self.show_in_buttons = show_in_buttons
 
-    thresholds = {}
+    @abstractmethod
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        """计算分割阈值的抽象方法"""
+        pass
 
-    # 1. Original peak-based method
-    try:
-        peaks, _ = find_peaks(hist)
-        sorted_peaks = sorted(peaks, key=lambda x: hist[x], reverse=True)
-        if len(sorted_peaks) >= 2:
-            second_peak_index = min(sorted_peaks[:2])
-            min_val_after_peak = np.argmin(hist[second_peak_index:]) + second_peak_index
-            thresholds["Peak-based"] = min_val_after_peak
-    except:
-        thresholds["Peak-based"] = None
+    def apply_segmentation(
+        self, src: np.ndarray, threshold: int, kernel_size: tuple = (5, 5)
+    ) -> Tuple[Optional[tuple], Optional[np.ndarray], np.ndarray]:
+        """应用阈值进行分割"""
+        _, src_bin = cv.threshold(src, threshold, 255, cv.THRESH_BINARY)
+        kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
+        src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
+        src_bin = cv.morphologyEx(src_bin, cv.MORPH_CLOSE, kernel)
+        coords = cv.findNonZero(src_bin)
+        contours, _ = cv.findContours(src_bin, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        if not contours or coords is None:
+            return None, None, src_bin
+        contour = max(contours, key=cv.contourArea)
+        bbox = cv.boundingRect(coords)
+        mask = np.zeros(src.shape, dtype=np.uint8)
+        cv.drawContours(mask, [contour], -1, 1, thickness=cv.FILLED)
+        return bbox, mask, src_bin
 
-    # 2. Mean threshold
-    valid_pixels = red_channel[red_channel > 0]  # Exclude zero values
-    if len(valid_pixels) > 0:
-        thresholds["Mean"] = int(np.mean(valid_pixels))
-    else:
-        thresholds["Mean"] = None
 
-    # 3. Median threshold
-    if len(valid_pixels) > 0:
-        thresholds["Median"] = int(np.median(valid_pixels))
-    else:
-        thresholds["Median"] = None
+# =================== 具体的分割阈值方法实现 ===================
 
-    # 4. Otsu's method
-    try:
-        otsu_thresh, _ = cv.threshold(
-            red_channel, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU
-        )
-        thresholds["Otsu"] = int(otsu_thresh)
-    except:
-        thresholds["Otsu"] = None
 
-    # 5. Triangle method (approximation)
-    try:
-        # Find the peak of the histogram
-        max_idx = np.argmax(hist)
-        # Find the rightmost non-zero bin
-        right_idx = len(hist) - 1
-        while right_idx > max_idx and hist[right_idx] == 0:
-            right_idx -= 1
+class PeakBasedSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Peak-based", "red", "Basic", show_in_buttons=True)
 
-        if right_idx > max_idx:
-            # Calculate triangle threshold
-            max_distance = 0
-            triangle_thresh = max_idx
-            for i in range(max_idx, right_idx + 1):
-                # Distance from point to line
-                distance = abs(
-                    (hist[right_idx] - hist[max_idx]) * i
-                    - (right_idx - max_idx) * hist[i]
-                    + right_idx * hist[max_idx]
-                    - max_idx * hist[right_idx]
-                ) / np.sqrt(
-                    (hist[right_idx] - hist[max_idx]) ** 2 + (right_idx - max_idx) ** 2
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+
+            peaks, _ = find_peaks(hist)
+            sorted_peaks = sorted(peaks, key=lambda x: hist[x], reverse=True)
+            if len(sorted_peaks) >= 2:
+                second_peak_index = min(sorted_peaks[:2])
+                min_val_after_peak = (
+                    np.argmin(hist[second_peak_index:]) + second_peak_index
                 )
-                if distance > max_distance:
-                    max_distance = distance
-                    triangle_thresh = i
-            thresholds["Triangle"] = triangle_thresh
-        else:
-            thresholds["Triangle"] = None
-    except:
-        thresholds["Triangle"] = None
+                return min_val_after_peak
+        except:
+            pass
+        return None
 
-    # 6. Percentile-based thresholds
-    if len(valid_pixels) > 0:
-        thresholds["25th Percentile"] = int(np.percentile(valid_pixels, 25))
-        thresholds["75th Percentile"] = int(np.percentile(valid_pixels, 75))
-        thresholds["90th Percentile"] = int(np.percentile(valid_pixels, 90))
-    else:
-        thresholds["25th Percentile"] = None
-        thresholds["75th Percentile"] = None
-        thresholds["90th Percentile"] = None
 
-    # 7. Mode (most frequent value)
-    if len(hist) > 0:
-        mode_idx = np.argmax(hist)
-        thresholds["Mode"] = mode_idx
-    else:
-        thresholds["Mode"] = None
+class MeanSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Mean", "purple", "Basic", show_in_buttons=True)
 
-    # 8. Gaussian Mixture Model (2 components)
-    try:
-        if len(valid_pixels) > 100:  # Need enough samples
-            gmm = GaussianMixture(n_components=2, random_state=42)
-            data = valid_pixels.reshape(-1, 1)
-            gmm.fit(data)
-            means = gmm.means_.flatten()
-            # Threshold is between the two means
-            gmm_thresh = int(np.mean(means))
-            thresholds["GMM"] = gmm_thresh
-        else:
-            thresholds["GMM"] = None
-    except:
-        thresholds["GMM"] = None
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
 
-    # 9. Weighted mean (weight by frequency)
-    try:
-        weighted_sum = np.sum(np.arange(256) * hist)
-        total_weight = np.sum(hist)
-        if total_weight > 0:
-            thresholds["Weighted Mean"] = int(weighted_sum / total_weight)
-        else:
-            thresholds["Weighted Mean"] = None
-    except:
-        thresholds["Weighted Mean"] = None
+            valid_pixels = red_channel[red_channel > 0]
+            if len(valid_pixels) > 0:
+                return int(np.mean(valid_pixels))
+        except:
+            pass
+        return None
 
-    # 10. Minimum error threshold (Kittler-Illingworth)
-    try:
-        min_error = float("inf")
-        min_error_thresh = 128
-        for t in range(1, 255):
-            if np.sum(hist[:t]) > 0 and np.sum(hist[t:]) > 0:
-                w0 = np.sum(hist[:t])
-                w1 = np.sum(hist[t:])
-                if w0 > 0 and w1 > 0:
-                    mu0 = np.sum(np.arange(t) * hist[:t]) / w0
-                    mu1 = np.sum(np.arange(t, 256) * hist[t:]) / w1
 
-                    # Calculate variances
-                    var0 = (
-                        np.sum(((np.arange(t) - mu0) ** 2) * hist[:t]) / w0
-                        if w0 > 0
-                        else 1
+class MedianSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Median", "orange", "Basic", show_in_buttons=True)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            valid_pixels = red_channel[red_channel > 0]
+            if len(valid_pixels) > 0:
+                return int(np.median(valid_pixels))
+        except:
+            pass
+        return None
+
+
+class OtsuSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Otsu", "green", "Basic", show_in_buttons=True)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            otsu_thresh, _ = cv.threshold(
+                red_channel, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU
+            )
+            return int(otsu_thresh)
+        except:
+            pass
+        return None
+
+
+class ModeSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Mode", "brown", "Basic", show_in_buttons=True)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+            if len(hist) > 0:
+                return np.argmax(hist)
+        except:
+            pass
+        return None
+
+
+class TriangleSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Triangle", "pink", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+
+            max_idx = np.argmax(hist)
+            right_idx = len(hist) - 1
+            while right_idx > max_idx and hist[right_idx] == 0:
+                right_idx -= 1
+
+            if right_idx > max_idx:
+                max_distance = 0
+                triangle_thresh = max_idx
+                for i in range(max_idx, right_idx + 1):
+                    distance = abs(
+                        (hist[right_idx] - hist[max_idx]) * i
+                        - (right_idx - max_idx) * hist[i]
+                        + right_idx * hist[max_idx]
+                        - max_idx * hist[right_idx]
+                    ) / np.sqrt(
+                        (hist[right_idx] - hist[max_idx]) ** 2
+                        + (right_idx - max_idx) ** 2
                     )
-                    var1 = (
-                        np.sum(((np.arange(t, 256) - mu1) ** 2) * hist[t:]) / w1
-                        if w1 > 0
-                        else 1
-                    )
+                    if distance > max_distance:
+                        max_distance = distance
+                        triangle_thresh = i
+                return triangle_thresh
+        except:
+            pass
+        return None
 
-                    if var0 > 0 and var1 > 0:
-                        error = (
-                            w0 * np.log(var0)
-                            + w1 * np.log(var1)
-                            - w0 * np.log(w0)
-                            - w1 * np.log(w1)
+
+class GMMSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("GMM", "cyan", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            valid_pixels = red_channel[red_channel > 0]
+            if len(valid_pixels) > 100:
+                gmm = GaussianMixture(n_components=2, random_state=42)
+                data = valid_pixels.reshape(-1, 1)
+                gmm.fit(data)
+                means = gmm.means_.flatten()
+                return int(np.mean(means))
+        except:
+            pass
+        return None
+
+
+class MinErrorSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Min Error", "gray", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+
+            min_error = float("inf")
+            min_error_thresh = 128
+            for t in range(1, 255):
+                if np.sum(hist[:t]) > 0 and np.sum(hist[t:]) > 0:
+                    w0 = np.sum(hist[:t])
+                    w1 = np.sum(hist[t:])
+                    if w0 > 0 and w1 > 0:
+                        mu0 = np.sum(np.arange(t) * hist[:t]) / w0
+                        mu1 = np.sum(np.arange(t, 256) * hist[t:]) / w1
+
+                        var0 = (
+                            np.sum(((np.arange(t) - mu0) ** 2) * hist[:t]) / w0
+                            if w0 > 0
+                            else 1
                         )
-                        if error < min_error:
-                            min_error = error
-                            min_error_thresh = t
-        thresholds["Min Error"] = min_error_thresh
-    except:
-        thresholds["Min Error"] = None
+                        var1 = (
+                            np.sum(((np.arange(t, 256) - mu1) ** 2) * hist[t:]) / w1
+                            if w1 > 0
+                            else 1
+                        )
 
-    return thresholds, hist
-
-
-def calculate_threshold(red_channel, mask=None):
-    """
-    Original threshold calculation for backward compatibility.
-    """
-    thresholds, hist = calculate_multiple_thresholds(red_channel, mask)
-    peaks = None
-
-    # Try to get peaks for visualization
-    try:
-        peaks_indices, _ = find_peaks(hist)
-        sorted_peaks = sorted(peaks_indices, key=lambda x: hist[x], reverse=True)
-        peaks = sorted_peaks[:2] if len(sorted_peaks) >= 2 else None
-    except:
-        peaks = None
-
-    peak_thresh = thresholds.get("Peak-based")
-    if peak_thresh is None:
-        raise ValueError("Cannot find two peaks")
-
-    return peak_thresh, hist, peaks
+                        if var0 > 0 and var1 > 0:
+                            error = (
+                                w0 * np.log(var0)
+                                + w1 * np.log(var1)
+                                - w0 * np.log(w0)
+                                - w1 * np.log(w1)
+                            )
+                            if error < min_error:
+                                min_error = error
+                                min_error_thresh = t
+            return min_error_thresh
+        except:
+            pass
+        return None
 
 
-def segment_image_with_threshold(src, threshold, kernel_size):
-    """
-    Use manual threshold to segment image and return bounding box and mask.
-    """
-    _, src_bin = cv.threshold(src, threshold, 255, cv.THRESH_BINARY)
-    kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
-    src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
-    src_bin = cv.morphologyEx(src_bin, cv.MORPH_CLOSE, kernel)
-    coords = cv.findNonZero(src_bin)
-    contours, _ = cv.findContours(src_bin, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    if not contours or coords is None:
-        return None, None, src_bin
-    contour = max(contours, key=cv.contourArea)
-    bbox = cv.boundingRect(coords)
-    mask = np.zeros(src.shape, dtype=np.uint8)
-    cv.drawContours(mask, [contour], -1, 1, thickness=cv.FILLED)
-    return bbox, mask, src_bin
+class WeightedMeanSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Weighted Mean", "magenta", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+
+            weighted_sum = np.sum(np.arange(256) * hist)
+            total_weight = np.sum(hist)
+            if total_weight > 0:
+                return int(weighted_sum / total_weight)
+        except:
+            pass
+        return None
 
 
-def process_frame_with_manual_threshold(frame, threshold, kernel_size=(5, 5)):
+class PercentileSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self, percentile: int):
+        super().__init__(
+            f"{percentile}th Percentile",
+            self._get_color(percentile),
+            "Percentile",
+            show_in_buttons=False,
+        )
+        self.percentile = percentile
+
+    def _get_color(self, percentile):
+        colors = {25: "lightblue", 75: "lightgreen", 90: "lightyellow"}
+        return colors.get(percentile, "lightgray")
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            valid_pixels = red_channel[red_channel > 0]
+            if len(valid_pixels) > 0:
+                return int(np.percentile(valid_pixels, self.percentile))
+        except:
+            pass
+        return None
+
+
+class YenSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("Yen", "darkviolet", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist = hist.astype(np.float64)
+            hist[0] = 0
+
+            # Yen's method implementation
+            total_pixels = np.sum(hist)
+            if total_pixels == 0:
+                return None
+
+            # Normalize histogram
+            hist = hist / total_pixels
+
+            max_entropy = -float("inf")
+            best_threshold = 128
+
+            for t in range(1, 255):
+                # Background entropy
+                p0 = np.sum(hist[:t])
+                if p0 <= 0 or p0 >= 1:
+                    continue
+
+                p1 = 1.0 - p0
+
+                # Background mean
+                mu0 = np.sum(np.arange(t) * hist[:t]) / p0 if p0 > 0 else 0
+                mu1 = np.sum(np.arange(t, 256) * hist[t:]) / p1 if p1 > 0 else 0
+
+                # Yen's entropy
+                entropy = (
+                    -p0 * np.log(p0)
+                    - p1 * np.log(p1)
+                    + p0 * np.log(p0 / (mu0 + 1e-10))
+                    + p1 * np.log(p1 / (mu1 + 1e-10))
+                )
+
+                if entropy > max_entropy:
+                    max_entropy = entropy
+                    best_threshold = t
+
+            return best_threshold
+        except:
+            pass
+        return None
+
+
+class IsoDataSegmentThreshold(SegmentThresholdMethod):
+    def __init__(self):
+        super().__init__("IsoData", "teal", "Advanced", show_in_buttons=False)
+
+    def calculate_threshold(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Optional[int]:
+        try:
+            if mask is not None and mask.shape == red_channel.shape:
+                red_channel = cv.bitwise_and(red_channel, red_channel, mask=mask)
+
+            hist = cv.calcHist([red_channel], [0], None, [256], [0, 256]).flatten()
+            hist[0] = 0
+
+            # IsoData iterative method
+            threshold = 128
+            prev_threshold = 0
+
+            max_iterations = 100
+            tolerance = 1
+
+            for _ in range(max_iterations):
+                if abs(threshold - prev_threshold) < tolerance:
+                    break
+
+                prev_threshold = threshold
+
+                # Calculate means of two regions
+                background_sum = np.sum(np.arange(threshold) * hist[:threshold])
+                background_count = np.sum(hist[:threshold])
+
+                foreground_sum = np.sum(np.arange(threshold, 256) * hist[threshold:])
+                foreground_count = np.sum(hist[threshold:])
+
+                if background_count > 0 and foreground_count > 0:
+                    mu_background = background_sum / background_count
+                    mu_foreground = foreground_sum / foreground_count
+                    threshold = int((mu_background + mu_foreground) / 2)
+                else:
+                    break
+
+            return threshold
+        except:
+            pass
+        return None
+
+
+# =================== 分割阈值管理器 ===================
+
+
+class SegmentThresholdMethodManager:
+    """分割阈值方法管理器"""
+
+    def __init__(self):
+        self.methods: Dict[str, SegmentThresholdMethod] = {}
+        self._register_default_methods()
+
+    def _register_default_methods(self):
+        """注册默认的分割阈值方法"""
+        # 基础方法
+        self.register_method(PeakBasedSegmentThreshold())
+        self.register_method(MeanSegmentThreshold())
+        self.register_method(MedianSegmentThreshold())
+        self.register_method(OtsuSegmentThreshold())
+        self.register_method(ModeSegmentThreshold())
+
+        # 高级方法
+        self.register_method(TriangleSegmentThreshold())
+        self.register_method(GMMSegmentThreshold())
+        self.register_method(MinErrorSegmentThreshold())
+        self.register_method(WeightedMeanSegmentThreshold())
+        self.register_method(YenSegmentThreshold())
+        self.register_method(IsoDataSegmentThreshold())
+
+        # 百分位数方法
+        self.register_method(PercentileSegmentThreshold(25))
+        self.register_method(PercentileSegmentThreshold(75))
+        self.register_method(PercentileSegmentThreshold(90))
+
+    def register_method(self, method: SegmentThresholdMethod):
+        """注册分割阈值方法"""
+        self.methods[method.name] = method
+
+    def calculate_all_thresholds(
+        self, red_channel: np.ndarray, mask: Optional[np.ndarray] = None
+    ) -> Dict[str, Optional[int]]:
+        """计算所有分割阈值方法的结果"""
+        results = {}
+        for name, method in self.methods.items():
+            results[name] = method.calculate_threshold(red_channel, mask)
+        return results
+
+    def get_method(self, name: str) -> Optional[SegmentThresholdMethod]:
+        """获取指定名称的分割阈值方法"""
+        return self.methods.get(name)
+
+    def get_methods_by_category(self) -> Dict[str, list]:
+        """按类别获取方法"""
+        categories = {}
+        for method in self.methods.values():
+            if method.category not in categories:
+                categories[method.category] = []
+            categories[method.category].append(method)
+        return categories
+
+    def get_button_methods(self) -> list:
+        """获取应该显示在快速按钮中的方法"""
+        return [method for method in self.methods.values() if method.show_in_buttons]
+
+
+# =================== 辅助函数 ===================
+
+
+def process_frame_with_manual_threshold(
+    frame, threshold, kernel_size=(5, 5), segment_manager=None
+):
     """
     Process frame with manual threshold for segmentation testing.
     """
     try:
         red_channel = frame[:, :, 2]
 
-        bbox, mask, binary_image = segment_image_with_threshold(
-            red_channel, threshold, kernel_size
-        )
+        # 使用默认的分割方法（Otsu方法的分割逻辑）
+        if segment_manager:
+            otsu_method = segment_manager.get_method("Otsu")
+            if otsu_method:
+                bbox, mask, binary_image = otsu_method.apply_segmentation(
+                    red_channel, threshold, kernel_size
+                )
+            else:
+                # 备用方案
+                bbox, mask, binary_image = segment_image_with_threshold(
+                    red_channel, threshold, kernel_size
+                )
+        else:
+            bbox, mask, binary_image = segment_image_with_threshold(
+                red_channel, threshold, kernel_size
+            )
 
         if bbox is None:
             return False, None, 0, binary_image
@@ -242,11 +542,37 @@ def process_frame_with_manual_threshold(frame, threshold, kernel_size=(5, 5)):
         return False, None, 0, None
 
 
-class ThresholdTester:
+def segment_image_with_threshold(src, threshold, kernel_size):
+    """
+    Use manual threshold to segment image and return bounding box and mask.
+    (Backup function for compatibility)
+    """
+    _, src_bin = cv.threshold(src, threshold, 255, cv.THRESH_BINARY)
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
+    src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
+    src_bin = cv.morphologyEx(src_bin, cv.MORPH_CLOSE, kernel)
+    coords = cv.findNonZero(src_bin)
+    contours, _ = cv.findContours(src_bin, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    if not contours or coords is None:
+        return None, None, src_bin
+    contour = max(contours, key=cv.contourArea)
+    bbox = cv.boundingRect(coords)
+    mask = np.zeros(src.shape, dtype=np.uint8)
+    cv.drawContours(mask, [contour], -1, 1, thickness=cv.FILLED)
+    return bbox, mask, src_bin
+
+
+# =================== 主应用程序 ===================
+
+
+class SegmentThresholdTester:
     def __init__(self, root):
         self.root = root
-        self.root.title("Manual Threshold Test Tool with Multiple Methods")
+        self.root.title("Segment Threshold Test Tool with Multiple Methods")
         self.root.geometry("1600x900")
+
+        # 分割阈值方法管理器
+        self.segment_manager = SegmentThresholdMethodManager()
 
         # Frame management
         self.frames_buffer = {}
@@ -260,7 +586,6 @@ class ThresholdTester:
         self.kernel_size = (5, 5)
         self.all_thresholds = {}
         self.histogram_data = None
-        self.peaks = None
 
         self.setup_ui()
         self.open_video()
@@ -309,21 +634,24 @@ class ThresholdTester:
         self.threshold_label = ttk.Label(threshold_frame, text="128")
         self.threshold_label.pack(side=tk.LEFT, padx=5)
 
-        # Quick threshold buttons
+        # Quick threshold buttons - 动态生成
         button_frame = ttk.Frame(threshold_frame)
         button_frame.pack(side=tk.LEFT, padx=10)
 
         self.threshold_buttons = {}
-        methods = ["Peak-based", "Otsu", "Mean", "Median", "Mode"]
-        for i, method in enumerate(methods):
+        button_methods = self.segment_manager.get_button_methods()
+
+        for i, method in enumerate(button_methods):
+            row = i // 5  # 每行5个按钮
+            col = i % 5
             btn = ttk.Button(
                 button_frame,
-                text=method,
+                text=method.name,
                 width=10,
-                command=lambda m=method: self.use_method_threshold(m),
+                command=lambda m=method.name: self.use_method_threshold(m),
             )
-            btn.grid(row=0, column=i, padx=2)
-            self.threshold_buttons[method] = btn
+            btn.grid(row=row, column=col, padx=2, pady=2)
+            self.threshold_buttons[method.name] = btn
 
         # Kernel size control
         ttk.Label(threshold_frame, text="Kernel Size:").pack(side=tk.LEFT, padx=(20, 5))
@@ -346,7 +674,7 @@ class ThresholdTester:
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
-        # Left side - Images (simplified to 2 images side by side)
+        # Left side - Images (2 images side by side)
         left_frame = ttk.Frame(main_frame)
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
 
@@ -354,7 +682,7 @@ class ThresholdTester:
         images_frame = ttk.Frame(left_frame)
         images_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Original image with contour (left)
+        # Original image with segmentation (left)
         left_image_frame = ttk.Frame(images_frame)
         left_image_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
         ttk.Label(
@@ -413,14 +741,17 @@ class ThresholdTester:
         self.root.bind("<Right>", lambda e: self.next_frame())
         self.root.focus_set()
 
-    def use_method_threshold(self, method):
+    def use_method_threshold(self, method_name):
         """Use threshold from specific method"""
-        if method in self.all_thresholds and self.all_thresholds[method] is not None:
-            self.threshold_var.set(self.all_thresholds[method])
-            self.current_threshold = self.all_thresholds[method]
+        if (
+            method_name in self.all_thresholds
+            and self.all_thresholds[method_name] is not None
+        ):
+            self.threshold_var.set(self.all_thresholds[method_name])
+            self.current_threshold = self.all_thresholds[method_name]
             self.threshold_label.config(text=str(self.current_threshold))
-            self.update_histogram()  # 更新直方图中的当前阈值线
-            self.update_segmentation_only()  # 只更新分割结果
+            self.update_histogram()
+            self.update_segmentation_only()
 
     def open_video(self):
         """Open video and get basic info"""
@@ -500,10 +831,10 @@ class ThresholdTester:
         if frame is None:
             return
 
-        # 只处理当前帧的分割，不重新计算阈值
+        # 处理当前帧的分割
         success, bbox, current_bbox_area, binary_image = (
             process_frame_with_manual_threshold(
-                frame, self.current_threshold, self.kernel_size
+                frame, self.current_threshold, self.kernel_size, self.segment_manager
             )
         )
 
@@ -529,7 +860,6 @@ class ThresholdTester:
     def on_kernel_change(self):
         kernel_size = self.kernel_var.get()
         self.kernel_size = (kernel_size, kernel_size)
-        # 内核大小变化也只需要更新分割结果
         self.update_segmentation_only()
 
     def jump_to_frame(self):
@@ -560,33 +890,18 @@ class ThresholdTester:
             label="Histogram",
         )
 
-        # Color scheme for different threshold methods
-        colors = {
-            "Peak-based": "red",
-            "Otsu": "green",
-            "Mean": "purple",
-            "Median": "orange",
-            "Mode": "brown",
-            "Triangle": "pink",
-            "GMM": "cyan",
-            "Min Error": "gray",
-            "25th Percentile": "lightblue",
-            "75th Percentile": "lightgreen",
-            "90th Percentile": "lightyellow",
-            "Weighted Mean": "magenta",
-        }
-
-        # Plot threshold lines
-        for method, threshold in self.all_thresholds.items():
+        # Plot threshold lines using method colors
+        for method_name, threshold in self.all_thresholds.items():
             if threshold is not None and 0 <= threshold <= 255:
-                color = colors.get(method, "black")
+                method = self.segment_manager.get_method(method_name)
+                color = method.color if method else "black"
                 self.ax.axvline(
                     x=threshold,
                     color=color,
                     linestyle="--",
                     linewidth=1.5,
                     alpha=0.8,
-                    label=f"{method}: {threshold}",
+                    label=f"{method_name}: {threshold}",
                 )
 
         # Highlight current manual threshold
@@ -613,14 +928,23 @@ class ThresholdTester:
         """Update the text display with threshold information"""
         self.threshold_info_text.delete(1.0, tk.END)
 
+        # 按类别分组显示
+        categories = self.segment_manager.get_methods_by_category()
         info_lines = []
-        for method, threshold in sorted(self.all_thresholds.items()):
-            if threshold is not None:
-                info_lines.append(f"{method}: {threshold}")
-            else:
-                info_lines.append(f"{method}: Failed")
 
-        info_lines.append(f"\nCurrent Manual: {self.current_threshold}")
+        for category, methods in categories.items():
+            info_lines.append(f"=== {category} ===")
+            for method in methods:
+                threshold = self.all_thresholds.get(method.name)
+                if threshold is not None:
+                    info_lines.append(f"{method.name}: {threshold}")
+                else:
+                    info_lines.append(f"{method.name}: Failed")
+            info_lines.append("")  # 空行分隔
+
+        info_lines.append("=== Current Settings ===")
+        info_lines.append(f"Manual Threshold: {self.current_threshold}")
+        info_lines.append(f"Kernel Size: {self.kernel_size[0]}")
 
         self.threshold_info_text.insert(1.0, "\n".join(info_lines))
 
@@ -634,9 +958,13 @@ class ThresholdTester:
         red_channel = frame[:, :, 2]
 
         # Calculate all thresholds - 只在切换帧时计算
-        self.all_thresholds, self.histogram_data = calculate_multiple_thresholds(
-            red_channel
-        )
+        self.all_thresholds = self.segment_manager.calculate_all_thresholds(red_channel)
+
+        # 获取直方图数据
+        self.histogram_data = cv.calcHist(
+            [red_channel], [0], None, [256], [0, 256]
+        ).flatten()
+        self.histogram_data[0] = 0
 
         # Update histogram
         self.update_histogram()
@@ -647,7 +975,7 @@ class ThresholdTester:
         # Process current frame with manual threshold
         success, bbox, current_bbox_area, binary_image = (
             process_frame_with_manual_threshold(
-                frame, self.current_threshold, self.kernel_size
+                frame, self.current_threshold, self.kernel_size, self.segment_manager
             )
         )
 
@@ -667,7 +995,7 @@ class ThresholdTester:
         )
         self.status_label.config(text=f"Status: {status_text}")
 
-        # Display only the two main images
+        # Display images
         self.display_image(result_frame, self.result_label, 400)
         if binary_image is not None:
             self.display_image(
@@ -724,7 +1052,7 @@ class ThresholdTester:
 
 def main():
     root = tk.Tk()
-    app = ThresholdTester(root)
+    app = SegmentThresholdTester(root)
     root.mainloop()
 
 
