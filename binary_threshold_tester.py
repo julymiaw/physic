@@ -12,8 +12,8 @@ from typing import Optional, Dict, Any, Tuple
 
 
 # Set video path directly here
-# VIDEO_PATH = "test.mp4"  # Change to your video file path
-VIDEO_PATH = "真实场景.mp4"
+VIDEO_PATH = "test.mp4"  # Change to your video file path
+# VIDEO_PATH = "真实场景.mp4"
 
 
 class ThresholdMethod(ABC):
@@ -415,6 +415,184 @@ class LocalAdaptiveCenterThreshold(ThresholdMethod):
         return None
 
 
+class LocalAdaptiveMeanThreshold(AdaptiveThresholdMethod):
+    def __init__(self):
+        super().__init__("Local Adaptive Mean", "darkmagenta")
+
+    def apply_threshold(
+        self, red_channel: np.ndarray, threshold: int = 0
+    ) -> np.ndarray:
+        # 使用多个不同的块大小和C值，选择最佳的组合
+        block_sizes = [11, 15, 19, 25]  # 不同的邻域大小
+        C_values = [2, 4, 6, 8]  # 不同的常数偏移
+
+        best_result = None
+        best_score = -1
+
+        for block_size in block_sizes:
+            for C in C_values:
+                try:
+                    # 确保block_size是奇数
+                    if block_size % 2 == 0:
+                        block_size += 1
+
+                    binary_img = cv.adaptiveThreshold(
+                        red_channel,
+                        255,
+                        cv.ADAPTIVE_THRESH_MEAN_C,
+                        cv.THRESH_BINARY_INV,
+                        block_size,
+                        C,
+                    )
+
+                    # 评估二值化质量（基于边缘连续性和区域连通性）
+                    score = self._evaluate_binary_quality(binary_img)
+
+                    if score > best_score:
+                        best_score = score
+                        best_result = binary_img
+
+                except Exception:
+                    continue
+
+        # 如果所有参数都失败，使用默认参数
+        if best_result is None:
+            best_result = cv.adaptiveThreshold(
+                red_channel, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 15, 2
+            )
+
+        return best_result
+
+    def _evaluate_binary_quality(self, binary_img):
+        """评估二值化图像的质量"""
+        try:
+            # 1. 计算边缘连续性
+            edges = cv.Canny(binary_img, 50, 150)
+            edge_density = np.sum(edges > 0) / edges.size
+
+            # 2. 计算连通组件的合理性
+            num_labels, labels, stats, centroids = cv.connectedComponentsWithStats(
+                binary_img
+            )
+
+            # 过滤太小的连通组件
+            min_area = binary_img.size * 0.001  # 至少占总面积的0.1%
+            valid_components = np.sum(stats[1:, cv.CC_STAT_AREA] > min_area)
+
+            # 3. 计算前景/背景比例的合理性
+            fg_ratio = np.sum(binary_img > 0) / binary_img.size
+            balance_score = 1.0 - abs(fg_ratio - 0.5)  # 越接近50/50越好
+
+            # 综合评分
+            score = (
+                edge_density * 0.4
+                + (valid_components / max(num_labels, 1)) * 0.3
+                + balance_score * 0.3
+            )
+
+            return score
+
+        except Exception:
+            return 0.0
+
+
+class LocalAdaptiveGaussianThreshold(AdaptiveThresholdMethod):
+    def __init__(self):
+        super().__init__("Local Adaptive Gaussian", "darkcyan")
+
+    def apply_threshold(
+        self, red_channel: np.ndarray, threshold: int = 0
+    ) -> np.ndarray:
+        # 使用多个不同的块大小和C值，选择最佳的组合
+        block_sizes = [11, 15, 19, 25]  # 不同的邻域大小
+        C_values = [2, 4, 6, 8]  # 不同的常数偏移
+
+        best_result = None
+        best_score = -1
+
+        for block_size in block_sizes:
+            for C in C_values:
+                try:
+                    # 确保block_size是奇数
+                    if block_size % 2 == 0:
+                        block_size += 1
+
+                    binary_img = cv.adaptiveThreshold(
+                        red_channel,
+                        255,
+                        cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                        cv.THRESH_BINARY_INV,
+                        block_size,
+                        C,
+                    )
+
+                    # 评估二值化质量
+                    score = self._evaluate_binary_quality(binary_img)
+
+                    if score > best_score:
+                        best_score = score
+                        best_result = binary_img
+
+                except Exception:
+                    continue
+
+        # 如果所有参数都失败，使用默认参数
+        if best_result is None:
+            best_result = cv.adaptiveThreshold(
+                red_channel,
+                255,
+                cv.ADAPTIVE_THRESH_GAUSSIAN_C,
+                cv.THRESH_BINARY_INV,
+                15,
+                2,
+            )
+
+        return best_result
+
+    def _evaluate_binary_quality(self, binary_img):
+        """评估二值化图像的质量"""
+        try:
+            # 1. 使用Sobel算子计算梯度强度
+            sobelx = cv.Sobel(binary_img, cv.CV_64F, 1, 0, ksize=3)
+            sobely = cv.Sobel(binary_img, cv.CV_64F, 0, 1, ksize=3)
+            gradient_magnitude = np.sqrt(sobelx**2 + sobely**2)
+            gradient_score = np.mean(gradient_magnitude) / 255.0
+
+            # 2. 计算结构相似性（检查是否有规律的环形结构）
+            # 使用形态学操作检测圆形结构
+            kernel_circle = cv.getStructuringElement(cv.MORPH_ELLIPSE, (7, 7))
+            opened = cv.morphologyEx(binary_img, cv.MORPH_OPEN, kernel_circle)
+            structure_score = np.sum(opened > 0) / max(np.sum(binary_img > 0), 1)
+
+            # 3. 计算区域分布的均匀性
+            h, w = binary_img.shape
+            grid_h, grid_w = h // 4, w // 4
+            region_variances = []
+
+            for i in range(4):
+                for j in range(4):
+                    region = binary_img[
+                        i * grid_h : (i + 1) * grid_h, j * grid_w : (j + 1) * grid_w
+                    ]
+                    if region.size > 0:
+                        region_mean = np.mean(region > 0)
+                        region_variances.append(region_mean)
+
+            uniformity_score = (
+                1.0 - np.std(region_variances) if region_variances else 0.0
+            )
+
+            # 综合评分
+            score = (
+                gradient_score * 0.4 + structure_score * 0.4 + uniformity_score * 0.2
+            )
+
+            return score
+
+        except Exception:
+            return 0.0
+
+
 # 自适应阈值方法实现
 class AdaptiveMeanThreshold(AdaptiveThresholdMethod):
     def __init__(self):
@@ -494,6 +672,12 @@ class ThresholdMethodManager:
         # 真正的自适应方法
         self.register_adaptive_method("adaptive_mean", AdaptiveMeanThreshold())
         self.register_adaptive_method("adaptive_gaussian", AdaptiveGaussianThreshold())
+        self.register_adaptive_method(
+            "local_adaptive_mean", LocalAdaptiveMeanThreshold()
+        )
+        self.register_adaptive_method(
+            "local_adaptive_gaussian", LocalAdaptiveGaussianThreshold()
+        )
         self.register_adaptive_method("clahe", CLAHEThreshold())
 
     def register_method(self, method: ThresholdMethod):
