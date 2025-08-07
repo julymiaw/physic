@@ -34,13 +34,12 @@ def calculate_threshold(red_channel, mask=None):
     return min_val_after_peak
 
 
-def segment_image(src, threshold, kernel_size):
+def segment_image(src, kernel_size):
     """
     对图像进行分割，并返回分割后的边界框和掩码。
 
     参数:
     src (numpy.ndarray): 输入的源图像。
-    threshold (int): 用于二值化的阈值。
     kernel_size (tuple): 用于形态学操作的内核大小。
 
     返回:
@@ -51,7 +50,7 @@ def segment_image(src, threshold, kernel_size):
     异常:
     无
     """
-    _, src_bin = cv.threshold(src, threshold, 255, cv.THRESH_BINARY)
+    _, src_bin = cv.threshold(src, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
     kernel = cv.getStructuringElement(cv.MORPH_RECT, kernel_size)
     src_bin = cv.morphologyEx(src_bin, cv.MORPH_OPEN, kernel)
     src_bin = cv.morphologyEx(src_bin, cv.MORPH_CLOSE, kernel)
@@ -157,17 +156,16 @@ def process_frame(
         - center_color (int or None): 公共中心的颜色，红色为 255，黑色为 0，无效为 None。
     """
     red_channel = frame[:, :, 2]
-    threshold = calculate_threshold(red_channel)
 
-    bbox, mask = segment_image(red_channel, threshold, (5, 5))
+    bbox, mask = segment_image(red_channel, (5, 5))
     current_bbox_area = bbox[2] * bbox[3]
 
     if previous_bbox_area > 0 and current_bbox_area > previous_bbox_area * 1.5:
-        bbox, mask = segment_image(red_channel, threshold, (7, 7))
+        bbox, mask = segment_image(red_channel, (7, 7))
         current_bbox_area = bbox[2] * bbox[3]
 
     if current_bbox_area == 0:
-        return frame, previous_bbox_area, [], None
+        return None, previous_bbox_area, [], None
 
     red_channel = crop_to_bbox(red_channel, bbox)
     mask = crop_to_bbox(mask, bbox)
@@ -299,12 +297,7 @@ class ContourDetection:
         frame (numpy.ndarray): 当前最新的帧。
         """
         self.total_frames += 1
-        (
-            processed_frame,
-            self.previous_bbox_area,
-            current_contours_info,
-            current_center_color,
-        ) = process_frame(
+        result = process_frame(
             frame,
             self.previous_bbox_area,
             self.settings["kernel_size"],
@@ -316,6 +309,19 @@ class ContourDetection:
             self.settings["center_circle_diameter"],
             self.settings["center_circle_thickness"],
         )
+
+        # 检查是否成功处理了帧
+        if result[0] is None:
+            # 未检测到有效轮廓，保持原始帧不变
+            self.white_count += 1
+            return frame
+
+        (
+            processed_frame,
+            self.previous_bbox_area,
+            current_contours_info,
+            current_center_color,
+        ) = result
 
         # 匹配轮廓并判断放大或缩小
         scale_count = 0
@@ -402,12 +408,12 @@ class ContourDetection:
         output_path (str): 输出视频文件路径。
         """
         cap = cv.VideoCapture(input_path)
-        # ret, frame = cap.read()
-        # original_height, original_width = frame.shape[:2]
-        # fourcc = cv.VideoWriter_fourcc(*"mp4v")
-        # out = cv.VideoWriter(
-        # output_path, fourcc, self.settings["fps"], (original_width, original_height)
-        # )
+        ret, frame = cap.read()
+        original_height, original_width = frame.shape[:2]
+        fourcc = cv.VideoWriter_fourcc(*"mp4v")
+        out = cv.VideoWriter(
+            output_path, fourcc, self.settings["fps"], (original_width, original_height)
+        )
         frame_count = int(cap.get(cv.CAP_PROP_FRAME_COUNT))
 
         self.reset_counters()
@@ -418,10 +424,10 @@ class ContourDetection:
             if not ret:
                 break
             frame = self.update(frame)
-            # out.write(frame)
+            out.write(frame)
 
         cap.release()
-        # out.release()
+        out.release()
 
         # 打印统计信息
         total_frames = self.green_count + self.blue_count + self.white_count
@@ -438,8 +444,10 @@ class ContourDetection:
 
 
 def main():
-    video_path = "/home/july/physic/test/真实场景.mp4"
-    output_path = "轮廓检测+计数（python版）.mp4"
+    # video_path = "真实场景.mp4"
+    # output_path = "轮廓检测+计数（python版）.mp4"
+    video_path = "test.mp4"
+    output_path = "test_output.mp4"
 
     # 创建 ContourDetection 实例
     contour_detection = ContourDetection()
