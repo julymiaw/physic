@@ -1,0 +1,1199 @@
+{
+  "video": "data/raw/michelson-original.mp4",
+  "status": "assistant_visual_physical_boundary_reference",
+  "human_verified": false,
+  "calibration_interval": [
+    9.6,
+    11.6
+  ],
+  "measurement_interval": [
+    11.632622,
+    59.831322
+  ],
+  "event_definition": "One fixed physical phase: the innermost dark annulus reaches the interference center. Inward crossing +1, outward recrossing -1. A return within four frames does not erase genuine opposite crossings.",
+  "calibration_anchors": [
+    {
+      "frame": 235,
+      "timestamp": 9.799667,
+      "interval": [
+        9.758011,
+        9.841322
+      ]
+    },
+    {
+      "frame": 250,
+      "timestamp": 10.4245,
+      "interval": [
+        10.382844,
+        10.466156
+      ]
+    },
+    {
+      "frame": 262,
+      "timestamp": 10.924478,
+      "interval": [
+        10.882822,
+        10.966133000000001
+      ]
+    },
+    {
+      "frame": 272,
+      "timestamp": 11.341033,
+      "interval": [
+        11.299378,
+        11.382689000000001
+      ]
+    }
+  ],
+  "review_passes": [
+    "All1437 real-frame raw-core data, entire measurement horizontal and vertical spacetime strips (raw-pass-0..5); no candidate output read.",
+    "84 candidate neighborhoods inspected as continuous seven-frame raw strips (events-pass2-0..10); additional continuous stop18,stop24,pause,stop34,stop40,turn,stop56,tail panels."
+  ],
+  "revisions": [
+    {
+      "interval": [
+        46.5,
+        47.2
+      ],
+      "decision": "Remove former +1/-1 pair: central bright hole persists throughout the excursion; no dark annulus reaches the center.",
+      "evidence": "review/turn.jpg"
+    },
+    {
+      "interval": [
+        29.62,
+        29.84
+      ],
+      "decision": "Add outward recrossing then inward crossing: a resolved bright hole opens at713 and closes at714, unlike neighboring dark-core frames.",
+      "evidence": "review/pause.jpg"
+    },
+    {
+      "interval": [
+        51.2,
+        51.34
+      ],
+      "decision": "Retain newly discovered real dark passage.",
+      "evidence": "../real-track/review-51.jpg"
+    }
+  ],
+  "unresolved": [],
+  "events": [
+    {
+      "frame_index": 281,
+      "timestamp_estimate": 11.715933,
+      "timestamp_interval": [
+        11.674278000000001,
+        11.757589
+      ],
+      "direction": 1,
+      "source_reference_id": 1,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 1,
+      "count_after_event": 1
+    },
+    {
+      "frame_index": 291,
+      "timestamp_estimate": 12.132489,
+      "timestamp_interval": [
+        12.090833,
+        12.174144
+      ],
+      "direction": 1,
+      "source_reference_id": 2,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 2,
+      "count_after_event": 2
+    },
+    {
+      "frame_index": 300,
+      "timestamp_estimate": 12.5075,
+      "timestamp_interval": [
+        12.465844,
+        12.549156
+      ],
+      "direction": 1,
+      "source_reference_id": 3,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 3,
+      "count_after_event": 3
+    },
+    {
+      "frame_index": 314,
+      "timestamp_estimate": 13.090678,
+      "timestamp_interval": [
+        13.049022,
+        13.132333000000001
+      ],
+      "direction": 1,
+      "source_reference_id": 4,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 4,
+      "count_after_event": 4
+    },
+    {
+      "frame_index": 324,
+      "timestamp_estimate": 13.507233,
+      "timestamp_interval": [
+        13.465578,
+        13.548889
+      ],
+      "direction": 1,
+      "source_reference_id": 5,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 5,
+      "count_after_event": 5
+    },
+    {
+      "frame_index": 335,
+      "timestamp_estimate": 13.965556,
+      "timestamp_interval": [
+        13.9239,
+        14.007211
+      ],
+      "direction": 1,
+      "source_reference_id": 6,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 6,
+      "count_after_event": 6
+    },
+    {
+      "frame_index": 344,
+      "timestamp_estimate": 14.340456,
+      "timestamp_interval": [
+        14.2988,
+        14.382111
+      ],
+      "direction": 1,
+      "source_reference_id": 7,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 7,
+      "count_after_event": 7
+    },
+    {
+      "frame_index": 357,
+      "timestamp_estimate": 14.881978,
+      "timestamp_interval": [
+        14.840322,
+        14.923633
+      ],
+      "direction": 1,
+      "source_reference_id": 8,
+      "evidence": "review/events-pass2-0.jpg",
+      "id": 8,
+      "count_after_event": 8
+    },
+    {
+      "frame_index": 376,
+      "timestamp_estimate": 15.673544,
+      "timestamp_interval": [
+        15.631889000000001,
+        15.7152
+      ],
+      "direction": 1,
+      "source_reference_id": 9,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 9,
+      "count_after_event": 9
+    },
+    {
+      "frame_index": 393,
+      "timestamp_estimate": 16.381688999999998,
+      "timestamp_interval": [
+        16.340033,
+        16.423344
+      ],
+      "direction": 1,
+      "source_reference_id": 10,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 10,
+      "count_after_event": 10
+    },
+    {
+      "frame_index": 402,
+      "timestamp_estimate": 16.756588999999998,
+      "timestamp_interval": [
+        16.714933,
+        16.798243999999997
+      ],
+      "direction": 1,
+      "source_reference_id": 11,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 11,
+      "count_after_event": 11
+    },
+    {
+      "frame_index": 411,
+      "timestamp_estimate": 17.131489,
+      "timestamp_interval": [
+        17.089833,
+        17.173143999999997
+      ],
+      "direction": 1,
+      "source_reference_id": 12,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 12,
+      "count_after_event": 12
+    },
+    {
+      "frame_index": 469,
+      "timestamp_estimate": 19.547732999999997,
+      "timestamp_interval": [
+        19.506078,
+        19.589388999999997
+      ],
+      "direction": 1,
+      "source_reference_id": 13,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 13,
+      "count_after_event": 13
+    },
+    {
+      "frame_index": 483,
+      "timestamp_estimate": 20.130910999999998,
+      "timestamp_interval": [
+        20.089256,
+        20.172566999999997
+      ],
+      "direction": 1,
+      "source_reference_id": 14,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 14,
+      "count_after_event": 14
+    },
+    {
+      "frame_index": 494,
+      "timestamp_estimate": 20.589122,
+      "timestamp_interval": [
+        20.547466999999997,
+        20.630778
+      ],
+      "direction": 1,
+      "source_reference_id": 15,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 15,
+      "count_after_event": 15
+    },
+    {
+      "frame_index": 504,
+      "timestamp_estimate": 21.005789,
+      "timestamp_interval": [
+        20.964132999999997,
+        21.047444
+      ],
+      "direction": 1,
+      "source_reference_id": 16,
+      "evidence": "review/events-pass2-1.jpg",
+      "id": 16,
+      "count_after_event": 16
+    },
+    {
+      "frame_index": 514,
+      "timestamp_estimate": 21.422344,
+      "timestamp_interval": [
+        21.380688999999997,
+        21.464
+      ],
+      "direction": 1,
+      "source_reference_id": 17,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 17,
+      "count_after_event": 17
+    },
+    {
+      "frame_index": 522,
+      "timestamp_estimate": 21.755588999999997,
+      "timestamp_interval": [
+        21.713932999999997,
+        21.797244
+      ],
+      "direction": 1,
+      "source_reference_id": 18,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 18,
+      "count_after_event": 18
+    },
+    {
+      "frame_index": 537,
+      "timestamp_estimate": 22.380533,
+      "timestamp_interval": [
+        22.338877999999998,
+        22.422189
+      ],
+      "direction": 1,
+      "source_reference_id": 19,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 19,
+      "count_after_event": 19
+    },
+    {
+      "frame_index": 552,
+      "timestamp_estimate": 23.005367,
+      "timestamp_interval": [
+        22.963711,
+        23.047022
+      ],
+      "direction": 1,
+      "source_reference_id": 20,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 20,
+      "count_after_event": 20
+    },
+    {
+      "frame_index": 565,
+      "timestamp_estimate": 23.546889,
+      "timestamp_interval": [
+        23.505232999999997,
+        23.588544
+      ],
+      "direction": 1,
+      "source_reference_id": 21,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 21,
+      "count_after_event": 21
+    },
+    {
+      "frame_index": 606,
+      "timestamp_estimate": 25.254877999999998,
+      "timestamp_interval": [
+        25.213222,
+        25.296533
+      ],
+      "direction": 1,
+      "source_reference_id": 22,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 22,
+      "count_after_event": 22
+    },
+    {
+      "frame_index": 617,
+      "timestamp_estimate": 25.713199999999997,
+      "timestamp_interval": [
+        25.671543999999997,
+        25.754856
+      ],
+      "direction": 1,
+      "source_reference_id": 23,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 23,
+      "count_after_event": 23
+    },
+    {
+      "frame_index": 627,
+      "timestamp_estimate": 26.129755999999997,
+      "timestamp_interval": [
+        26.088099999999997,
+        26.171411
+      ],
+      "direction": 1,
+      "source_reference_id": 24,
+      "evidence": "review/events-pass2-2.jpg",
+      "id": 24,
+      "count_after_event": 24
+    },
+    {
+      "frame_index": 636,
+      "timestamp_estimate": 26.504655999999997,
+      "timestamp_interval": [
+        26.462999999999997,
+        26.546311
+      ],
+      "direction": 1,
+      "source_reference_id": 25,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 25,
+      "count_after_event": 25
+    },
+    {
+      "frame_index": 646,
+      "timestamp_estimate": 26.921211,
+      "timestamp_interval": [
+        26.879555999999997,
+        26.962867
+      ],
+      "direction": 1,
+      "source_reference_id": 26,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 26,
+      "count_after_event": 26
+    },
+    {
+      "frame_index": 655,
+      "timestamp_estimate": 27.296222,
+      "timestamp_interval": [
+        27.254566999999998,
+        27.337878
+      ],
+      "direction": 1,
+      "source_reference_id": 27,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 27,
+      "count_after_event": 27
+    },
+    {
+      "frame_index": 662,
+      "timestamp_estimate": 27.587811,
+      "timestamp_interval": [
+        27.546156,
+        27.629466999999998
+      ],
+      "direction": 1,
+      "source_reference_id": 28,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 28,
+      "count_after_event": 28
+    },
+    {
+      "frame_index": 669,
+      "timestamp_estimate": 27.879399999999997,
+      "timestamp_interval": [
+        27.837743999999997,
+        27.921056
+      ],
+      "direction": 1,
+      "source_reference_id": 29,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 29,
+      "count_after_event": 29
+    },
+    {
+      "frame_index": 682,
+      "timestamp_estimate": 28.420921999999997,
+      "timestamp_interval": [
+        28.379267,
+        28.462577999999997
+      ],
+      "direction": 1,
+      "source_reference_id": 30,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 30,
+      "count_after_event": 30
+    },
+    {
+      "frame_index": 696,
+      "timestamp_estimate": 29.004210999999998,
+      "timestamp_interval": [
+        28.962556,
+        29.045866999999998
+      ],
+      "direction": 1,
+      "source_reference_id": 31,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 31,
+      "count_after_event": 31
+    },
+    {
+      "frame_index": 713,
+      "timestamp_estimate": 29.712356,
+      "timestamp_interval": [
+        29.6707,
+        29.754011
+      ],
+      "direction": -1,
+      "evidence": "review/pause.jpg",
+      "id": 32,
+      "count_after_event": 30
+    },
+    {
+      "frame_index": 714,
+      "timestamp_estimate": 29.754011,
+      "timestamp_interval": [
+        29.712356,
+        29.795666999999998
+      ],
+      "direction": 1,
+      "evidence": "review/pause.jpg",
+      "id": 33,
+      "count_after_event": 31
+    },
+    {
+      "frame_index": 740,
+      "timestamp_estimate": 30.837166999999997,
+      "timestamp_interval": [
+        30.795510999999998,
+        30.878822
+      ],
+      "direction": 1,
+      "source_reference_id": 32,
+      "evidence": "review/events-pass2-3.jpg",
+      "id": 34,
+      "count_after_event": 32
+    },
+    {
+      "frame_index": 748,
+      "timestamp_estimate": 31.170410999999998,
+      "timestamp_interval": [
+        31.128756,
+        31.212066999999998
+      ],
+      "direction": 1,
+      "source_reference_id": 33,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 35,
+      "count_after_event": 33
+    },
+    {
+      "frame_index": 756,
+      "timestamp_estimate": 31.503656,
+      "timestamp_interval": [
+        31.462,
+        31.545310999999998
+      ],
+      "direction": 1,
+      "source_reference_id": 34,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 36,
+      "count_after_event": 34
+    },
+    {
+      "frame_index": 766,
+      "timestamp_estimate": 31.920211,
+      "timestamp_interval": [
+        31.878556,
+        31.961866999999998
+      ],
+      "direction": 1,
+      "source_reference_id": 35,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 37,
+      "count_after_event": 35
+    },
+    {
+      "frame_index": 776,
+      "timestamp_estimate": 32.336878,
+      "timestamp_interval": [
+        32.295222,
+        32.378533000000004
+      ],
+      "direction": 1,
+      "source_reference_id": 36,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 38,
+      "count_after_event": 36
+    },
+    {
+      "frame_index": 783,
+      "timestamp_estimate": 32.628467,
+      "timestamp_interval": [
+        32.586811000000004,
+        32.670122
+      ],
+      "direction": 1,
+      "source_reference_id": 37,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 39,
+      "count_after_event": 37
+    },
+    {
+      "frame_index": 793,
+      "timestamp_estimate": 33.045022,
+      "timestamp_interval": [
+        33.003367000000004,
+        33.086678
+      ],
+      "direction": 1,
+      "source_reference_id": 38,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 40,
+      "count_after_event": 38
+    },
+    {
+      "frame_index": 801,
+      "timestamp_estimate": 33.378267,
+      "timestamp_interval": [
+        33.336611000000005,
+        33.419922
+      ],
+      "direction": 1,
+      "source_reference_id": 39,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 41,
+      "count_after_event": 39
+    },
+    {
+      "frame_index": 815,
+      "timestamp_estimate": 33.961556,
+      "timestamp_interval": [
+        33.919900000000005,
+        34.003211
+      ],
+      "direction": 1,
+      "source_reference_id": 40,
+      "evidence": "review/events-pass2-4.jpg",
+      "id": 42,
+      "count_after_event": 40
+    },
+    {
+      "frame_index": 849,
+      "timestamp_estimate": 35.377844,
+      "timestamp_interval": [
+        35.336189000000005,
+        35.4195
+      ],
+      "direction": 1,
+      "source_reference_id": 41,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 43,
+      "count_after_event": 41
+    },
+    {
+      "frame_index": 857,
+      "timestamp_estimate": 35.711200000000005,
+      "timestamp_interval": [
+        35.669544,
+        35.752856
+      ],
+      "direction": 1,
+      "source_reference_id": 42,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 44,
+      "count_after_event": 42
+    },
+    {
+      "frame_index": 869,
+      "timestamp_estimate": 36.211067,
+      "timestamp_interval": [
+        36.169411000000004,
+        36.252722
+      ],
+      "direction": 1,
+      "source_reference_id": 43,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 45,
+      "count_after_event": 43
+    },
+    {
+      "frame_index": 880,
+      "timestamp_estimate": 36.669278,
+      "timestamp_interval": [
+        36.627622,
+        36.710933000000004
+      ],
+      "direction": 1,
+      "source_reference_id": 44,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 46,
+      "count_after_event": 44
+    },
+    {
+      "frame_index": 892,
+      "timestamp_estimate": 37.169256000000004,
+      "timestamp_interval": [
+        37.1276,
+        37.210911
+      ],
+      "direction": 1,
+      "source_reference_id": 45,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 47,
+      "count_after_event": 45
+    },
+    {
+      "frame_index": 898,
+      "timestamp_estimate": 37.419189,
+      "timestamp_interval": [
+        37.377533,
+        37.460844
+      ],
+      "direction": 1,
+      "source_reference_id": 46,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 48,
+      "count_after_event": 46
+    },
+    {
+      "frame_index": 908,
+      "timestamp_estimate": 37.835744000000005,
+      "timestamp_interval": [
+        37.794089,
+        37.8774
+      ],
+      "direction": 1,
+      "source_reference_id": 47,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 49,
+      "count_after_event": 47
+    },
+    {
+      "frame_index": 925,
+      "timestamp_estimate": 38.543889,
+      "timestamp_interval": [
+        38.502233000000004,
+        38.585656
+      ],
+      "direction": 1,
+      "source_reference_id": 48,
+      "evidence": "review/events-pass2-5.jpg",
+      "id": 50,
+      "count_after_event": 48
+    },
+    {
+      "frame_index": 936,
+      "timestamp_estimate": 39.002211,
+      "timestamp_interval": [
+        38.960556000000004,
+        39.043867
+      ],
+      "direction": 1,
+      "source_reference_id": 49,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 51,
+      "count_after_event": 49
+    },
+    {
+      "frame_index": 948,
+      "timestamp_estimate": 39.502078000000004,
+      "timestamp_interval": [
+        39.460422,
+        39.543733
+      ],
+      "direction": 1,
+      "source_reference_id": 50,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 52,
+      "count_after_event": 50
+    },
+    {
+      "frame_index": 979,
+      "timestamp_estimate": 40.793511,
+      "timestamp_interval": [
+        40.751856000000004,
+        40.835167000000006
+      ],
+      "direction": 1,
+      "source_reference_id": 51,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 53,
+      "count_after_event": 51
+    },
+    {
+      "frame_index": 987,
+      "timestamp_estimate": 41.126756,
+      "timestamp_interval": [
+        41.085100000000004,
+        41.168411
+      ],
+      "direction": 1,
+      "source_reference_id": 52,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 54,
+      "count_after_event": 52
+    },
+    {
+      "frame_index": 997,
+      "timestamp_estimate": 41.543311,
+      "timestamp_interval": [
+        41.501656000000004,
+        41.584967
+      ],
+      "direction": 1,
+      "source_reference_id": 53,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 55,
+      "count_after_event": 53
+    },
+    {
+      "frame_index": 1009,
+      "timestamp_estimate": 42.043289,
+      "timestamp_interval": [
+        42.001633000000005,
+        42.084944
+      ],
+      "direction": 1,
+      "source_reference_id": 54,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 56,
+      "count_after_event": 54
+    },
+    {
+      "frame_index": 1017,
+      "timestamp_estimate": 42.376533,
+      "timestamp_interval": [
+        42.334878,
+        42.418189000000005
+      ],
+      "direction": 1,
+      "source_reference_id": 55,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 57,
+      "count_after_event": 55
+    },
+    {
+      "frame_index": 1027,
+      "timestamp_estimate": 42.793089,
+      "timestamp_interval": [
+        42.751433,
+        42.834744
+      ],
+      "direction": 1,
+      "source_reference_id": 56,
+      "evidence": "review/events-pass2-6.jpg",
+      "id": 58,
+      "count_after_event": 56
+    },
+    {
+      "frame_index": 1037,
+      "timestamp_estimate": 43.209644000000004,
+      "timestamp_interval": [
+        43.167989,
+        43.2513
+      ],
+      "direction": 1,
+      "source_reference_id": 57,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 59,
+      "count_after_event": 57
+    },
+    {
+      "frame_index": 1051,
+      "timestamp_estimate": 43.792933000000005,
+      "timestamp_interval": [
+        43.751278,
+        43.834589
+      ],
+      "direction": 1,
+      "source_reference_id": 58,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 60,
+      "count_after_event": 58
+    },
+    {
+      "frame_index": 1068,
+      "timestamp_estimate": 44.501078,
+      "timestamp_interval": [
+        44.459422,
+        44.542733000000005
+      ],
+      "direction": 1,
+      "source_reference_id": 59,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 61,
+      "count_after_event": 59
+    },
+    {
+      "frame_index": 1078,
+      "timestamp_estimate": 44.917633,
+      "timestamp_interval": [
+        44.875978,
+        44.959289000000005
+      ],
+      "direction": 1,
+      "source_reference_id": 60,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 62,
+      "count_after_event": 60
+    },
+    {
+      "frame_index": 1088,
+      "timestamp_estimate": 45.3343,
+      "timestamp_interval": [
+        45.292533,
+        45.375956
+      ],
+      "direction": 1,
+      "source_reference_id": 61,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 63,
+      "count_after_event": 61
+    },
+    {
+      "frame_index": 1097,
+      "timestamp_estimate": 45.7092,
+      "timestamp_interval": [
+        45.667544,
+        45.750856
+      ],
+      "direction": 1,
+      "source_reference_id": 62,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 64,
+      "count_after_event": 62
+    },
+    {
+      "frame_index": 1115,
+      "timestamp_estimate": 46.459,
+      "timestamp_interval": [
+        46.417344,
+        46.500656
+      ],
+      "direction": 1,
+      "source_reference_id": 63,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 65,
+      "count_after_event": 63
+    },
+    {
+      "frame_index": 1149,
+      "timestamp_estimate": 47.8754,
+      "timestamp_interval": [
+        47.833744,
+        47.917056
+      ],
+      "direction": 1,
+      "source_reference_id": 66,
+      "evidence": "review/events-pass2-7.jpg",
+      "id": 66,
+      "count_after_event": 64
+    },
+    {
+      "frame_index": 1163,
+      "timestamp_estimate": 48.458578,
+      "timestamp_interval": [
+        48.416922,
+        48.500233
+      ],
+      "direction": 1,
+      "source_reference_id": 67,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 67,
+      "count_after_event": 65
+    },
+    {
+      "frame_index": 1173,
+      "timestamp_estimate": 48.875244,
+      "timestamp_interval": [
+        48.833589,
+        48.916900000000005
+      ],
+      "direction": 1,
+      "source_reference_id": 68,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 68,
+      "count_after_event": 66
+    },
+    {
+      "frame_index": 1183,
+      "timestamp_estimate": 49.2918,
+      "timestamp_interval": [
+        49.250144,
+        49.333456000000005
+      ],
+      "direction": 1,
+      "source_reference_id": 69,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 69,
+      "count_after_event": 67
+    },
+    {
+      "frame_index": 1191,
+      "timestamp_estimate": 49.625044,
+      "timestamp_interval": [
+        49.583389000000004,
+        49.6667
+      ],
+      "direction": 1,
+      "source_reference_id": 70,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 70,
+      "count_after_event": 68
+    },
+    {
+      "frame_index": 1204,
+      "timestamp_estimate": 50.166678000000005,
+      "timestamp_interval": [
+        50.125022,
+        50.208333
+      ],
+      "direction": 1,
+      "source_reference_id": 71,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 71,
+      "count_after_event": 69
+    },
+    {
+      "frame_index": 1213,
+      "timestamp_estimate": 50.541578,
+      "timestamp_interval": [
+        50.499922000000005,
+        50.583233
+      ],
+      "direction": 1,
+      "source_reference_id": 72,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 72,
+      "count_after_event": 70
+    },
+    {
+      "frame_index": 1223,
+      "timestamp_estimate": 50.958133000000004,
+      "timestamp_interval": [
+        50.916478000000005,
+        50.999789
+      ],
+      "direction": 1,
+      "source_reference_id": 73,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 73,
+      "count_after_event": 71
+    },
+    {
+      "frame_index": 1231,
+      "timestamp_estimate": 51.291378,
+      "timestamp_interval": [
+        51.249722000000006,
+        51.333033
+      ],
+      "direction": 1,
+      "source_reference_id": 74,
+      "evidence": "review/events-pass2-8.jpg",
+      "id": 74,
+      "count_after_event": 72
+    },
+    {
+      "frame_index": 1241,
+      "timestamp_estimate": 51.708044,
+      "timestamp_interval": [
+        51.666278000000005,
+        51.749700000000004
+      ],
+      "direction": 1,
+      "source_reference_id": 75,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 75,
+      "count_after_event": 73
+    },
+    {
+      "frame_index": 1252,
+      "timestamp_estimate": 52.166256000000004,
+      "timestamp_interval": [
+        52.1246,
+        52.207911
+      ],
+      "direction": 1,
+      "source_reference_id": 76,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 76,
+      "count_after_event": 74
+    },
+    {
+      "frame_index": 1262,
+      "timestamp_estimate": 52.582811,
+      "timestamp_interval": [
+        52.541156,
+        52.624467
+      ],
+      "direction": 1,
+      "source_reference_id": 77,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 77,
+      "count_after_event": 75
+    },
+    {
+      "frame_index": 1271,
+      "timestamp_estimate": 52.957711,
+      "timestamp_interval": [
+        52.916056000000005,
+        52.999367
+      ],
+      "direction": 1,
+      "source_reference_id": 78,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 78,
+      "count_after_event": 76
+    },
+    {
+      "frame_index": 1282,
+      "timestamp_estimate": 53.416033,
+      "timestamp_interval": [
+        53.374378,
+        53.457689
+      ],
+      "direction": 1,
+      "source_reference_id": 79,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 79,
+      "count_after_event": 77
+    },
+    {
+      "frame_index": 1295,
+      "timestamp_estimate": 53.957556000000004,
+      "timestamp_interval": [
+        53.9159,
+        53.999211
+      ],
+      "direction": 1,
+      "source_reference_id": 80,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 80,
+      "count_after_event": 78
+    },
+    {
+      "frame_index": 1308,
+      "timestamp_estimate": 54.499078000000004,
+      "timestamp_interval": [
+        54.457422,
+        54.540733
+      ],
+      "direction": 1,
+      "source_reference_id": 81,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 81,
+      "count_after_event": 79
+    },
+    {
+      "frame_index": 1325,
+      "timestamp_estimate": 55.207333000000006,
+      "timestamp_interval": [
+        55.165678,
+        55.248989
+      ],
+      "direction": 1,
+      "source_reference_id": 82,
+      "evidence": "review/events-pass2-9.jpg",
+      "id": 82,
+      "count_after_event": 80
+    },
+    {
+      "frame_index": 1373,
+      "timestamp_estimate": 57.206911000000005,
+      "timestamp_interval": [
+        57.165256,
+        57.248567
+      ],
+      "direction": 1,
+      "source_reference_id": 83,
+      "evidence": "review/events-pass2-10.jpg",
+      "id": 83,
+      "count_after_event": 81
+    },
+    {
+      "frame_index": 1383,
+      "timestamp_estimate": 57.623467000000005,
+      "timestamp_interval": [
+        57.581811,
+        57.665122000000004
+      ],
+      "direction": 1,
+      "source_reference_id": 84,
+      "evidence": "review/events-pass2-10.jpg",
+      "id": 84,
+      "count_after_event": 82
+    },
+    {
+      "frame_index": 1396,
+      "timestamp_estimate": 58.164989,
+      "timestamp_interval": [
+        58.123333,
+        58.206644000000004
+      ],
+      "direction": 1,
+      "source_reference_id": 85,
+      "evidence": "review/events-pass2-10.jpg",
+      "id": 85,
+      "count_after_event": 83
+    },
+    {
+      "frame_index": 1417,
+      "timestamp_estimate": 59.039867,
+      "timestamp_interval": [
+        58.998211000000005,
+        59.081522
+      ],
+      "direction": 1,
+      "source_reference_id": 86,
+      "evidence": "review/events-pass2-10.jpg",
+      "id": 86,
+      "count_after_event": 84
+    }
+  ],
+  "warning": "Assistant visual review on development video, not independently human verified. Event times have raw-frame uncertainty. This file is frozen before the new counter is changed.",
+  "final_net_count": 84
+}

@@ -1,0 +1,78 @@
+{
+  "videos": [
+    {
+      "path": "data/raw/michelson-original.mp4",
+      "source_archive_path": "archive/undergraduate-senior-autumn/真实场景(全).mp4",
+      "sha256": "cb9d27460bc36a1c8358829134fba396f7e9a92b405a69974afa549fdec94ab1",
+      "bytes": 493897360,
+      "provenance": "自录实验视频（按用户项目背景；未核验拍摄日期）",
+      "metadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 7680,
+            "height": 4320,
+            "avg_frame_rate": "16166250/673571",
+            "nb_frames": "1437",
+            "side_data_list": [
+              {
+                "rotation": -90
+              }
+            ]
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "avg_frame_rate": "0/0",
+            "nb_frames": "2809"
+          }
+        ],
+        "format": {
+          "duration": "59.925333",
+          "size": "493897360"
+        }
+      }
+    },
+    {
+      "path": "data/raw/michelson-bilibili.mp4",
+      "source_archive_path": "archive/undergraduate-senior-autumn/真实场景(b站).mp4",
+      "sha256": "237a55fbb55e38c6fd66e3cf00efc54c1ce97b55fa28adf6282c1ae72bd28408",
+      "bytes": 1847591,
+      "provenance": "B 站版本；原网页链接及作者尚未提供",
+      "metadata": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1280,
+            "height": 720,
+            "avg_frame_rate": "30/1",
+            "nb_frames": "637"
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "avg_frame_rate": "0/0",
+            "nb_frames": "917"
+          }
+        ],
+        "format": {
+          "duration": "21.233333",
+          "size": "1847591"
+        }
+      }
+    }
+  ],
+  "duplicate_sources": [
+    {
+      "archive_path": "archive/undergraduate-junior-spring/真实场景.mp4",
+      "canonical_path": "data/raw/michelson-original.mp4",
+      "same_sha256": true
+    }
+  ]
+}

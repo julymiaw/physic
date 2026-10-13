@@ -1,0 +1,43 @@
+# Publish only the current Native implementation and its frozen real-data evidence.
+# All historical local material, videos, environments and caches stay untracked.
+*
+!*/
+!/.gitignore
+!/README.md
+!/CMakeLists.txt
+!/requirements.txt
+!/research/real_pair.cpp
+!/research/screen_tracker.h
+!/research/screen_track.cpp
+!/research/prepare_gray.cpp
+!/research/prepare_original.py
+!/research/check_real.py
+!/research/replay_physical.sh
+!/research/render_physical_video.py
+!/experiments/prepare_video.py
+!/data/videos.json
+!/data/raw/README.md
+!/experiments/results/physical-count/README.md
+!/experiments/results/physical-count/reference-v*.json
+!/experiments/results/physical-count/reference-v*.sha256
+!/experiments/results/physical-count/frames.csv*
+!/experiments/results/physical-count/causality.json
+!/experiments/results/physical-count/tracker-parity.json
+!/experiments/results/physical-count/timing.json
+!/experiments/results/physical-count/timed-source.cpp
+!/experiments/results/physical-count/timed.csv.core.csv
+!/experiments/results/physical-count/legacy-center-probe.txt
+!/experiments/results/physical-count/physical-count-explained.mp4
+!/experiments/results/physical-count/video-preview.jpg
+!/experiments/results/physical-count/video-ambiguity-preview.jpg
+!/experiments/results/physical-count/final/*.json
+!/experiments/results/physical-count/final/*.csv
+!/experiments/results/physical-count/review/*.jpg
+!/experiments/results/real-track/review-51.jpg
+# Added only on the adaptation branch:
+archive/
+.venv/
+.tools/
+build*/
+__pycache__/
+data/derived/

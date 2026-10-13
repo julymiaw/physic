@@ -1,0 +1,18 @@
+{
+  "single_timed_run": true,
+  "processor": "Apple M4 (arm64)",
+  "build": "clang++ -std=c++17 -O3 -DNDEBUG; single thread",
+  "frames": 1158,
+  "median_ms": 0.5337915,
+  "p95_ms": 0.60824005,
+  "p99_ms": 0.6745962500000002,
+  "maximum_ms": 0.797584,
+  "passed": true,
+  "scope": "Contour tracking + five 3x3 patch samples + phase consensus/confirmation, including EOF drain. Excludes calibration, decoding, input/output, preprocessing and rendering.",
+  "identical_to_untimed": true,
+  "hashes": {
+    "research/real_pair.cpp": "13583e7fcf15bf188596c16a470a489e5374bd85636d4b0e893abfe0adf29e5d",
+    "research/screen_tracker.h": "b24e888ce715f4349e677ce1d8deec28ef993dbd4f71a63f7802215ee7173b86",
+    "experiments/results/real-track/padded-screen.frc": "842b5f8be50a527fbd7386a8bed6cbe0a678e49bb5771b48798927ca62d7025b"
+  }
+}

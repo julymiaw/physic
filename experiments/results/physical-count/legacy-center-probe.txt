@@ -1,0 +1,7 @@
+symmetry_probe=28,23 score=0.356437 weight=1.81337
+symmetry_probe=30,32 score=0.367046 weight=2.39123
+center=28,23 symmetry_error=0.35643691 pairs=4 count=82 processed=1158
+node 36,23 score=0.11025261 min_radius=0.43993029 orientation=-1
+node 22,23 score=0.065717564 min_radius=0.33253481 orientation=-1
+node 28,31 score=0.10102401 min_radius=0.41024238 orientation=-1
+node 19,23 score=0.049212759 min_radius=0.32874979 orientation=-1

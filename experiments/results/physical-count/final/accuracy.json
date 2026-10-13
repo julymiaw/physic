@@ -1,0 +1,640 @@
+{
+  "expected_events": 88,
+  "observed_events": 90,
+  "certain_observed_events": 88,
+  "optional_ambiguous_events": 2,
+  "ambiguous_episodes": [
+    {
+      "id": "tiny-core-34",
+      "passed": true,
+      "base_count": 40,
+      "end_count": 40,
+      "events": [
+        {
+          "timestamp": "34.378111000000004",
+          "calibrating": "0",
+          "source_frame": "825",
+          "count": "39",
+          "event_direction": "-1",
+          "confirmed_at": "34.544733000000001",
+          "confirmation_frame": "829",
+          "delay_frames": "4",
+          "tail_pending": "0",
+          "complete": "1",
+          "valid_pairs": "4",
+          "repairs": "0",
+          "ambiguous": "0",
+          "primary": "-0.78994166139827315",
+          "tracking_valid": "1",
+          "tracking_iou": "0.9866463181991606",
+          "pair0": "39",
+          "phase0": "-0.71287038748162779",
+          "pair1": "39",
+          "phase1": "-0.5715846107524829",
+          "pair2": "39",
+          "phase2": "-0.3468831324906394",
+          "pair3": "39",
+          "phase3": "-0.26510534749542325"
+        },
+        {
+          "timestamp": "34.836322000000003",
+          "calibrating": "0",
+          "source_frame": "836",
+          "count": "40",
+          "event_direction": "1",
+          "confirmed_at": "35.002943999999999",
+          "confirmation_frame": "840",
+          "delay_frames": "4",
+          "tail_pending": "0",
+          "complete": "1",
+          "valid_pairs": "4",
+          "repairs": "0",
+          "ambiguous": "0",
+          "primary": "-0.41657494619795887",
+          "tracking_valid": "1",
+          "tracking_iou": "0.98701298701298701",
+          "pair0": "40",
+          "phase0": "0.94443213151258654",
+          "pair1": "40",
+          "phase1": "0.95519430248929327",
+          "pair2": "40",
+          "phase2": "0.19303680254769384",
+          "pair3": "40",
+          "phase3": "0.73114136831702026"
+        }
+      ],
+      "relative_count_values": [
+        -1,
+        0
+      ],
+      "exact_physical_events_known": false,
+      "policy": "User accepts bright-core recrossing or speckle interpretations for frames825 and834, provided the local final net count is unchanged."
+    }
+  ],
+  "matched_events": 88,
+  "missing": [],
+  "extra": [],
+  "wrong_direction": [],
+  "checkpoints": [
+    {
+      "timestamp": 11.924211,
+      "expected": 1,
+      "actual": 1,
+      "error": 0
+    },
+    {
+      "timestamp": 12.3199945,
+      "expected": 2,
+      "actual": 2,
+      "error": 0
+    },
+    {
+      "timestamp": 12.799089,
+      "expected": 3,
+      "actual": 3,
+      "error": 0
+    },
+    {
+      "timestamp": 13.2989555,
+      "expected": 4,
+      "actual": 4,
+      "error": 0
+    },
+    {
+      "timestamp": 13.7363945,
+      "expected": 5,
+      "actual": 5,
+      "error": 0
+    },
+    {
+      "timestamp": 14.153006,
+      "expected": 6,
+      "actual": 6,
+      "error": 0
+    },
+    {
+      "timestamp": 14.611217,
+      "expected": 7,
+      "actual": 7,
+      "error": 0
+    },
+    {
+      "timestamp": 15.277761,
+      "expected": 8,
+      "actual": 8,
+      "error": 0
+    },
+    {
+      "timestamp": 16.0276165,
+      "expected": 9,
+      "actual": 9,
+      "error": 0
+    },
+    {
+      "timestamp": 16.569139,
+      "expected": 10,
+      "actual": 10,
+      "error": 0
+    },
+    {
+      "timestamp": 16.944038999999997,
+      "expected": 11,
+      "actual": 11,
+      "error": 0
+    },
+    {
+      "timestamp": 18.339610999999998,
+      "expected": 12,
+      "actual": 12,
+      "error": 0
+    },
+    {
+      "timestamp": 19.839321999999996,
+      "expected": 13,
+      "actual": 13,
+      "error": 0
+    },
+    {
+      "timestamp": 20.3600165,
+      "expected": 14,
+      "actual": 14,
+      "error": 0
+    },
+    {
+      "timestamp": 20.797455499999998,
+      "expected": 15,
+      "actual": 15,
+      "error": 0
+    },
+    {
+      "timestamp": 21.2140665,
+      "expected": 16,
+      "actual": 16,
+      "error": 0
+    },
+    {
+      "timestamp": 21.588966499999998,
+      "expected": 17,
+      "actual": 17,
+      "error": 0
+    },
+    {
+      "timestamp": 22.068061,
+      "expected": 18,
+      "actual": 18,
+      "error": 0
+    },
+    {
+      "timestamp": 22.69295,
+      "expected": 19,
+      "actual": 19,
+      "error": 0
+    },
+    {
+      "timestamp": 23.276128,
+      "expected": 20,
+      "actual": 20,
+      "error": 0
+    },
+    {
+      "timestamp": 24.4008835,
+      "expected": 21,
+      "actual": 21,
+      "error": 0
+    },
+    {
+      "timestamp": 25.484038999999996,
+      "expected": 22,
+      "actual": 22,
+      "error": 0
+    },
+    {
+      "timestamp": 25.921477999999997,
+      "expected": 23,
+      "actual": 23,
+      "error": 0
+    },
+    {
+      "timestamp": 26.317206,
+      "expected": 24,
+      "actual": 24,
+      "error": 0
+    },
+    {
+      "timestamp": 26.7129335,
+      "expected": 25,
+      "actual": 25,
+      "error": 0
+    },
+    {
+      "timestamp": 27.1087165,
+      "expected": 26,
+      "actual": 26,
+      "error": 0
+    },
+    {
+      "timestamp": 27.4420165,
+      "expected": 27,
+      "actual": 27,
+      "error": 0
+    },
+    {
+      "timestamp": 27.733605499999996,
+      "expected": 28,
+      "actual": 28,
+      "error": 0
+    },
+    {
+      "timestamp": 28.150160999999997,
+      "expected": 29,
+      "actual": 29,
+      "error": 0
+    },
+    {
+      "timestamp": 28.712566499999998,
+      "expected": 30,
+      "actual": 30,
+      "error": 0
+    },
+    {
+      "timestamp": 29.3582835,
+      "expected": 31,
+      "actual": 31,
+      "error": 0
+    },
+    {
+      "timestamp": 29.7331835,
+      "expected": 30,
+      "actual": 30,
+      "error": 0
+    },
+    {
+      "timestamp": 29.837322,
+      "expected": 31,
+      "actual": 31,
+      "error": 0
+    },
+    {
+      "timestamp": 30.0039445,
+      "expected": 30,
+      "actual": 30,
+      "error": 0
+    },
+    {
+      "timestamp": 30.4622115,
+      "expected": 31,
+      "actual": 31,
+      "error": 0
+    },
+    {
+      "timestamp": 31.003788999999998,
+      "expected": 32,
+      "actual": 32,
+      "error": 0
+    },
+    {
+      "timestamp": 31.337033499999997,
+      "expected": 33,
+      "actual": 33,
+      "error": 0
+    },
+    {
+      "timestamp": 31.7119335,
+      "expected": 34,
+      "actual": 34,
+      "error": 0
+    },
+    {
+      "timestamp": 32.1285445,
+      "expected": 35,
+      "actual": 35,
+      "error": 0
+    },
+    {
+      "timestamp": 32.4826725,
+      "expected": 36,
+      "actual": 36,
+      "error": 0
+    },
+    {
+      "timestamp": 32.8367445,
+      "expected": 37,
+      "actual": 37,
+      "error": 0
+    },
+    {
+      "timestamp": 33.211644500000006,
+      "expected": 38,
+      "actual": 38,
+      "error": 0
+    },
+    {
+      "timestamp": 33.6699115,
+      "expected": 39,
+      "actual": 39,
+      "error": 0
+    },
+    {
+      "timestamp": 34.669700000000006,
+      "expected_range": [
+        39,
+        40
+      ],
+      "actual": 39,
+      "error": 0,
+      "ambiguity_id": "tiny-core-34"
+    },
+    {
+      "timestamp": 34.961289,
+      "expected": 40,
+      "actual": 40,
+      "error": 0
+    },
+    {
+      "timestamp": 35.544522,
+      "expected": 41,
+      "actual": 41,
+      "error": 0
+    },
+    {
+      "timestamp": 35.9611335,
+      "expected": 42,
+      "actual": 42,
+      "error": 0
+    },
+    {
+      "timestamp": 36.4401725,
+      "expected": 43,
+      "actual": 43,
+      "error": 0
+    },
+    {
+      "timestamp": 36.919267000000005,
+      "expected": 44,
+      "actual": 44,
+      "error": 0
+    },
+    {
+      "timestamp": 37.294222500000004,
+      "expected": 45,
+      "actual": 45,
+      "error": 0
+    },
+    {
+      "timestamp": 37.627466500000004,
+      "expected": 46,
+      "actual": 46,
+      "error": 0
+    },
+    {
+      "timestamp": 38.189816500000006,
+      "expected": 47,
+      "actual": 47,
+      "error": 0
+    },
+    {
+      "timestamp": 38.77305,
+      "expected": 48,
+      "actual": 48,
+      "error": 0
+    },
+    {
+      "timestamp": 39.2521445,
+      "expected": 49,
+      "actual": 49,
+      "error": 0
+    },
+    {
+      "timestamp": 40.1477945,
+      "expected": 50,
+      "actual": 50,
+      "error": 0
+    },
+    {
+      "timestamp": 40.9601335,
+      "expected": 51,
+      "actual": 51,
+      "error": 0
+    },
+    {
+      "timestamp": 41.3350335,
+      "expected": 52,
+      "actual": 52,
+      "error": 0
+    },
+    {
+      "timestamp": 41.7933,
+      "expected": 53,
+      "actual": 53,
+      "error": 0
+    },
+    {
+      "timestamp": 42.209911000000005,
+      "expected": 54,
+      "actual": 54,
+      "error": 0
+    },
+    {
+      "timestamp": 42.584811,
+      "expected": 55,
+      "actual": 55,
+      "error": 0
+    },
+    {
+      "timestamp": 43.0013665,
+      "expected": 56,
+      "actual": 56,
+      "error": 0
+    },
+    {
+      "timestamp": 43.5012885,
+      "expected": 57,
+      "actual": 57,
+      "error": 0
+    },
+    {
+      "timestamp": 44.147005500000006,
+      "expected": 58,
+      "actual": 58,
+      "error": 0
+    },
+    {
+      "timestamp": 44.7093555,
+      "expected": 59,
+      "actual": 59,
+      "error": 0
+    },
+    {
+      "timestamp": 45.125966500000004,
+      "expected": 60,
+      "actual": 60,
+      "error": 0
+    },
+    {
+      "timestamp": 45.52175,
+      "expected": 61,
+      "actual": 61,
+      "error": 0
+    },
+    {
+      "timestamp": 46.08410000000001,
+      "expected": 62,
+      "actual": 62,
+      "error": 0
+    },
+    {
+      "timestamp": 47.1672,
+      "expected": 63,
+      "actual": 63,
+      "error": 0
+    },
+    {
+      "timestamp": 48.166989,
+      "expected": 64,
+      "actual": 64,
+      "error": 0
+    },
+    {
+      "timestamp": 48.666911,
+      "expected": 65,
+      "actual": 65,
+      "error": 0
+    },
+    {
+      "timestamp": 49.083522,
+      "expected": 66,
+      "actual": 66,
+      "error": 0
+    },
+    {
+      "timestamp": 49.458422,
+      "expected": 67,
+      "actual": 67,
+      "error": 0
+    },
+    {
+      "timestamp": 49.895861000000004,
+      "expected": 68,
+      "actual": 68,
+      "error": 0
+    },
+    {
+      "timestamp": 50.354128,
+      "expected": 69,
+      "actual": 69,
+      "error": 0
+    },
+    {
+      "timestamp": 50.7498555,
+      "expected": 70,
+      "actual": 70,
+      "error": 0
+    },
+    {
+      "timestamp": 51.124755500000006,
+      "expected": 71,
+      "actual": 71,
+      "error": 0
+    },
+    {
+      "timestamp": 51.499711000000005,
+      "expected": 72,
+      "actual": 72,
+      "error": 0
+    },
+    {
+      "timestamp": 51.93715,
+      "expected": 73,
+      "actual": 73,
+      "error": 0
+    },
+    {
+      "timestamp": 52.3745335,
+      "expected": 74,
+      "actual": 74,
+      "error": 0
+    },
+    {
+      "timestamp": 52.770261000000005,
+      "expected": 75,
+      "actual": 75,
+      "error": 0
+    },
+    {
+      "timestamp": 53.186872,
+      "expected": 76,
+      "actual": 76,
+      "error": 0
+    },
+    {
+      "timestamp": 53.686794500000005,
+      "expected": 77,
+      "actual": 77,
+      "error": 0
+    },
+    {
+      "timestamp": 54.228317000000004,
+      "expected": 78,
+      "actual": 78,
+      "error": 0
+    },
+    {
+      "timestamp": 54.8532055,
+      "expected": 79,
+      "actual": 79,
+      "error": 0
+    },
+    {
+      "timestamp": 56.207122000000005,
+      "expected": 80,
+      "actual": 80,
+      "error": 0
+    },
+    {
+      "timestamp": 57.415189000000005,
+      "expected": 81,
+      "actual": 81,
+      "error": 0
+    },
+    {
+      "timestamp": 57.894228,
+      "expected": 82,
+      "actual": 82,
+      "error": 0
+    },
+    {
+      "timestamp": 58.602428,
+      "expected": 83,
+      "actual": 83,
+      "error": 0
+    },
+    {
+      "timestamp": 59.831322,
+      "expected": 84,
+      "actual": 84,
+      "error": 0
+    }
+  ],
+  "final_expected": 84,
+  "final_actual": 84,
+  "final_error": 0,
+  "source_frame_count": 1158,
+  "source_frame_begin": 279,
+  "source_frame_end": 1436,
+  "all_source_frames_covered": true,
+  "initial_zero": true,
+  "confirmation_delay_within_four_frames": true,
+  "unconfirmed_tail": false,
+  "max_reference_time_difference_seconds": 0.12496699999999805,
+  "max_confirmation_delay_frames": 4,
+  "zero_quorum_frames": 0,
+  "below_two_valid_pairs_frames": 0,
+  "matching_note": "Ordered, same direction, <=0.2s, clipped at adjacent reference midpoints.",
+  "reference_type": "assistant_visual_physical_reference_with_user_accepted_local_ambiguity",
+  "human_verified": false,
+  "reference_file": "experiments/results/physical-count/reference-v4.json",
+  "unresolved_reference_intervals": [],
+  "all_frames_complete": true,
+  "reference_sha256": "4761d0f7c1e383e5387e6c4051de8eef565c8717f5b85221684d603ae9918430",
+  "passed": true
+}
