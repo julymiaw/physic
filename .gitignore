@@ -41,3 +41,12 @@ archive/
 build*/
 __pycache__/
 data/derived/
+!/research/check_bilibili_transfer.py
+!/experiments/results/bilibili-transfer/README.md
+!/experiments/results/bilibili-transfer/protocol.json
+!/experiments/results/bilibili-transfer/result.json
+!/experiments/results/bilibili-transfer/replay.log
+!/experiments/results/bilibili-transfer/tracking.log
+!/experiments/results/bilibili-transfer/calibration-diagnostic.txt
+!/experiments/results/bilibili-transfer/motion.csv
+!/experiments/results/bilibili-transfer/failure-overview.jpg

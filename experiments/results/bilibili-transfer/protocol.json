@@ -1,0 +1,29 @@
+{
+  "protocol": "Frozen current counting and tracking rules; first256 frames0..8.5s calibration, remaining8.533333..21.2s evaluation. Manual ROI from previously recorded roi.json; no selection using count accuracy.",
+  "hashes": {
+    "research/real_pair.cpp": "13583e7fcf15bf188596c16a470a489e5374bd85636d4b0e893abfe0adf29e5d",
+    "research/screen_tracker.h": "b24e888ce715f4349e677ce1d8deec28ef993dbd4f71a63f7802215ee7173b86",
+    "data/raw/michelson-bilibili.mp4": "237a55fbb55e38c6fd66e3cf00efc54c1ce97b55fa28adf6282c1ae72bd28408",
+    "data/derived/bilibili.npz": "08f11be400daaea3f707ec0513053ec5b429b50732ade0e6dfd582153a07b8e5"
+  },
+  "count_roi": [
+    284,
+    0,
+    164,
+    180
+  ],
+  "padded_roi": [
+    243,
+    -45,
+    246,
+    270
+  ],
+  "count_offset": [
+    16,
+    16
+  ],
+  "padding": "Outside the camera image is explicitly zero padded, not recovered content.",
+  "tested_core_sha256": "fd152d7a4916d7aae286d676e4bb7b3135eb8b05edae3960d5421504a824f472",
+  "adapter_change": "Only added count-coordinate offset input options; default original-video replay is byte-identical. No tracking/calibration/counting rules changed.",
+  "original_regression_byte_identical": true
+}
