@@ -5,10 +5,11 @@ import csv,hashlib,json,struct,subprocess,tempfile
 from pathlib import Path
 import cv2,numpy as np
 ROOT=Path(__file__).resolve().parents[1]
-P=ROOT/'experiments/results/bilibili-transfer'
-protocol=json.loads((P/'protocol.json').read_text())
-source=ROOT/'research/real_pair.cpp'
-assert hashlib.sha256(source.read_bytes()).hexdigest()==protocol['tested_core_sha256'],'Frozen implementation changed; preserve this baseline before starting a revised experiment.'
+P=ROOT/'experiments/runs/bilibili-frozen-baseline'
+P.mkdir(parents=True,exist_ok=True)
+protocol=json.loads((ROOT/'experiments/results/bilibili-transfer/protocol.json').read_text())
+source_text=subprocess.check_output(['git','show','self-recorded-v1:research/real_pair.cpp'],cwd=ROOT).decode()
+assert hashlib.sha256(source_text.encode()).hexdigest()==protocol['tested_core_sha256'],'Frozen Git baseline does not match the recorded implementation.'
 assert hashlib.sha256((ROOT/'research/screen_tracker.h').read_bytes()).hexdigest()==protocol['hashes']['research/screen_tracker.h']
 assert hashlib.sha256((ROOT/'data/derived/bilibili.npz').read_bytes()).hexdigest()==protocol['hashes']['data/derived/bilibili.npz']
 data=np.load(ROOT/'data/derived/bilibili.npz');frames,times=data['frames'],data['timestamps']
@@ -21,6 +22,7 @@ with (P/'padded-screen.frc').open('wb') as f:
 with tempfile.TemporaryDirectory(prefix='physic-bilibili-') as td:
     td=Path(td);binary=td/'counter';tracker=td/'tracker'
     def build(src,dest):subprocess.run(['clang++','-std=c++17','-O3','-DNDEBUG','-I',str(ROOT/'research'),str(src),'-o',str(dest)],check=True)
+    source=td/'frozen.cpp';source.write_text(source_text)
     build(source,binary);build(ROOT/'research/screen_track.cpp',tracker)
     args=[str(P/'padded-screen.frc'),'0','8.5','22',str(P/'frames.csv'),'--count-offset-x','16','--count-offset-y','16']
     result=subprocess.run([str(binary),*args],capture_output=True,text=True)
@@ -28,7 +30,7 @@ with tempfile.TemporaryDirectory(prefix='physic-bilibili-') as td:
     assert result.returncode==1 and 'insufficient phase pairs' in result.stderr
     tracking=subprocess.run([str(tracker),str(P/'padded-screen.frc'),'0','8.5',str(P/'motion.csv'),'16','16'],check=True,capture_output=True,text=True)
     (P/'tracking.log').write_text(tracking.stdout)
-    diagnostic=source.read_text()
+    diagnostic=source_text
     diagnostic=diagnostic.replace(' std::vector<Node> candidates;', ' std::cout<<"center,"<<cx<<","<<cy<<",gradient_residual,"<<center_residual<<",primary_scale,"<<scale0<<"\\n";std::cout<<"candidate,x,y,contrast_scale,net_cycles,direction_dominance,min_radius,accepted\\n"; std::vector<Node> candidates;')
     needle='if(std::abs(net)<3*pi||std::abs(net)<.9*absolute||*std::min_element(radii.begin(),radii.end())<.15)continue;'
     diagnostic=diagnostic.replace(needle,'std::cout<<"candidate,"<<x<<","<<y<<","<<scale<<","<<net/(2*pi)<<","<<std::abs(net)/absolute<<","<<*std::min_element(radii.begin(),radii.end())<<","<<(std::abs(net)>=3*pi&&std::abs(net)>=.9*absolute&&*std::min_element(radii.begin(),radii.end())>=.15)<<"\\n";'+needle)
@@ -39,7 +41,8 @@ from pathlib import Path
 import json,csv,struct
 import numpy as np,cv2
 from PIL import Image,ImageDraw,ImageFont
-P=ROOT/'experiments/results/bilibili-transfer'
+P=ROOT/'experiments/runs/bilibili-frozen-baseline'
+P.mkdir(parents=True,exist_ok=True)
 raw=np.load(ROOT/'data/derived/bilibili.npz')['frames']
 with (P/'padded-screen.frc').open('rb') as f:
  _,n,_,_,count,_=struct.unpack('<4sIIIId',f.read(28));pixels=[];times=[]

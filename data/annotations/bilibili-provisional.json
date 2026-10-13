@@ -1,0 +1,172 @@
+{
+  "video": "data/raw/michelson-bilibili.mp4",
+  "annotator": "AI assistant visual inspection, not a human annotator",
+  "status": "provisional_requires_human_review",
+  "independent_of_candidate_outputs": true,
+  "passes": [
+    "horizontal raw-intensity spacetime slice",
+    "orthogonal vertical slice plus raw center-intensity trace"
+  ],
+  "event_definition": "One central-dark extremum per full cycle; first extremum of each clear segment is a phase anchor, not an absolute count from video start.",
+  "clear_intervals_provisional": [
+    [
+      0,
+      21.2
+    ]
+  ],
+  "uncertainty_note": "No exact total count is claimed across unlabelled/blurred intervals. Time intervals account for broad dark extrema and visual precision; revisit full frames before human confirmation.",
+  "events": [
+    {
+      "id": 1,
+      "timestamp_estimate": 1.36,
+      "frame_index": 41,
+      "timestamp_interval": [
+        1.1800000000000002,
+        1.54
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 2,
+      "timestamp_estimate": 3.43,
+      "frame_index": 103,
+      "timestamp_interval": [
+        3.25,
+        3.6100000000000003
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 3,
+      "timestamp_estimate": 5.38,
+      "frame_index": 161,
+      "timestamp_interval": [
+        5.2,
+        5.56
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 4,
+      "timestamp_estimate": 7.35,
+      "frame_index": 220,
+      "timestamp_interval": [
+        7.17,
+        7.529999999999999
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 5,
+      "timestamp_estimate": 10.42,
+      "frame_index": 313,
+      "timestamp_interval": [
+        10.24,
+        10.6
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 6,
+      "timestamp_estimate": 12.3,
+      "frame_index": 369,
+      "timestamp_interval": [
+        12.120000000000001,
+        12.48
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 7,
+      "timestamp_estimate": 13.9,
+      "frame_index": 417,
+      "timestamp_interval": [
+        13.72,
+        14.08
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 8,
+      "timestamp_estimate": 15.62,
+      "frame_index": 469,
+      "timestamp_interval": [
+        15.44,
+        15.799999999999999
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 9,
+      "timestamp_estimate": 17.88,
+      "frame_index": 536,
+      "timestamp_interval": [
+        17.7,
+        18.06
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    },
+    {
+      "id": 10,
+      "timestamp_estimate": 19.38,
+      "frame_index": 581,
+      "timestamp_interval": [
+        19.2,
+        19.56
+      ],
+      "event": "central_dark_extremum",
+      "direction": 1,
+      "direction_convention": "contraction positive; not absolute screw motion",
+      "confidence": "provisional_visual",
+      "human_verified": false,
+      "clear_segment": 0
+    }
+  ],
+  "pause_or_subcycle_motion_intervals": [],
+  "human_review_required": true
+}

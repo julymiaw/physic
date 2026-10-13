@@ -50,3 +50,13 @@ data/derived/
 !/experiments/results/bilibili-transfer/calibration-diagnostic.txt
 !/experiments/results/bilibili-transfer/motion.csv
 !/experiments/results/bilibili-transfer/failure-overview.jpg
+!/research/compare_scenes.py
+!/data/annotations/bilibili-provisional.json
+!/docs/ROBUSTNESS.md
+!/experiments/results/bilibili-adapt/*.json
+!/experiments/results/bilibili-adapt/README.md
+!/experiments/results/bilibili-adapt/original/*.json
+!/experiments/results/bilibili-adapt/original/*.csv
+!/experiments/results/bilibili-adapt/bilibili/*.json
+!/experiments/results/bilibili-adapt/bilibili/*.csv
+!/experiments/results/bilibili-adapt/review/*.jpg

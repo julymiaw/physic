@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "baseline": "self-recorded-v1",
+  "implementation_sha256": "9aa65bb36deefa3c7418b4772fe5537f0d27503d665bf3742d02203a84f510e4",
+  "tracker_sha256": "b24e888ce715f4349e677ce1d8deec28ef993dbd4f71a63f7802215ee7173b86",
+  "original": {
+    "passed": true,
+    "certain_matched": 88,
+    "optional_events": 2,
+    "final": 84,
+    "frames": 1158
+  },
+  "bilibili": {
+    "passed": true,
+    "provisional_matched": 6,
+    "final": 6,
+    "frames": 381
+  },
+  "warning": "Both clips are development data. Passing is relative to the documented references, not proof of generalization or independent human accuracy."
+}

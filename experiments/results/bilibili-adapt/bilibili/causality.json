@@ -1,0 +1,26 @@
+[
+  {
+    "prefix_end": 10.5,
+    "identical": true,
+    "compared_confirmed_frames": 56,
+    "pending_tail_frames": 4
+  },
+  {
+    "prefix_end": 13.5,
+    "identical": true,
+    "compared_confirmed_frames": 146,
+    "pending_tail_frames": 0
+  },
+  {
+    "prefix_end": 18.1,
+    "identical": true,
+    "compared_confirmed_frames": 284,
+    "pending_tail_frames": 3
+  },
+  {
+    "prefix_end": 20.5,
+    "identical": true,
+    "compared_confirmed_frames": 356,
+    "pending_tail_frames": 0
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "reference_status": "provisional_requires_human_review",
+  "human_verified": false,
+  "accuracy_scope": "Six post-calibration provisional visual reference events, reviewed in raw spacetime strips and local frame panels. No independent human ground truth; not unseen-scene validation.",
+  "reference_sha256": "61cfb69827869dfd8d05f52295605c759d8d4de730245ab83c8e511ac36cb140",
+  "expected_events": 6,
+  "observed_events": 6,
+  "pairs": [
+    {
+      "reference_id": 5,
+      "reference_time": 10.42,
+      "event_time": 10.4,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": -0.019999999999999574
+    },
+    {
+      "reference_id": 6,
+      "reference_time": 12.3,
+      "event_time": 12.266667,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": -0.03333300000000072
+    },
+    {
+      "reference_id": 7,
+      "reference_time": 13.9,
+      "event_time": 13.866667,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": -0.03333300000000072
+    },
+    {
+      "reference_id": 8,
+      "reference_time": 15.62,
+      "event_time": 15.7,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": 0.08000000000000007
+    },
+    {
+      "reference_id": 9,
+      "reference_time": 17.88,
+      "event_time": 18.033333,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": 0.15333299999999994
+    },
+    {
+      "reference_id": 10,
+      "reference_time": 19.38,
+      "event_time": 19.466667,
+      "direction": 1,
+      "matched": true,
+      "difference_seconds": 0.08666700000000205
+    }
+  ],
+  "checkpoints": [
+    {
+      "timestamp": 11.36,
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "timestamp": 13.100000000000001,
+      "expected": 2,
+      "actual": 2
+    },
+    {
+      "timestamp": 14.76,
+      "expected": 3,
+      "actual": 3
+    },
+    {
+      "timestamp": 16.75,
+      "expected": 4,
+      "actual": 4
+    },
+    {
+      "timestamp": 18.63,
+      "expected": 5,
+      "actual": 5
+    },
+    {
+      "timestamp": 21.2,
+      "expected": 6,
+      "actual": 6
+    }
+  ],
+  "final_expected": 6,
+  "final_actual": 6,
+  "frames": 381,
+  "all_source_frames_covered": true,
+  "all_frames_complete": true,
+  "confirmation_delay_within_four_frames": true,
+  "max_confirmation_delay_frames": 4,
+  "unconfirmed_tail": false,
+  "max_reference_time_difference_seconds": 0.15333299999999994
+}
