@@ -60,3 +60,7 @@ data/derived/
 !/experiments/results/bilibili-adapt/bilibili/*.json
 !/experiments/results/bilibili-adapt/bilibili/*.csv
 !/experiments/results/bilibili-adapt/review/*.jpg
+!/research/render_bilibili_video.py
+!/experiments/results/bilibili-adapt/bilibili-count-explained.mp4
+!/experiments/results/bilibili-adapt/bilibili-video-intro.jpg
+!/experiments/results/bilibili-adapt/bilibili-video-end.jpg

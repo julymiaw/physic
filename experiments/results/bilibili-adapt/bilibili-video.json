@@ -1,0 +1,22 @@
+{
+  "video": "experiments/results/bilibili-adapt/bilibili-count-explained.mp4",
+  "fps": 30,
+  "frames": 847,
+  "duration_seconds": 28.233333333333334,
+  "source_time_interval": [
+    0.0,
+    21.2
+  ],
+  "measurement_frame_interval": [
+    256,
+    636
+  ],
+  "final_confirmed_count": 6,
+  "explanation_intro_seconds": 4,
+  "calibration_not_counted": true,
+  "derived_data_sha256": "08f11be400daaea3f707ec0513053ec5b429b50732ade0e6dfd582153a07b8e5",
+  "result_sha256": "a45a88bae50b901019f120d14fb53117c97e4ed644ed590648248d3792d9b9cf",
+  "reference_status": "provisional visual reference, not independently human verified",
+  "video_sha256": "f0fe539a4bad510d5e6e28b732e1472c94764f1f90991135dbaf9c85768f1335",
+  "verification": "Encoded frame count/duration checked; decoded measurement and final frames visually inspected; displayed confirmed count reads saved Native online output."
+}
