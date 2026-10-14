@@ -2,7 +2,7 @@
   <view class="preview">
     <camera wx:if="{{cameraEnabled}}" class="camera" device-position="back" flash="off" resolution="medium" frame-size="medium" bindinitdone="onCameraReady" binderror="onCameraError" bindstop="onCameraStop" />
     <cover-view wx:if="{{cameraEnabled && overlayStyle}}" id="roi-touch" class="selection-layer" style="{{overlayStyle}}" catchtouchstart="onSelectionStart" catchtouchmove="onSelectionMove" catchtouchend="onSelectionEnd" catchtouchcancel="onSelectionCancel">
-        <cover-view wx:if="{{selectionStyle}}" class="selection" style="{{selectionStyle}}"></cover-view>
+        <cover-view class="selection" style="{{selectionStyle || 'left:0px;top:0px;width:0px;height:0px;border-width:0;'}}"></cover-view>
         <cover-view wx:for="{{points}}" wx:key="id" wx:if="{{item.visible}}" class="sample-point" style="{{item.style}}"></cover-view>
     </cover-view>
     <button wx:if="{{!cameraEnabled}}" class="camera-start camera-button" bindtap="toggleCamera">开启相机</button>

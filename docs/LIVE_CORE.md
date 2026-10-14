@@ -52,3 +52,5 @@
 测量流程验证：`node tests/measurement_flow.cjs`（真实帧、Native/WASM状态对照），`node tests/measurement_page.cjs`（页面状态切换）。IDE复现：先运行前者，再运行`python3 tools/prepare_measurement_ide.py`，调用页面`verifyReplay("measurement-flow")`；验证时临时取消打包忽略verification文件夹，验证后恢复配置并移除临时目录。
 
 真机交互兼容检查：`node tests/phone_compat.cjs`。圈选覆盖层改为相机同级、明确像素尺寸和轻微背景，支持拖动或点两个对角；支持client/page坐标与局部坐标兼容输入。没有手机触摸日志时，不能把这些兼容测试称为问题已在真机复现并解决。
+
+手机左上角圈选反馈仍未完成真机验收。开发版记录最近16条`[ROI]`原始触摸坐标、结束/取消事件及预览几何（不记录图像），同时存储`fringe-roi-debug`便于真机调试读取。无效全零全局坐标不会被夹成有效角点；选框原生节点保持存在，取消手势不提交区域，也不抹掉已选角点。需要用户复测日志确定真机调试/原生事件的实际行为。

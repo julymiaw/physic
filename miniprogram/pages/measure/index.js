@@ -56,28 +56,43 @@ Page({
     const reviewing=this.data.phase==='review';this.stopFeed();if(this._core&&this.isRunning()){const result=this._core.interrupt();if(reviewing)this._hasMeasured=false;this.display(result,true);if(!reviewing)this.remember();}
   },
   stopCamera(){
-    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._corner=null;this._previewBounds=null;this._frameShape=null;
+    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._corner=null;this._fingerStart=null;this._previewBounds=null;this._frameShape=null;
     this.setData({phase:'idle',mainLabel:'标定',overlayStyle:'',cameraEnabled:false,cameraReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
   },
   onCameraError(event){this.stopCamera();this.showMessage('相机无法开启',(event.detail&&event.detail.errMsg)||'请检查相机权限后重试。');},
   onCameraStop(){if(this.data.cameraEnabled){this.stopCamera();this.setData({status:'相机已中断'});}},
   clearSelection(){
-    this.interrupt();this._dragStart=null;this._corner=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
+    this.interrupt();this._dragStart=null;this._corner=null;this._fingerStart=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
     if(!this._lastResult||this._lastResult.state===1)this.setData({status:'待圈选'});
   },
+  traceTouch(stage,event,point){
+    const pick=t=>{if(!t)return null;const out={};for(const k of ['identifier','clientX','clientY','pageX','pageY','x','y'])if(t[k]!==undefined)out[k]=t[k];return out;};
+    const row={stage,touches:Array.from(event.touches||[]).map(pick),changed:Array.from(event.changedTouches||[]).map(pick),detail:event.detail||null,point,bounds:this._previewBounds?{left:this._previewBounds.left,top:this._previewBounds.top,width:this._previewBounds.width,height:this._previewBounds.height}:null};
+    this._touchTrace=(this._touchTrace||[]).concat(row).slice(-16);
+    try{if(wx.getAccountInfoSync&&wx.getAccountInfoSync().miniProgram.envVersion==='develop'){
+      console.info('[ROI]',JSON.stringify(row));wx.setStorageSync('fringe-roi-debug',this._touchTrace);
+    }}catch(_){}
+  },
   previewPoint(touch){
-    const rect=this._previewBounds;if(!rect||!touch)return null;let x,y;
-    if(Number.isFinite(touch.clientX)&&Number.isFinite(touch.clientY)){x=touch.clientX-rect.left;y=touch.clientY-rect.top;}
-    else if(Number.isFinite(touch.pageX)&&Number.isFinite(touch.pageY)){x=touch.pageX-rect.left;y=touch.pageY-rect.top;}
-    else if(Number.isFinite(touch.x)&&Number.isFinite(touch.y)){x=touch.x;y=touch.y;}
-    else return null;
-    return {x:Math.max(0,Math.min(rect.width,x)),y:Math.max(0,Math.min(rect.height,y))};
+    const rect=this._previewBounds;if(!rect||!touch)return null;
+    // A native/remote event may carry zero client coordinates with valid page/local
+    // fields. (0,0) is outside this preview, so it must not become a valid corner.
+    const candidates=[];
+    for(const [kx,ky,local] of [['clientX','clientY',false],['pageX','pageY',false],['x','y',true]]){
+      if(!Number.isFinite(touch[kx])||!Number.isFinite(touch[ky]))continue;
+      const x=touch[kx],y=touch[ky];
+      if(!local&&x===0&&y===0&&(rect.left>0||rect.top>0))continue;
+      candidates.push({x:local?x:x-rect.left,y:local?y:y-rect.top});
+    }
+    if(!candidates.length)return null;
+    const p=candidates.find(p=>p.x>=0&&p.y>=0&&p.x<=rect.width&&p.y<=rect.height)||candidates[0];
+    return {x:Math.max(0,Math.min(rect.width,p.x)),y:Math.max(0,Math.min(rect.height,p.y))};
   },
   onSelectionStart(event){
     if(!this.data.cameraEnabled||this.isRunning())return;
     const touch=(event.touches&&event.touches[0])||(event.changedTouches&&event.changedTouches[0]);
     if(!this._previewBounds){this.measurePreview(()=>{if(this._previewBounds)this.onSelectionStart(event);});return;}
-    const p=this.previewPoint(touch);if(!p)return;
+    const p=this.previewPoint(touch);this.traceTouch('start',event,p);if(!p){this.setData({status:'未收到有效触摸位置'});return;}
     this._touchInfo={keys:Object.keys(touch),point:p};
     this._dragStart=this._corner||p;this._fingerStart=p;this._dragCurrent=p;
     this.setData({roiSelected:false,previewRegion:null,points:[]});
@@ -91,18 +106,26 @@ Page({
     if(p){this._dragCurrent=p;this.drawRegion(this.regionFromPoint(p));}
   },
   onSelectionEnd(event){
-    if(!this._dragStart)return;
+    if(!this._dragStart){this.traceTouch('end-without-start',event,null);return;}
     const p=this.previewPoint(event.changedTouches&&event.changedTouches[0])||this._dragCurrent;
-    const r=this.regionFromPoint(p),wasCorner=!!this._corner;
+    this.traceTouch('end',event,p);const r=this.regionFromPoint(p),wasCorner=!!this._corner;
     const moved=p&&this._fingerStart?Math.hypot(p.x-this._fingerStart.x,p.y-this._fingerStart.y):0;
-    this._dragStart=null;this._dragCurrent=null;
+    this._dragStart=null;this._dragCurrent=null;this._fingerStart=null;
     if(!r)return;
     if(!wasCorner&&moved<8){this._corner=p;this.drawCorner(p);this.setData({status:'点另一个对角'});return;}
     this._corner=null;
     if(r.width<32||r.height<32){this.clearSelection();return;}
     const b=this._previewBounds;this.drawRegion(r);this.setData({roiSelected:true,previewRegion:{x:r.x/b.width,y:r.y/b.height,width:r.width/b.width,height:r.height/b.height},status:'待标定'});
   },
-  onSelectionCancel(){this.clearSelection();},
+  onSelectionCancel(event={}){
+    if(this.isRunning())return;
+    this.traceTouch('cancel',event,this._dragCurrent||null);
+    // A cancelled native gesture never finalizes an ROI, but should not erase a
+    // previously chosen first corner or a complete selection.
+    const corner=this._corner||this._fingerStart;
+    this._dragStart=null;this._dragCurrent=null;
+    if(corner&&!this.data.roiSelected){this._corner=corner;this.drawCorner(corner);this.setData({status:'点另一个对角'});}
+  },
   mainAction(){
     if(this.data.phase==='stopping')return;
     if(this.data.phase==='ready'||this.data.phase==='review'){
