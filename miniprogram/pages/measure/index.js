@@ -23,7 +23,7 @@ Page({
   createStreamDiagnostics(){
     let device={},account={};try{const d=wx.getDeviceInfo?wx.getDeviceInfo():wx.getSystemInfoSync();device={brand:d.brand,model:d.model,platform:d.platform,system:d.system};}catch(_){}
     try{account=wx.getAccountInfoSync().miniProgram;}catch(_){}
-    this._streamCoreSignature=null;this._streamDiag=new StreamDiagnostics({build:'stream-diagnostics-2',clock:this._clockInfo,device,envVersion:account.envVersion,version:account.version,preview:this._previewBounds,frame:this._frameShape},{save:report=>wx.setStorageSync('fringe-stream-debug',report)});
+    this._streamCoreSignature=null;this._streamDiag=new StreamDiagnostics({build:'stream-diagnostics-3',clock:this._clockInfo,device,envVersion:account.envVersion,version:account.version,preview:this._previewBounds,frame:this._frameShape},{save:report=>wx.setStorageSync('fringe-stream-debug',report)});
     this._streamDiag.event('calibration-begin',{map:this._map});
   },
   copyStreamDiagnostics(){
@@ -48,7 +48,7 @@ Page({
     // Let callbacks queued during synchronous initialization get an event-loop turn.
     // This applies only to calibration, never an active measurement.
     this._fitGraceUntil=this._clock()+.15;
-    if(this._streamDiag)this._streamDiag.event('calibration-fit-end',{success,fitMs:ended-started,coreState:this._core.snapshot().state,reason:this._core.snapshot().reason});
+    if(this._streamDiag)this._streamDiag.event('calibration-fit-end',{success,rejection:success?null:this._core.calibrationError(),fitMs:ended-started,coreState:this._core.snapshot().state,reason:this._core.snapshot().reason});
     return success;
   },
   onReady(){this.initCanvas();},
@@ -188,7 +188,7 @@ Page({
     if(!this.isRunning())return;const handlerStart=Date.now();const phaseBefore=this.data.phase;const reviewing=this.data.phase==='review',stopping=this.data.phase==='stopping';this._lastReceive=t;prepare(frame,this._map,this._core.input());const prepareEnd=Date.now();let result;
     if(this.data.phase==='calibrating'){
       if(this._startedAt===null)this._startedAt=t;result=this._core.collect(t,id);const elapsed=t-this._startedAt;
-      if(elapsed>=2&&result.state===1&&elapsed-this._lastAttempt>=1){this._lastAttempt=elapsed;if(this.tryCalibration()){this._core.arm();result=this._core.snapshot();}}
+      if(elapsed>=2&&result.state===1&&elapsed-this._lastAttempt>=1){this._lastAttempt=elapsed;const success=this.tryCalibration();if(success)this._core.arm();result=this._core.snapshot();}
       if(result.state===1&&(elapsed>=9.8||result.calibrationFrames>=256)){if(!this.tryCalibration())result=this._core.endCalibration();else {this._core.arm();result=this._core.snapshot();}}
     }else if(this.data.phase==='measuring'||this.data.phase==='stopping')result=this._core.push(t,id);
     else result=this._core.monitor(t,id);

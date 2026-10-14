@@ -4,12 +4,12 @@ const {mapping,prepare,previewPoint,LatestFrame}=require('../miniprogram/utils/c
  const {instance}=await WebAssembly.instantiate(fs.readFileSync('miniprogram/wasm/fringe.wasm'),{env:{emscripten_notify_memory_growth(){}}});instance.exports._initialize();
  const fixture=fs.readFileSync('experiments/results/real-track/padded-screen.frc');
  function frame(id){const p=28+id*(12+96*96*4);return {t:fixture.readDoubleLE(p+4),pixels:new Float32Array(fixture.buffer,fixture.byteOffset+p+12,96*96)};}
- function initialized(){const c=new Counter(instance.exports);c.reset(16,58*96/345);for(let id=231;id<=278;id++){const f=frame(id);c.input().set(f.pixels);c.collect(f.t,id);}assert(c.start());return c;}
+ function initialized(){const c=new Counter(instance.exports);c.reset(16,58*96/345);for(let id=231;id<=278;id++){const f=frame(id);c.input().set(f.pixels);c.collect(f.t,id);}assert(c.start());assert.strictEqual(c.calibrationError(),'');return c;}
  let c=initialized();for(let id=279;id<300;id++){const f=frame(id);c.input().set(f.pixels);c.push(f.t,id);}
  const count=c.snapshot().count;const f=frame(300);c.input().set(f.pixels);let result=c.push(f.t+1,300);assert(!result.complete&&result.reason===5&&result.count===count);c.push(f.t+2,301);assert.strictEqual(c.snapshot().count,count);c.destroy();
  c=initialized();c.input().fill(0);result=c.push(frame(279).t,279);assert(!result.complete&&result.count===0);c.destroy();
  c=initialized();c.input().set(frame(279).pixels);c.push(frame(279).t,279);result=c.push(frame(279).t,280);assert(!result.complete&&result.reason===4);c.destroy();
- c=new Counter(instance.exports);c.reset();c.input().fill(.5);for(let i=0;i<24;i++)c.collect(i/30,i);assert(!c.start());assert(c.snapshot().state===1);c.endCalibration();assert(c.snapshot().state===5);c.destroy();
+ c=new Counter(instance.exports);c.reset();c.input().fill(.5);for(let i=0;i<24;i++)c.collect(i/30,i);assert(!c.start());assert(c.snapshot().state===1);assert(c.calibrationError().length>0);assert(!c.calibrationError().includes('unavailable'));c.endCalibration();assert(c.snapshot().state===5);c.destroy();
  // Find a real truncated tail event; pending must not be silently committed.
  let pendingFound=false;
  for(const end of [345,489,684,823,1240]){c=initialized();for(let id=279;id<=end;id++){const f=frame(id);c.input().set(f.pixels);c.push(f.t,id);}result=c.finish();if(!result.complete&&result.reason===6){pendingFound=true;assert(c.rows().some(r=>r[10]===1));}c.destroy();}

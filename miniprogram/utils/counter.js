@@ -18,6 +18,13 @@ class Counter {
   }
   reset(x=16,y=16) { if(!this.e.fc_reset(this.handle,x,y)) throw new Error('光屏区域无效'); return this.snapshot(); }
   collect(t,id) { this.e.fc_calibrate(this.handle,t,id); return this.snapshot(); }
+  calibrationError() {
+    if(!this.e.fc_calibration_error)return 'diagnostic unavailable in old WASM';
+    const pointer=this.e.fc_calibration_error(this.handle);if(!pointer)return '';
+    const memory=new Uint8Array(this.e.memory.buffer);let text='';
+    for(let i=pointer;i<Math.min(memory.length,pointer+512)&&memory[i];i++)text+=String.fromCharCode(memory[i]);
+    return text;
+  }
   start() { return !!this.e.fc_start(this.handle); }
   arm() { return !!this.e.fc_arm(this.handle); }
   monitor(t,id) { this.e.fc_monitor(this.handle,t,id); return this.snapshot(); }

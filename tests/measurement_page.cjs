@@ -9,4 +9,5 @@ p.mainAction();assert.strictEqual(p.data.phase,'measuring');assert.strictEqual(p
 count=12;p.mainAction();assert.strictEqual(p.data.phase,'stopping');assert.strictEqual(p.data.mainLabel,'确认中');p.mainAction();assert(stopping);
 stopping=false;state=4;p.display(snapshot(),true);p.remember();assert.strictEqual(p.data.mainLabel,'再次测量');assert.strictEqual(saved['fringe-last-session'].count,12);
 p.processFrame({frame:{},t:12,id:300});assert.strictEqual(p.data.countText,'12');p.mainAction();assert.strictEqual(p.data.countText,'0');assert.strictEqual(p.data.phase,'measuring');
-camera.prepare=originalPrepare;console.log(JSON.stringify({passed:true,checks:['calibration-does-not-auto-start','explicit-start-zero','stop-confirmation-button','stopped-result-stays-visible','reuse-start-zero']}));
+state=1;p.data.phase='calibrating';p._lastAttempt=-1;p._startedAt=9.9;p._core.start=()=>false;p._core.snapshot=()=>({...snapshot(),reason:8});p.processFrame({frame:{},t:12,id:301});assert.strictEqual(p._lastResult.reason,8);
+camera.prepare=originalPrepare;console.log(JSON.stringify({passed:true,checks:['calibration-does-not-auto-start','explicit-start-zero','stop-confirmation-button','stopped-result-stays-visible','reuse-start-zero','failed-fit-refreshes-reason']}));

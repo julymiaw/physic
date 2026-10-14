@@ -1,0 +1,22 @@
+{
+  "build": "stream-diagnostics-2",
+  "initial_callback_fps": 30.784508440913605,
+  "initial_fit": {
+    "frames": 61,
+    "dropped": 0,
+    "success": false,
+    "fitMs": 539
+  },
+  "attempts": 8,
+  "all_attempts_rejected": true,
+  "fit_ms_total": 6621,
+  "received": 305,
+  "processed": 115,
+  "dropped": 190,
+  "final_state": 5,
+  "final_reason": 8,
+  "watchdog_timeout_present": false,
+  "diagnosis": "Initialization repeatedly rejected; first rejection precedes frame loss. Heavy synchronous retries subsequently starve capture processing. Specific mathematical rejection unavailable in supplied log because exception details were discarded.",
+  "next_build": "stream-diagnostics-3",
+  "scope": "No attribution to filming a screen until first rejection text is collected."
+}

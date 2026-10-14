@@ -16,6 +16,7 @@ class Counter {
  std::vector<Feature> features;
  std::vector<Track> tracks;
  std::unique_ptr<CalibrationModel> model;
+ std::string calibration_error;
  double ox=16,oy=16,last_time=-1,gap_limit=.2,cycles=0,stop_time=-1;
  std::array<double,4> phase_origins{};
  std::array<bool,4> phase_initialized{};
@@ -25,7 +26,7 @@ class Counter {
  Matrix transform=screen::identity;
  Counter(){calibration.reserve(256);queue.reserve(5);features.reserve(5);publish();}
  void reset(double x,double y){
-  calibration.clear();queue.clear();features.clear();tracks.clear();model.reset();emitted.clear();
+  calibration.clear();queue.clear();features.clear();tracks.clear();model.reset();emitted.clear();calibration_error.clear();
   ox=x;oy=y;last_time=-1;gap_limit=.2;cycles=0;phase_origins.fill(0);phase_initialized.fill(false);
   state=calibrating;reason=none;confirmed=fused=0;complete=true;relative_measurement=false;has_observation=false;stop_requested=false;stop_time=-1;last_feature=Feature{};transform=screen::identity;publish();
  }
@@ -45,15 +46,15 @@ class Counter {
  }
  bool start(){
   if(state!=calibrating)return false;
-  if(calibration.size()<24){reason=need_calibration;publish();return false;}
+  if(calibration.size()<24){calibration_error="calibration too short";reason=need_calibration;publish();return false;}
   // Retry works on a copy. Failed attempts must not mutate stored raw calibration.
   auto aligned=calibration;
   try {
    auto learned=std::make_unique<CalibrationModel>(aligned,size,ox,oy);
    Image intervals;for(size_t i=1;i<calibration.size();++i)intervals.push_back(calibration[i].t-calibration[i-1].t);
    gap_limit=std::min(.2,3*screen::quantile(intervals,.5));
-   model=std::move(learned);tracks.assign(model->nodes.size(),Track{});state=measuring;reason=none;publish();return true;
-  }catch(const std::exception&){reason=calibration_failed;publish();return false;}
+   calibration_error.clear();model=std::move(learned);tracks.assign(model->nodes.size(),Track{});state=measuring;reason=none;publish();return true;
+  }catch(const std::exception& e){calibration_error=e.what();reason=calibration_failed;publish();return false;}
  }
  // Product flow: calibration learns once; monitoring does not accumulate counts.
  bool arm(){if(state!=measuring||!queue.empty())return false;state=ready;has_observation=false;publish();return true;}
