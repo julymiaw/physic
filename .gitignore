@@ -68,3 +68,13 @@ data/derived/
 !/experiments/results/bilibili-adapt/original-phase-explained.mp4
 !/experiments/results/bilibili-adapt/original-phase-intro.jpg
 !/experiments/results/bilibili-adapt/original-phase-end.jpg
+!/requirements-legacy.txt
+!/research/render_legacy_comparison.py
+!/experiments/results/legacy-side-by-side/README.md
+!/experiments/results/legacy-side-by-side/manifest.json
+!/experiments/results/legacy-side-by-side/old-frames.csv
+!/experiments/results/legacy-side-by-side/comparison.csv
+!/experiments/results/legacy-side-by-side/undergraduate-vs-current.mp4
+!/experiments/results/legacy-side-by-side/comparison-intro.jpg
+!/experiments/results/legacy-side-by-side/comparison-end.jpg
+!/experiments/results/legacy-side-by-side/comparison-frame-*.jpg

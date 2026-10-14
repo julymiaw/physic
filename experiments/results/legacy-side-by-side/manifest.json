@@ -1,0 +1,37 @@
+{
+  "video": "experiments/results/legacy-side-by-side/undergraduate-vs-current.mp4",
+  "fps": 24,
+  "frames": 1326,
+  "duration_seconds": 55.25,
+  "old_source_commit": "c3ae479a0999f263b9365f1f94845e691e55d953",
+  "old_source_path": "轮廓检测.py",
+  "old_source_sha256": "0b0174987b88cccad8c8ca260b6aa2a84864b6cea8b0e690fac110c01d09625b",
+  "old_archived_core_ast_equal": true,
+  "old_source_resolution": [
+    4320,
+    7680
+  ],
+  "old_parameters": "Historical defaults; zoom_in positive; process_frame and ContourDetection.update unchanged",
+  "old_io_changes": "Read every source frame from0; do not use historical driver that skips first frame and rewrites playback FPS.",
+  "measurement_frame_interval": [
+    279,
+    1436
+  ],
+  "measurement_frame_count": 1158,
+  "old_warmup_frames": 279,
+  "old_display_origin": 7,
+  "old_final_raw_count": 91,
+  "old_final_relative_count": 84,
+  "new_final_confirmed_count": 84,
+  "old_measurement_positive_events": 86,
+  "old_measurement_negative_events": 2,
+  "new_measurement_positive_events": 87,
+  "new_measurement_negative_events": 3,
+  "legacy_reference_all_frames_identical": true,
+  "new_replay_byte_identical_to_verified_results": true,
+  "new_source_sha256": "9aa65bb36deefa3c7418b4772fe5537f0d27503d665bf3742d02203a84f510e4",
+  "raw_source_sha256": "cb9d27460bc36a1c8358829134fba396f7e9a92b405a69974afa549fdec94ab1",
+  "video_sha256": "3212bead2fa698251f8936f77c639f61133444d48458453a5d5325e3e89cdf39",
+  "note": "Same-frame offline algorithm demonstration, not a controlled speed benchmark. Equal endpoint totals do not establish equal event accuracy. New display uses confirmation timeline; old count updates immediately at its own threshold boundary.",
+  "verification": "Encoded duration/frame count checked; decoded endpoint and local comparison frames inspected. Every historical count/state/ring result matches prior full replay, and fresh Native output matches verified results byte-for-byte."
+}
