@@ -1,0 +1,195 @@
+{
+  "old_cpp": {
+    "mean_ms": 90.81711827202074,
+    "median_ms": 90.351062,
+    "p95_ms": 96.16713934999999,
+    "p99_ms": 107.68645375,
+    "max_ms": 157.014041,
+    "frames": 1158
+  },
+  "new_cpp": {
+    "mean_ms": 0.5869505215889465,
+    "median_ms": 0.5805415,
+    "p95_ms": 0.64376245,
+    "p99_ms": 0.6941913100000002,
+    "max_ms": 0.878291,
+    "frames": 1158
+  },
+  "old_stage_sample": {
+    "mean_ms": 91.14238700781249,
+    "median_ms": 90.857208,
+    "p95_ms": 95.8143352,
+    "p99_ms": 104.54224798,
+    "max_ms": 105.165583,
+    "frames": 128
+  },
+  "new_stage_sample": {
+    "mean_ms": 0.586978515625,
+    "median_ms": 0.583521,
+    "p95_ms": 0.63816415,
+    "p99_ms": 0.6708949100000001,
+    "max_ms": 0.6992079999999999,
+    "frames": 128
+  },
+  "decode_full_bgr": {
+    "mean_ms": 74.8640603221071,
+    "median_ms": 74.057271,
+    "p95_ms": 80.30728119999999,
+    "p99_ms": 96.38951237000006,
+    "max_ms": 187.67195800000002,
+    "frames": 1158
+  },
+  "preview_to_96": {
+    "mean_ms": 0.13952460449050086,
+    "median_ms": 0.13525,
+    "p95_ms": 0.16180445,
+    "p99_ms": 0.2065605600000003,
+    "max_ms": 0.35995900000000003,
+    "frames": 1158
+  },
+  "initialization": {
+    "reference_and_calibration_tracking_ms": 27.4706,
+    "gradient_center_ms": 8.51638,
+    "signal_selection_ms": 0.608667,
+    "zero_alignment_ms": 0.0065,
+    "total_ms": 36.6021
+  },
+  "old_stages": [
+    {
+      "key": "red_extract_copy",
+      "label": "红通道整图复制／提取",
+      "mean_ms": 14.2661029140625,
+      "share": 0.15652544751587033
+    },
+    {
+      "key": "histograms",
+      "label": "两次直方图与阈值",
+      "mean_ms": 54.576711281250006,
+      "share": 0.5988071310505815
+    },
+    {
+      "key": "screen_segment",
+      "label": "光屏区域分割",
+      "mean_ms": 10.256686187500001,
+      "share": 0.11253475495019481
+    },
+    {
+      "key": "roi_views",
+      "label": "区域视图裁剪",
+      "mean_ms": 0.0005585859375000001,
+      "share": 6.128717447921562e-06
+    },
+    {
+      "key": "binary_morphology",
+      "label": "二值化与形态学",
+      "mean_ms": 1.6021155546874999,
+      "share": 0.017578161021283876
+    },
+    {
+      "key": "edges_find_contours",
+      "label": "边缘与轮廓发现",
+      "mean_ms": 3.86770178125,
+      "share": 0.042435818374149774
+    },
+    {
+      "key": "ring_filter_classification",
+      "label": "圆环筛选与内外分类",
+      "mean_ms": 4.782079765625,
+      "share": 0.05246823045368662
+    },
+    {
+      "key": "center_brightness",
+      "label": "圆心与明暗判断",
+      "mean_ms": 0.0020426484375,
+      "share": 2.2411618836852594e-05
+    },
+    {
+      "key": "area_vote_count",
+      "label": "面积投票与加减计数",
+      "mean_ms": 0.00021846093750000001,
+      "share": 2.396919201614437e-06
+    },
+    {
+      "key": "embedded_drawing",
+      "label": "原代码内置绘图／边框",
+      "mean_ms": 1.2561887578125002,
+      "share": 0.013782706368057077
+    },
+    {
+      "key": "other",
+      "label": "其余状态与临时对象",
+      "mean_ms": 0.5319810703124999,
+      "share": 0.005836813010689524
+    }
+  ],
+  "new_stages": [
+    {
+      "key": "screen_segment",
+      "label": "小图光屏分割",
+      "mean_ms": 0.33152998437500003,
+      "share": 0.5648076983226468
+    },
+    {
+      "key": "distance_field",
+      "label": "距离场构建",
+      "mean_ms": 0.18096803125,
+      "share": 0.3083043526002136
+    },
+    {
+      "key": "motion_fit",
+      "label": "相机位移拟合",
+      "mean_ms": 0.047585671875,
+      "share": 0.08106884768062075
+    },
+    {
+      "key": "tracking_quality",
+      "label": "跟踪质量检查",
+      "mean_ms": 0.026123968750000004,
+      "share": 0.04450583463380062
+    },
+    {
+      "key": "patch_sampling",
+      "label": "45次亮度采样",
+      "mean_ms": 0.00021359375000000002,
+      "share": 0.00036388682773605565
+    },
+    {
+      "key": "phase_angles",
+      "label": "4路角度计算",
+      "mean_ms": 0.00015138281250000001,
+      "share": 0.0002579017944784766
+    },
+    {
+      "key": "confirmation",
+      "label": "多路确认与计数",
+      "mean_ms": 0.00037464062500000003,
+      "share": 0.0006382527043619171
+    },
+    {
+      "key": "other",
+      "label": "其余",
+      "mean_ms": 3.1242187500000006e-05,
+      "share": 5.3225436141788096e-05
+    }
+  ],
+  "context": {
+    "legacy_bilibili": {
+      "frames": 637,
+      "error": null,
+      "origin": 0,
+      "final": 0,
+      "measurement_delta": 0
+    },
+    "ffmpeg_preview": {
+      "frames": 1437,
+      "total_seconds": 25.748658917000284,
+      "average_ms_per_frame": 17.91834301809345,
+      "scope": "FFmpeg decode, rotation, area resize, red channel extraction and Python pipe reception; offline throughput, not latency; excludes npz compression and Native processing."
+    }
+  },
+  "mean_core_ratio_current_routes": 154.72704245354063,
+  "input_pixel_ratio": 3600.0,
+  "old_profile_vs_same_frames_control_mean_ratio": 0.9998908400178631,
+  "new_tracking_share": 0.9986867332372817,
+  "stage_scope": "Exclusive stage times; same fixed128 source frames for both stage charts. Full1158-frame distributions shown separately. Old includes embedded drawing; no video encoding in benchmarks."
+}

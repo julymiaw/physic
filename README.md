@@ -21,6 +21,8 @@
 
 [观看本科旧方法与当前新方法的同帧左右对比](experiments/results/legacy-side-by-side/undergraduate-vs-current.mp4) · [比较规则与复现](experiments/results/legacy-side-by-side/README.md)
 
+[本科 C++ 与新版 C++ 的分步骤计时、准确度及可视化](experiments/results/native-stage-profile/README.md)
+
 ## 构建与复现
 
 Native核心仅需C++17编译器和CMake，无Eigen、OpenCV或其他C++库依赖。

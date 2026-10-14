@@ -78,3 +78,24 @@ data/derived/
 !/experiments/results/legacy-side-by-side/comparison-intro.jpg
 !/experiments/results/legacy-side-by-side/comparison-end.jpg
 !/experiments/results/legacy-side-by-side/comparison-frame-*.jpg
+
+# C++/C++ real-video timing evidence and reproducible profiling tools
+!/requirements-analysis.txt
+!/research/profile_native_stages.py
+!/research/profile_stage_context.py
+!/research/analyze_native_stages.py
+!/research/build_profile_opencv.sh
+!/experiments/results/native-stage-profile/README.md
+!/experiments/results/native-stage-profile/protocol.json
+!/experiments/results/native-stage-profile/context.json
+!/experiments/results/native-stage-profile/summary.json
+!/experiments/results/native-stage-profile/quality.json
+!/experiments/results/native-stage-profile/legacy-cpp.csv
+!/experiments/results/native-stage-profile/legacy-cpp-bilibili.csv
+!/experiments/results/native-stage-profile/native-profile.csv.stages.csv
+!/experiments/results/native-stage-profile/native-profile.csv.init.json
+!/experiments/results/native-stage-profile/native-control.csv.core.csv
+!/experiments/results/native-stage-profile/timing-breakdown.png
+!/experiments/results/native-stage-profile/timing-breakdown.svg
+!/experiments/results/native-stage-profile/quality-checkpoints.png
+!/experiments/results/native-stage-profile/quality-checkpoints.svg

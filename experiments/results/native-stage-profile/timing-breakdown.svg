@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1152pt" height="792pt" viewBox="0 0 1152 792" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-14T11:01:52.280829</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 792
+L 1152 792
+L 1152 0
+L 0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 218.88 201.956692
+L 1117.44 201.956692
+L 1117.44 71.28
+L 218.88 71.28
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 218.88 112.942022
+L 943.525161 112.942022
+L 943.525161 77.21985
+L 218.88 77.21985
+z
+" clip-path="url(#pa134c16de6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 218.88 196.016842
+L 223.563378 196.016842
+L 223.563378 160.29467
+L 218.88 160.29467
+z
+" clip-path="url(#pa134c16de6)" style="fill: #167c68"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="m33358764dc" d="M 0 0
+L 0 3.5
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m33358764dc" x="218.88" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="218.88" y="218.416692" transform="rotate(-0 218.88 218.416692)">0</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#m33358764dc" x="378.463386" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="378.463386" y="218.416692" transform="rotate(-0 378.463386 218.416692)">20</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#m33358764dc" x="538.046772" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="538.046772" y="218.416692" transform="rotate(-0 538.046772 218.416692)">40</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#m33358764dc" x="697.630158" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="697.630158" y="218.416692" transform="rotate(-0 697.630158 218.416692)">60</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#m33358764dc" x="857.213543" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="857.213543" y="218.416692" transform="rotate(-0 857.213543 218.416692)">80</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#m33358764dc" x="1016.796929" y="201.956692" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_6">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="1016.796929" y="218.416692" transform="rotate(-0 1016.796929 218.416692)">100</text>
+     </g>
+    </g>
+    <g id="text_7">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="668.16" y="233.416692" transform="rotate(-0 668.16 233.416692)">每帧处理均值 / ms（1158帧；不含解码与新法预处理）</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_7">
+      <defs>
+       <path id="m109743b20d" d="M 0 0
+L -3.5 0
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="95.080936" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="99.810936" transform="rotate(-0 211.88 99.810936)">旧 C++：原尺寸轮廓路线</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="178.155756" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="182.885756" transform="rotate(-0 211.88 182.885756)">新 C++：96像素跟踪＋相位路线</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_5">
+    <path d="M 218.88 201.956692
+L 218.88 71.28
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 218.88 201.956692
+L 1117.44 201.956692
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: start" x="947.514746" y="99.040936" transform="rotate(-0 947.514746 99.040936)">90.817 ms  |  P95 96.167 ms</text>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: start" x="227.552962" y="182.115756" transform="rotate(-0 227.552962 182.115756)">0.587 ms  |  P95 0.644 ms</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 15px; font-family: 'Heiti TC'; text-anchor: start" x="218.88" y="55.28" transform="rotate(-0 218.88 55.28)">当前两条 C++ 核心路线：均值相差约 155 倍；输入像素数相差3600倍</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_7">
+    <path d="M 218.88 696.96
+L 575.451429 696.96
+L 575.451429 331.065263
+L 218.88 331.065263
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_7">
+     <g id="line2d_9">
+      <path d="M 218.88 696.96
+L 218.88 331.065263
+" clip-path="url(#pdf061357a6)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#m33358764dc" x="218.88" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_13">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="218.88" y="713.42" transform="rotate(-0 218.88 713.42)">0</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_11">
+      <path d="M 297.280787 696.96
+L 297.280787 331.065263
+" clip-path="url(#pdf061357a6)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#m33358764dc" x="297.280787" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_14">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="297.280787" y="713.42" transform="rotate(-0 297.280787 713.42)">15</text>
+     </g>
+    </g>
+    <g id="xtick_9">
+     <g id="line2d_13">
+      <path d="M 375.681575 696.96
+L 375.681575 331.065263
+" clip-path="url(#pdf061357a6)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m33358764dc" x="375.681575" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_15">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="375.681575" y="713.42" transform="rotate(-0 375.681575 713.42)">30</text>
+     </g>
+    </g>
+    <g id="xtick_10">
+     <g id="line2d_15">
+      <path d="M 454.082362 696.96
+L 454.082362 331.065263
+" clip-path="url(#pdf061357a6)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m33358764dc" x="454.082362" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_16">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="454.082362" y="713.42" transform="rotate(-0 454.082362 713.42)">45</text>
+     </g>
+    </g>
+    <g id="xtick_11">
+     <g id="line2d_17">
+      <path d="M 532.48315 696.96
+L 532.48315 331.065263
+" clip-path="url(#pdf061357a6)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#m33358764dc" x="532.48315" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="532.48315" y="713.42" transform="rotate(-0 532.48315 713.42)">60</text>
+     </g>
+    </g>
+    <g id="text_18">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="397.165714" y="728.42" transform="rotate(-0 397.165714 728.42)">平均步骤耗时 / ms（固定同一批128帧；两图横轴尺度不同）</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="ytick_3">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="357.553752" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="362.283752" transform="rotate(-0 211.88 362.283752)">两次直方图与阈值</text>
+     </g>
+    </g>
+    <g id="ytick_4">
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="388.845528" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="393.575528" transform="rotate(-0 211.88 393.575528)">红通道整图复制／提取</text>
+     </g>
+    </g>
+    <g id="ytick_5">
+     <g id="line2d_21">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="420.137304" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_21">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="424.867304" transform="rotate(-0 211.88 424.867304)">光屏区域分割</text>
+     </g>
+    </g>
+    <g id="ytick_6">
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="451.42908" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_22">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="456.15908" transform="rotate(-0 211.88 456.15908)">圆环筛选与内外分类</text>
+     </g>
+    </g>
+    <g id="ytick_7">
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="482.720856" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_23">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="487.450856" transform="rotate(-0 211.88 487.450856)">边缘与轮廓发现</text>
+     </g>
+    </g>
+    <g id="ytick_8">
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="514.012632" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_24">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="518.742632" transform="rotate(-0 211.88 518.742632)">二值化与形态学</text>
+     </g>
+    </g>
+    <g id="ytick_9">
+     <g id="line2d_25">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="545.304408" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_25">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="550.034408" transform="rotate(-0 211.88 550.034408)">原代码内置绘图／边框</text>
+     </g>
+    </g>
+    <g id="ytick_10">
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="576.596184" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_26">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="581.326184" transform="rotate(-0 211.88 581.326184)">其余状态与临时对象</text>
+     </g>
+    </g>
+    <g id="ytick_11">
+     <g id="line2d_27">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="607.88796" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_27">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="612.61796" transform="rotate(-0 211.88 612.61796)">圆心与明暗判断</text>
+     </g>
+    </g>
+    <g id="ytick_12">
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="639.179736" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_28">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="643.909736" transform="rotate(-0 211.88 643.909736)">区域视图裁剪</text>
+     </g>
+    </g>
+    <g id="ytick_13">
+     <g id="line2d_29">
+      <g>
+       <use xlink:href="#m109743b20d" x="218.88" y="670.471512" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_29">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="211.88" y="675.201512" transform="rotate(-0 211.88 675.201512)">面积投票与加减计数</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_8">
+    <path d="M 218.88 347.696842
+L 504.137143 347.696842
+L 504.137143 367.410661
+L 218.88 367.410661
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 218.88 378.988618
+L 293.444914 378.988618
+L 293.444914 398.702437
+L 218.88 398.702437
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 218.88 410.280394
+L 272.488818 410.280394
+L 272.488818 429.994213
+L 218.88 429.994213
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 218.88 441.57217
+L 243.874588 441.57217
+L 243.874588 461.285989
+L 218.88 461.285989
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 218.88 472.863946
+L 239.095391 472.863946
+L 239.095391 492.577765
+L 218.88 492.577765
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 218.88 504.155722
+L 227.253808 504.155722
+L 227.253808 523.869541
+L 218.88 523.869541
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 218.88 535.447498
+L 225.445746 535.447498
+L 225.445746 555.161317
+L 218.88 555.161317
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 218.88 566.739274
+L 221.660516 566.739274
+L 221.660516 586.453093
+L 218.88 586.453093
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 218.88 598.03105
+L 218.890676 598.03105
+L 218.890676 617.744869
+L 218.88 617.744869
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 218.88 629.322826
+L 218.88292 629.322826
+L 218.88292 649.036645
+L 218.88 649.036645
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 218.88 660.614602
+L 218.881142 660.614602
+L 218.881142 680.328421
+L 218.88 680.328421
+z
+" clip-path="url(#pdf061357a6)" style="fill: #c36d34"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 218.88 696.96
+L 218.88 331.065263
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 218.88 696.96
+L 575.451429 696.96
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_30">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="511.268571" y="361.153752" transform="rotate(-0 511.268571 361.153752)">54.577 ms</text>
+   </g>
+   <g id="text_31">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="300.576342" y="392.445528" transform="rotate(-0 300.576342 392.445528)">14.266 ms</text>
+   </g>
+   <g id="text_32">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="279.620247" y="423.737304" transform="rotate(-0 279.620247 423.737304)">10.257 ms</text>
+   </g>
+   <g id="text_33">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="251.006017" y="455.02908" transform="rotate(-0 251.006017 455.02908)">4.782 ms</text>
+   </g>
+   <g id="text_34">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="246.22682" y="486.320856" transform="rotate(-0 246.22682 486.320856)">3.868 ms</text>
+   </g>
+   <g id="text_35">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="234.385237" y="517.612632" transform="rotate(-0 234.385237 517.612632)">1.602 ms</text>
+   </g>
+   <g id="text_36">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="232.577174" y="548.904408" transform="rotate(-0 232.577174 548.904408)">1.256 ms</text>
+   </g>
+   <g id="text_37">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="228.791944" y="580.196184" transform="rotate(-0 228.791944 580.196184)">0.532 ms</text>
+   </g>
+   <g id="text_38">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="226.022105" y="611.48796" transform="rotate(-0 226.022105 611.48796)">0.002 ms</text>
+   </g>
+   <g id="text_39">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="226.014348" y="642.779736" transform="rotate(-0 226.014348 642.779736)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_40">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="226.01257" y="674.071512" transform="rotate(-0 226.01257 674.071512)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_41">
+    <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: start" x="218.88" y="315.065263" transform="rotate(-0 218.88 315.065263)">旧 C++：时间主要消耗在大图直方图、复制和分割</text>
+   </g>
+  </g>
+  <g id="axes_3">
+   <g id="patch_21">
+    <path d="M 760.868571 696.96
+L 1117.44 696.96
+L 1117.44 331.065263
+L 760.868571 331.065263
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_5">
+    <g id="xtick_12">
+     <g id="line2d_30">
+      <path d="M 760.868571 696.96
+L 760.868571 331.065263
+" clip-path="url(#p3f272249f0)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_31">
+      <g>
+       <use xlink:href="#m33358764dc" x="760.868571" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_42">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="760.868571" y="713.42" transform="rotate(-0 760.868571 713.42)">0.0</text>
+     </g>
+    </g>
+    <g id="xtick_13">
+     <g id="line2d_32">
+      <path d="M 846.911209 696.96
+L 846.911209 331.065263
+" clip-path="url(#p3f272249f0)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_33">
+      <g>
+       <use xlink:href="#m33358764dc" x="846.911209" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_43">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="846.911209" y="713.42" transform="rotate(-0 846.911209 713.42)">0.1</text>
+     </g>
+    </g>
+    <g id="xtick_14">
+     <g id="line2d_34">
+      <path d="M 932.953847 696.96
+L 932.953847 331.065263
+" clip-path="url(#p3f272249f0)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_35">
+      <g>
+       <use xlink:href="#m33358764dc" x="932.953847" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_44">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="932.953847" y="713.42" transform="rotate(-0 932.953847 713.42)">0.2</text>
+     </g>
+    </g>
+    <g id="xtick_15">
+     <g id="line2d_36">
+      <path d="M 1018.996484 696.96
+L 1018.996484 331.065263
+" clip-path="url(#p3f272249f0)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_37">
+      <g>
+       <use xlink:href="#m33358764dc" x="1018.996484" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_45">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="1018.996484" y="713.42" transform="rotate(-0 1018.996484 713.42)">0.3</text>
+     </g>
+    </g>
+    <g id="xtick_16">
+     <g id="line2d_38">
+      <path d="M 1105.039122 696.96
+L 1105.039122 331.065263
+" clip-path="url(#p3f272249f0)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.15; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_39">
+      <g>
+       <use xlink:href="#m33358764dc" x="1105.039122" y="696.96" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_46">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="1105.039122" y="713.42" transform="rotate(-0 1105.039122 713.42)">0.4</text>
+     </g>
+    </g>
+    <g id="text_47">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="939.154286" y="728.42" transform="rotate(-0 939.154286 728.42)">平均步骤耗时 / ms（固定同一批128帧；两图横轴尺度不同）</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_6">
+    <g id="ytick_14">
+     <g id="line2d_40">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="361.429338" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_48">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="366.159338" transform="rotate(-0 753.868571 366.159338)">小图光屏分割</text>
+     </g>
+    </g>
+    <g id="ytick_15">
+     <g id="line2d_41">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="405.024565" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_49">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="409.754565" transform="rotate(-0 753.868571 409.754565)">距离场构建</text>
+     </g>
+    </g>
+    <g id="ytick_16">
+     <g id="line2d_42">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="448.619792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_50">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="453.349792" transform="rotate(-0 753.868571 453.349792)">相机位移拟合</text>
+     </g>
+    </g>
+    <g id="ytick_17">
+     <g id="line2d_43">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="492.215018" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_51">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="496.945018" transform="rotate(-0 753.868571 496.945018)">跟踪质量检查</text>
+     </g>
+    </g>
+    <g id="ytick_18">
+     <g id="line2d_44">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="535.810245" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_52">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="540.540245" transform="rotate(-0 753.868571 540.540245)">多路确认与计数</text>
+     </g>
+    </g>
+    <g id="ytick_19">
+     <g id="line2d_45">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="579.405471" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_53">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="584.135471" transform="rotate(-0 753.868571 584.135471)">45次亮度采样</text>
+     </g>
+    </g>
+    <g id="ytick_20">
+     <g id="line2d_46">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="623.000698" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_54">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="627.730698" transform="rotate(-0 753.868571 627.730698)">4路角度计算</text>
+     </g>
+    </g>
+    <g id="ytick_21">
+     <g id="line2d_47">
+      <g>
+       <use xlink:href="#m109743b20d" x="760.868571" y="666.595925" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_55">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="753.868571" y="671.325925" transform="rotate(-0 753.868571 671.325925)">其余</text>
+     </g>
+    </g>
+   </g>
+   <g id="patch_22">
+    <path d="M 760.868571 347.696842
+L 1046.125714 347.696842
+L 1046.125714 375.161835
+L 760.868571 375.161835
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_23">
+    <path d="M 760.868571 391.292069
+L 916.578239 391.292069
+L 916.578239 418.757061
+L 760.868571 418.757061
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_24">
+    <path d="M 760.868571 434.887295
+L 801.812539 434.887295
+L 801.812539 462.352288
+L 760.868571 462.352288
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 760.868571 478.482522
+L 783.346323 478.482522
+L 783.346323 505.947515
+L 760.868571 505.947515
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_26">
+    <path d="M 760.868571 522.077748
+L 761.190922 522.077748
+L 761.190922 549.542741
+L 760.868571 549.542741
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_27">
+    <path d="M 760.868571 565.672975
+L 761.052353 565.672975
+L 761.052353 593.137968
+L 760.868571 593.137968
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 760.868571 609.268202
+L 760.998825 609.268202
+L 760.998825 636.733194
+L 760.868571 636.733194
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_29">
+    <path d="M 760.868571 652.863428
+L 760.895453 652.863428
+L 760.895453 680.328421
+L 760.868571 680.328421
+z
+" clip-path="url(#p3f272249f0)" style="fill: #167c68"/>
+   </g>
+   <g id="patch_30">
+    <path d="M 760.868571 696.96
+L 760.868571 331.065263
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_31">
+    <path d="M 760.868571 696.96
+L 1117.44 696.96
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_56">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="1053.257143" y="365.029338" transform="rotate(-0 1053.257143 365.029338)">0.332 ms</text>
+   </g>
+   <g id="text_57">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="923.709667" y="408.624565" transform="rotate(-0 923.709667 408.624565)">0.181 ms</text>
+   </g>
+   <g id="text_58">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="808.943967" y="452.219792" transform="rotate(-0 808.943967 452.219792)">0.048 ms</text>
+   </g>
+   <g id="text_59">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="790.477752" y="495.815018" transform="rotate(-0 790.477752 495.815018)">0.026 ms</text>
+   </g>
+   <g id="text_60">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="768.322351" y="539.410245" transform="rotate(-0 768.322351 539.410245)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_61">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="768.183782" y="583.005471" transform="rotate(-0 768.183782 583.005471)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_62">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="768.130254" y="626.600698" transform="rotate(-0 768.130254 626.600698)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_63">
+    <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start" x="768.026882" y="670.195925" transform="rotate(-0 768.026882 670.195925)">&lt;0.001 ms</text>
+   </g>
+   <g id="text_64">
+    <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: start" x="760.868571" y="315.065263" transform="rotate(-0 760.868571 315.065263)">新 C++：时间主要消耗在小图跟踪，而非算相位</text>
+   </g>
+  </g>
+  <g id="text_65">
+   <text style="font-size: 16px; font-family: 'Heiti TC'; text-anchor: middle" x="576" y="17.72" transform="rotate(-0 576 17.72)">同一台 Apple M4 · C++17 Release · 图像处理单线程 · 真实自录视频</text>
+  </g>
+  <g id="text_66">
+   <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: start" x="23.04" y="750.816" transform="rotate(-0 23.04 750.816)">新法一次性标定计算 36.6 ms，另需收集2秒标定画面；新法光屏跟踪占逐帧核心约 99.87%。</text>
+  </g>
+  <g id="text_67">
+   <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start; fill: #555555" x="23.04" y="772.2" transform="rotate(-0 23.04 772.2)">这是不同输入规模与处理路线的实测差，不是“同分辨率换算法”的纯因果倍率；旧法内置绘图单列，已计入旧法总时间。</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pa134c16de6">
+   <rect x="218.88" y="71.28" width="898.56" height="130.676692"/>
+  </clipPath>
+  <clipPath id="pdf061357a6">
+   <rect x="218.88" y="331.065263" width="356.571429" height="365.894737"/>
+  </clipPath>
+  <clipPath id="p3f272249f0">
+   <rect x="760.868571" y="331.065263" width="356.571429" height="365.894737"/>
+  </clipPath>
+ </defs>
+</svg>

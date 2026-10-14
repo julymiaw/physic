@@ -1,0 +1,15 @@
+{
+  "legacy_bilibili": {
+    "frames": 637,
+    "error": null,
+    "origin": 0,
+    "final": 0,
+    "measurement_delta": 0
+  },
+  "ffmpeg_preview": {
+    "frames": 1437,
+    "total_seconds": 25.748658917000284,
+    "average_ms_per_frame": 17.91834301809345,
+    "scope": "FFmpeg decode, rotation, area resize, red channel extraction and Python pipe reception; offline throughput, not latency; excludes npz compression and Native processing."
+  }
+}

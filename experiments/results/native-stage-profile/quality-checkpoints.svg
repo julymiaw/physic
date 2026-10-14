@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1008pt" height="648pt" viewBox="0 0 1008 648" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-14T11:01:52.439763</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 648
+L 1008 648
+L 1008 0
+L 0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 73.48 354.792
+L 975.96 354.792
+L 975.96 97.32
+L 73.48 97.32
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <path d="M 147.333521 354.792
+L 147.333521 97.32
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_2">
+      <defs>
+       <path id="md2a6f9847f" d="M 0 0
+L 0 3.5
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#md2a6f9847f" x="147.333521" y="354.792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="147.333521" y="371.252" transform="rotate(-0 147.333521 371.252)">20</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_3">
+      <path d="M 345.068525 354.792
+L 345.068525 97.32
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#md2a6f9847f" x="345.068525" y="354.792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="345.068525" y="371.252" transform="rotate(-0 345.068525 371.252)">30</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_5">
+      <path d="M 542.803529 354.792
+L 542.803529 97.32
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#md2a6f9847f" x="542.803529" y="354.792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="542.803529" y="371.252" transform="rotate(-0 542.803529 371.252)">40</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_7">
+      <path d="M 740.538532 354.792
+L 740.538532 97.32
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#md2a6f9847f" x="740.538532" y="354.792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="740.538532" y="371.252" transform="rotate(-0 740.538532 371.252)">50</text>
+     </g>
+    </g>
+    <g id="xtick_5">
+     <g id="line2d_9">
+      <path d="M 938.273536 354.792
+L 938.273536 97.32
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#md2a6f9847f" x="938.273536" y="354.792" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_5">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="938.273536" y="371.252" transform="rotate(-0 938.273536 371.252)">60</text>
+     </g>
+    </g>
+    <g id="text_6">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="524.72" y="386.252" transform="rotate(-0 524.72 386.252)">原片时间 / s</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="ytick_1">
+     <g id="line2d_11">
+      <path d="M 73.48 343.088727
+L 975.96 343.088727
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_12">
+      <defs>
+       <path id="m27794a86bb" d="M 0 0
+L -3.5 0
+" style="stroke: #000000; stroke-width: 0.8"/>
+      </defs>
+      <g>
+       <use xlink:href="#m27794a86bb" x="73.48" y="343.088727" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_7">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="66.48" y="347.818727" transform="rotate(-0 66.48 347.818727)">-2</text>
+     </g>
+    </g>
+    <g id="ytick_2">
+     <g id="line2d_13">
+      <path d="M 73.48 226.056
+L 975.96 226.056
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#m27794a86bb" x="73.48" y="226.056" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_8">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="66.48" y="230.786" transform="rotate(-0 66.48 230.786)">-1</text>
+     </g>
+    </g>
+    <g id="ytick_3">
+     <g id="line2d_15">
+      <path d="M 73.48 109.023273
+L 975.96 109.023273
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.17; stroke-width: 0.8; stroke-linecap: square"/>
+     </g>
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#m27794a86bb" x="73.48" y="109.023273" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: end" x="66.48" y="113.753273" transform="rotate(-0 66.48 113.753273)">0</text>
+     </g>
+    </g>
+    <g id="text_10">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: middle" x="51.192969" y="226.056" transform="rotate(-90 51.192969 226.056)">相对固定参考的净计数误差 / 圈</text>
+    </g>
+   </g>
+   <g id="line2d_17">
+    <path d="M 114.501818 343.088727
+L 234.354392 343.088727
+L 545.725943 343.088727
+L 684.524161 109.023273
+L 863.275062 343.088727
+L 910.638646 343.088727
+L 934.938182 343.088727
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #c36d34; stroke-width: 1.5; stroke-linecap: square"/>
+    <defs>
+     <path id="ma7e99d3952" d="M 0 3
+C 0.795609 3 1.55874 2.683901 2.12132 2.12132
+C 2.683901 1.55874 3 0.795609 3 0
+C 3 -0.795609 2.683901 -1.55874 2.12132 -2.12132
+C 1.55874 -2.683901 0.795609 -3 0 -3
+C -0.795609 -3 -1.55874 -2.683901 -2.12132 -2.12132
+C -2.683901 -1.55874 -3 -0.795609 -3 0
+C -3 0.795609 -2.683901 1.55874 -2.12132 2.12132
+C -1.55874 2.683901 -0.795609 3 0 3
+z
+" style="stroke: #c36d34"/>
+    </defs>
+    <g clip-path="url(#p6d128bb172)">
+     <use xlink:href="#ma7e99d3952" x="114.501818" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="234.354392" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="545.725943" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="684.524161" y="109.023273" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="863.275062" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="910.638646" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+     <use xlink:href="#ma7e99d3952" x="934.938182" y="343.088727" style="fill: #c36d34; stroke: #c36d34"/>
+    </g>
+   </g>
+   <g id="line2d_18">
+    <path d="M 114.501818 109.023273
+L 234.354392 109.023273
+L 545.725943 109.023273
+L 684.524161 109.023273
+L 863.275062 109.023273
+L 910.638646 109.023273
+L 934.938182 109.023273
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #167c68; stroke-width: 1.5; stroke-linecap: square"/>
+    <defs>
+     <path id="m07c1787b64" d="M -3 3
+L 3 3
+L 3 -3
+L -3 -3
+z
+" style="stroke: #167c68; stroke-linejoin: miter"/>
+    </defs>
+    <g clip-path="url(#p6d128bb172)">
+     <use xlink:href="#m07c1787b64" x="114.501818" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="234.354392" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="545.725943" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="684.524161" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="863.275062" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="910.638646" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     <use xlink:href="#m07c1787b64" x="934.938182" y="109.023273" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+    </g>
+   </g>
+   <g id="line2d_19">
+    <path d="M 73.48 109.023273
+L 975.96 109.023273
+" clip-path="url(#p6d128bb172)" style="fill: none; stroke: #888888; stroke-width: 0.8; stroke-linecap: square"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 73.48 354.792
+L 73.48 97.32
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 73.48 354.792
+L 975.96 354.792
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_11">
+    <text style="font-size: 14px; font-family: 'Heiti TC'; text-anchor: start" x="73.48" y="91.32" transform="rotate(-0 73.48 91.32)">参考预先定义的稳定检查点：旧 C++ 片尾82圈，新 C++ 84圈</text>
+   </g>
+   <g id="legend_1">
+    <g id="patch_5">
+     <path d="M 875.036719 244.206
+L 968.26 244.206
+Q 970.46 244.206 970.46 242.006
+L 970.46 210.106
+Q 970.46 207.906 968.26 207.906
+L 875.036719 207.906
+Q 872.836719 207.906 872.836719 210.106
+L 872.836719 242.006
+Q 872.836719 244.206 875.036719 244.206
+z
+" style="fill: #ffffff; opacity: 0.8; stroke: #cccccc; stroke-linejoin: miter"/>
+    </g>
+    <g id="line2d_20">
+     <path d="M 877.236719 217.916
+L 888.236719 217.916
+L 899.236719 217.916
+" style="fill: none; stroke: #c36d34; stroke-width: 1.5; stroke-linecap: square"/>
+     <g>
+      <use xlink:href="#ma7e99d3952" x="888.236719" y="217.916" style="fill: #c36d34; stroke: #c36d34"/>
+     </g>
+    </g>
+    <g id="text_12">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: start" x="908.036719" y="221.766" transform="rotate(-0 908.036719 221.766)">本科旧 C++</text>
+    </g>
+    <g id="line2d_21">
+     <path d="M 877.236719 234.416
+L 888.236719 234.416
+L 899.236719 234.416
+" style="fill: none; stroke: #167c68; stroke-width: 1.5; stroke-linecap: square"/>
+     <g>
+      <use xlink:href="#m07c1787b64" x="888.236719" y="234.416" style="fill: #167c68; stroke: #167c68; stroke-linejoin: miter"/>
+     </g>
+    </g>
+    <g id="text_13">
+     <text style="font-size: 11px; font-family: 'Heiti TC'; text-anchor: start" x="908.036719" y="238.266" transform="rotate(-0 908.036719 238.266)">当前新 C++</text>
+    </g>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="table_1">
+    <g id="patch_6">
+     <path d="M 73.48 454.844571
+L 470.5712 454.844571
+L 470.5712 434.410286
+L 73.48 434.410286
+z
+" style="fill: #f1f3f2; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_14">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="272.0256" y="448.947429" transform="rotate(-0 272.0256 448.947429)">自录测量段</text>
+    </g>
+    <g id="patch_7">
+     <path d="M 470.5712 454.844571
+L 678.1416 454.844571
+L 678.1416 434.410286
+L 470.5712 434.410286
+z
+" style="fill: #f1f3f2; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_15">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="574.3564" y="448.947429" transform="rotate(-0 574.3564 448.947429)">旧 C++</text>
+    </g>
+    <g id="patch_8">
+     <path d="M 678.1416 454.844571
+L 975.96 454.844571
+L 975.96 434.410286
+L 678.1416 434.410286
+z
+" style="fill: #f1f3f2; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_16">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="827.0508" y="448.947429" transform="rotate(-0 827.0508 448.947429)">新 C++</text>
+    </g>
+    <g id="patch_9">
+     <path d="M 73.48 475.278857
+L 470.5712 475.278857
+L 470.5712 454.844571
+L 73.48 454.844571
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_17">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="272.0256" y="469.381714" transform="rotate(-0 272.0256 469.381714)">确定参考事件匹配</text>
+    </g>
+    <g id="patch_10">
+     <path d="M 470.5712 475.278857
+L 678.1416 475.278857
+L 678.1416 454.844571
+L 470.5712 454.844571
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_18">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="574.3564" y="469.381714" transform="rotate(-0 574.3564 469.381714)">81 / 88</text>
+    </g>
+    <g id="patch_11">
+     <path d="M 678.1416 475.278857
+L 975.96 475.278857
+L 975.96 454.844571
+L 678.1416 454.844571
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_19">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="827.0508" y="469.381714" transform="rotate(-0 827.0508 469.381714)">88 / 88</text>
+    </g>
+    <g id="patch_12">
+     <path d="M 73.48 495.713143
+L 470.5712 495.713143
+L 470.5712 475.278857
+L 73.48 475.278857
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_20">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="272.0256" y="489.816" transform="rotate(-0 272.0256 489.816)">片尾净计数</text>
+    </g>
+    <g id="patch_13">
+     <path d="M 470.5712 495.713143
+L 678.1416 495.713143
+L 678.1416 475.278857
+L 470.5712 475.278857
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_21">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="574.3564" y="489.816" transform="rotate(-0 574.3564 489.816)">82</text>
+    </g>
+    <g id="patch_14">
+     <path d="M 678.1416 495.713143
+L 975.96 495.713143
+L 975.96 475.278857
+L 678.1416 475.278857
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_22">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="827.0508" y="489.816" transform="rotate(-0 827.0508 489.816)">84</text>
+    </g>
+    <g id="patch_15">
+     <path d="M 73.48 516.147429
+L 470.5712 516.147429
+L 470.5712 495.713143
+L 73.48 495.713143
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_23">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="272.0256" y="510.250286" transform="rotate(-0 272.0256 510.250286)">B站测量段事件输出</text>
+    </g>
+    <g id="patch_16">
+     <path d="M 470.5712 516.147429
+L 678.1416 516.147429
+L 678.1416 495.713143
+L 470.5712 495.713143
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_24">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="574.3564" y="510.250286" transform="rotate(-0 574.3564 510.250286)">0</text>
+    </g>
+    <g id="patch_17">
+     <path d="M 678.1416 516.147429
+L 975.96 516.147429
+L 975.96 495.713143
+L 678.1416 495.713143
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_25">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="827.0508" y="510.250286" transform="rotate(-0 827.0508 510.250286)">6（匹配临时视觉参考）</text>
+    </g>
+    <g id="patch_18">
+     <path d="M 73.48 536.581714
+L 470.5712 536.581714
+L 470.5712 516.147429
+L 73.48 516.147429
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_26">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="272.0256" y="530.684571" transform="rotate(-0 272.0256 530.684571)">B站状态与覆盖</text>
+    </g>
+    <g id="patch_19">
+     <path d="M 470.5712 536.581714
+L 678.1416 536.581714
+L 678.1416 516.147429
+L 470.5712 516.147429
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_27">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="574.3564" y="530.684571" transform="rotate(-0 574.3564 530.684571)">中心未知633/637帧</text>
+    </g>
+    <g id="patch_20">
+     <path d="M 678.1416 536.581714
+L 975.96 536.581714
+L 975.96 516.147429
+L 678.1416 516.147429
+z
+" style="fill: #ffffff; stroke: #dddddd; stroke-linejoin: miter"/>
+    </g>
+    <g id="text_28">
+     <text style="font-size: 12px; font-family: 'Heiti TC'; text-anchor: middle" x="827.0508" y="530.684571" transform="rotate(-0 827.0508 530.684571)">标定后381帧完整计数</text>
+    </g>
+   </g>
+  </g>
+  <g id="text_29">
+   <text style="font-size: 16px; font-family: 'Heiti TC'; text-anchor: middle" x="504" y="27.4875" transform="rotate(-0 504 27.4875)">“更好”的证据来自事件与稳定计数，不来自速度倍率</text>
+  </g>
+  <g id="text_30">
+   <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start; fill: #555555" x="25.2" y="609.12" transform="rotate(-0 25.2 609.12)">旧 C++与上一段视频的旧Python版不同，不能混用其结果。事件匹配采用同向、顺序、一对一及±0.2秒窗口。</text>
+  </g>
+  <g id="text_31">
+   <text style="font-size: 10px; font-family: 'Heiti TC'; text-anchor: start; fill: #555555" x="25.2" y="631.8" transform="rotate(-0 25.2 631.8)">自录参考为AI视觉复核；34秒可选往返单列。B站参考尚未经独立人工确认，两段均为开发数据，陌生场景未验证。</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p6d128bb172">
+   <rect x="73.48" y="97.32" width="902.48" height="257.472"/>
+  </clipPath>
+ </defs>
+</svg>
