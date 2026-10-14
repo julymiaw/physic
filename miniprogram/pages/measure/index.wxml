@@ -11,13 +11,13 @@
   <view wx:if="{{showSignals}}" class="signals-panel"><canvas type="2d" id="signals" class="signals"></canvas></view>
   <view class="readout">
     <view class="count"><text class="count-value">{{countText}}</text><text class="count-unit">圈</text></view>
-    <button class="status {{complete ? '' : 'incomplete'}}" bindtap="showStatus" disabled="{{phase === 'calibrating' || phase === 'measuring'}}">{{status}}</button>
+    <button class="status {{complete ? '' : 'incomplete'}}" bindtap="showStatus" disabled="{{phase === 'calibrating' || phase === 'measuring' || phase === 'stopping'}}">{{status}}</button>
   </view>
   <view class="controls">
     <button class="small" disabled="{{!cameraReady}}" bindtap="clearSelection">圈选</button>
-    <button class="main calibrate-button" disabled="{{!coreReady || (!roiSelected && phase !== 'calibrating' && phase !== 'measuring')}}" bindtap="mainAction">{{mainLabel}}</button>
-    <button class="small" disabled="{{phase === 'calibrating' || phase === 'measuring'}}" bindtap="toggleSignals">信号</button>
-    <button class="small help-button" disabled="{{phase === 'calibrating' || phase === 'measuring'}}" bindtap="showHelp">?</button>
+    <button class="main calibrate-button" disabled="{{!coreReady || phase === 'stopping' || ((phase === 'ready' || phase === 'review') && !canBegin) || (!roiSelected && phase !== 'calibrating' && phase !== 'measuring')}}" bindtap="mainAction">{{mainLabel}}</button>
+    <button class="small" disabled="{{phase === 'calibrating' || phase === 'measuring' || phase === 'stopping'}}" bindtap="toggleSignals">信号</button>
+    <button class="small help-button" disabled="{{phase === 'calibrating' || phase === 'measuring' || phase === 'stopping'}}" bindtap="showHelp">?</button>
   </view>
   <view wx:if="{{helpVisible}}" class="modal-backdrop" catchtouchmove="noop">
     <view class="modal"><text class="modal-title">{{helpTitle}}</text><text class="modal-body">{{helpBody || helpText}}</text><button class="main help-close" bindtap="closeHelp">知道了</button></view>

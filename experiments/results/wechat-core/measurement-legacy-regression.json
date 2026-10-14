@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "clips": [
+    {
+      "clip": "original",
+      "frames": 1158,
+      "final": 84,
+      "frozenReferenceExact": true,
+      "maxWasmDifference": 4.529709940470639e-14
+    },
+    {
+      "clip": "bilibili",
+      "frames": 381,
+      "final": 6,
+      "frozenReferenceExact": true,
+      "maxWasmDifference": 1.8207657603852567e-14
+    }
+  ],
+  "wasm_sha256": "3b02c4c436e04f8ed9c83ba8b7ffb84721478d6b3d6a4373b59f8dd270e0fab1"
+}

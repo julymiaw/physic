@@ -120,3 +120,8 @@ data/derived/
 !/docs/LIVE_CORE.md
 !/tests/replay_camera.cjs
 !/tools/prepare_camera_replay.py
+
+!/tests/measurement_replay.cpp
+!/tests/measurement_flow.cjs
+!/tests/measurement_page.cjs
+!/tools/prepare_measurement_ide.py

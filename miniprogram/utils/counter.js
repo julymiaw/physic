@@ -10,7 +10,7 @@ class Counter {
   input() { return new Float32Array(this.e.memory.buffer, this.inputPointer, 96 * 96); }
   snapshot() {
     const r = new Float64Array(this.e.memory.buffer, this.resultPointer, 64);
-    return { state:r[0], count:r[1], cycles:r[2], complete:!!r[3], reason:r[4], pending:r[5], calibrationFrames:r[6], nodes:r[7], timestamp:r[8], rows:r[9], signals:[r[10], ...Array.from(r.slice(22,26))], phases:Array.from(r.slice(14,18)), radii:Array.from(r.slice(18,22)), points:Array.from({length:r[7]+1},(_,k)=>({x:r[26+k*2],y:r[27+k*2]})) };
+    return { canBegin:!!r[36], stopping:!!r[37], stopTime:r[38], state:r[0], count:r[1], cycles:r[2], complete:!!r[3], reason:r[4], pending:r[5], calibrationFrames:r[6], nodes:r[7], timestamp:r[8], gapLimit:r[11], rows:r[9], signals:[r[10], ...Array.from(r.slice(22,26))], phases:Array.from(r.slice(14,18)), radii:Array.from(r.slice(18,22)), points:Array.from({length:r[7]+1},(_,k)=>({x:r[26+k*2],y:r[27+k*2]})) };
   }
   rows() {
     const count = this.snapshot().rows;
@@ -19,6 +19,10 @@ class Counter {
   reset(x=16,y=16) { if(!this.e.fc_reset(this.handle,x,y)) throw new Error('光屏区域无效'); return this.snapshot(); }
   collect(t,id) { this.e.fc_calibrate(this.handle,t,id); return this.snapshot(); }
   start() { return !!this.e.fc_start(this.handle); }
+  arm() { return !!this.e.fc_arm(this.handle); }
+  monitor(t,id) { this.e.fc_monitor(this.handle,t,id); return this.snapshot(); }
+  beginMeasurement() { return !!this.e.fc_begin_measurement(this.handle); }
+  stopMeasurement() { return !!this.e.fc_stop_measurement(this.handle); }
   push(t,id) { this.e.fc_push(this.handle,t,id); return this.snapshot(); }
   finish() { this.e.fc_finish(this.handle); return this.snapshot(); }
   interrupt() { this.e.fc_interrupt(this.handle); return this.snapshot(); }

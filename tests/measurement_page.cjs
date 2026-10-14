@@ -1,0 +1,12 @@
+const assert=require('assert');let definition;global.Page=p=>definition=p;const saved={};global.wx={setStorageSync:(k,v)=>saved[k]=v};
+const camera=require('../miniprogram/utils/camera'),originalPrepare=camera.prepare;camera.prepare=()=>{};
+require('../miniprogram/pages/measure/index');
+const p={...definition,data:{...definition.data},setData(x){Object.assign(this.data,x);},drawSignals(){},_clock:()=>12,_lastUI:0,_lastReceive:12,_history:[],_events:[],_map:{previewWidth:300,previewHeight:300},_startedAt:9.9,_lastAttempt:-1};
+let state=1,count=0,stopping=false;const snapshot=()=>({state,count,cycles:count+.2,complete:true,reason:0,nodes:0,timestamp:12,gapLimit:.2,stopTime:-1,canBegin:state!==1,stopping});
+p._core={input:()=>new Float32Array(96*96),collect:()=>({...snapshot(),calibrationFrames:50}),start:()=>{state=2;return true;},arm:()=>{state=6;},snapshot,rows:()=>[],beginMeasurement:()=>{state=2;count=0;stopping=false;return true;},stopMeasurement:()=>{stopping=true;return true;},monitor:()=>snapshot()};
+p.data.phase='calibrating';p.processFrame({frame:{},t:12,id:279});assert.strictEqual(p.data.phase,'ready');assert.strictEqual(p.data.mainLabel,'开始测量');assert(!p._hasMeasured);
+p.mainAction();assert.strictEqual(p.data.phase,'measuring');assert.strictEqual(p.data.countText,'0');assert(p._hasMeasured);
+count=12;p.mainAction();assert.strictEqual(p.data.phase,'stopping');assert.strictEqual(p.data.mainLabel,'确认中');p.mainAction();assert(stopping);
+stopping=false;state=4;p.display(snapshot(),true);p.remember();assert.strictEqual(p.data.mainLabel,'再次测量');assert.strictEqual(saved['fringe-last-session'].count,12);
+p.processFrame({frame:{},t:12,id:300});assert.strictEqual(p.data.countText,'12');p.mainAction();assert.strictEqual(p.data.countText,'0');assert.strictEqual(p.data.phase,'measuring');
+camera.prepare=originalPrepare;console.log(JSON.stringify({passed:true,checks:['calibration-does-not-auto-start','explicit-start-zero','stop-confirmation-button','stopped-result-stays-visible','reuse-start-zero']}));

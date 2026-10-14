@@ -1,0 +1,13 @@
+{
+  "error": "appLaunch with non-empty page stack",
+  "before": [
+    "pages/measure/index",
+    "pages/measure/index"
+  ],
+  "after": [
+    "pages/measure/index"
+  ],
+  "error_filter_after": "",
+  "action": "Close and reopen this project window",
+  "cause": "Likely simulator refresh/restart state; project contains no routing calls. Exact IDE internal cause not established."
+}

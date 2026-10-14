@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "name": "measurement-flow",
+  "operations": 423,
+  "count": 20,
+  "complete": true,
+  "maxDifference": 4.529709940470639e-14,
+  "scope": "Actual WXWebAssembly replay compared with all 64 Native state fields; not physical phone optical acceptance",
+  "wasm_sha256": "3b02c4c436e04f8ed9c83ba8b7ffb84721478d6b3d6a4373b59f8dd270e0fab1"
+}
