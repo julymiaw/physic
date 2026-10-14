@@ -48,6 +48,16 @@ const {Counter}=require('../miniprogram/utils/counter');
   assert(c.rows().every(r=>r[0]<=600));const count=stopped.count,cycles=stopped.cycles;
   for(let id=605;id<=650;id++){const r=s(2,id,frame(id).t);assert.strictEqual(r.count,count);assert.strictEqual(r.cycles,cycles);}
  });
+ scenario('initial-calibration-compute-gap',(s,c)=>{
+  // No measurement exists yet. A fresh observation can anchor after a slow fit.
+  const r=s(2,279,frame(279).t+.76);assert(r.complete);assert.strictEqual(r.state,6);s(3);
+  for(let id=280;id<=1436;id++)assert(s(4,id,frame(id).t+.76).complete);
+  s(7);for(let i=1;i<=4;i++)s(4,1436,frame(1436).t+.76+i/24);
+  assert.strictEqual(c.snapshot().state,4);assert.strictEqual(c.snapshot().count,83);
+ });
+ scenario('measurement-gap-still-rejected',(s,c)=>{
+  s(2,279,frame(279).t+.76);s(3);const r=s(4,280,frame(280).t+1.76);assert(!r.complete);assert.strictEqual(r.reason,5);
+ });
  scenario('ready-gap-rejects-start',(s,c)=>{s(2,279,frame(279).t);const r=s(2,280,frame(280).t+1);assert(!r.complete);assert.strictEqual(r.reason,5);assert(!c.beginMeasurement());});
- fs.writeFileSync('experiments/results/wechat-core/measurement-flow.json',JSON.stringify({passed:true,scope:'Real-video start/wait/stop/reuse flow and Native/WASM parity; recorded final frame repeated only to represent stopping the knob and clear four-frame confirmation buffer.',checks:['no-count-while-waiting','partial-first-period-not-counted','relative-cycle-start-and-end','real-frame-forward-back-net-zero','stop-cutoff-with-four-confirmation-frames','stop-result-frozen','reuse-without-recalibration','ready-gap-rejects-start'],scenarios:reports},null,2)+'\n');console.log(JSON.stringify(reports));
+ fs.writeFileSync('experiments/results/wechat-core/measurement-flow.json',JSON.stringify({passed:true,scope:'Real-video start/wait/stop/reuse flow and Native/WASM parity; recorded final frame repeated only to represent stopping the knob and clear four-frame confirmation buffer.',checks:['no-count-while-waiting','partial-first-period-not-counted','relative-cycle-start-and-end','real-frame-forward-back-net-zero','stop-cutoff-with-four-confirmation-frames','stop-result-frozen','reuse-without-recalibration','initial-calibration-compute-gap','measurement-gap-still-rejected','ready-gap-rejects-start'],scenarios:reports},null,2)+'\n');console.log(JSON.stringify(reports));
 })().catch(e=>{console.error(e);process.exitCode=1;});

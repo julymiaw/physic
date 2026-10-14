@@ -32,7 +32,7 @@ class Counter {
  void fail(int why){complete=false;state=invalid;reason=why;publish();}
  bool validate(double t){
   if(!std::isfinite(t)||t<0||t<=last_time){fail(bad_time);return false;}
-  if((state==measuring||state==ready||state==finished)&&last_time>=0&&t-last_time>gap_limit){fail(time_gap);return false;}
+  if((state==measuring||(state==ready&&has_observation)||state==finished)&&last_time>=0&&t-last_time>gap_limit){fail(time_gap);return false;}
   for(float v:input)if(!std::isfinite(v)||v<0||v>1.000001f){fail(bad_input);return false;}
   return true;
  }

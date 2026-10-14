@@ -1,0 +1,28 @@
+{
+  "source": "User-provided Android real-device debug log",
+  "device": "Xiaomi 24129PN74C / Android 16",
+  "callbackSize": [
+    480,
+    640
+  ],
+  "callbackFpsBeforeFit": 30.60217176702863,
+  "prepareMs": 3,
+  "fitMs": 760,
+  "calibrationSuccess": true,
+  "readyState": 6,
+  "watchdogReportedProcessedAgeMs": 770,
+  "timeoutMs": 350,
+  "pendingFrameAtTimeout": true,
+  "actualCallbackAgeMsNearTimeout": 1,
+  "receivedAtStop": 85,
+  "processedAtStop": 62,
+  "diagnosis": "Watchdog used last processed frame timestamp despite callbacks resumed and a pending frame. Synchronous calibration time was misclassified as a feed interruption.",
+  "fix": [
+    "Watchdog uses callback arrival timestamp",
+    "150ms post-calibration event-loop grace limited to initialization/waiting",
+    "First post-calibration ready observation may anchor without measurement continuity gap",
+    "Active measurement gap gate unchanged"
+  ],
+  "wasm_sha256": "1337e4739043a34fe5701f20acb6f407d7880e28102a58d6f3f4c47b6c2b8ec5",
+  "scope": "Event ordering regression verified locally; revised physical handset replay still pending"
+}

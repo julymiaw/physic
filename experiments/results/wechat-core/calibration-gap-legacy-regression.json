@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "clips": [
+    {
+      "clip": "original",
+      "frames": 1158,
+      "final": 84,
+      "frozenReferenceExact": true,
+      "maxWasmDifference": 4.529709940470639e-14
+    },
+    {
+      "clip": "bilibili",
+      "frames": 381,
+      "final": 6,
+      "frozenReferenceExact": true,
+      "maxWasmDifference": 1.8207657603852567e-14
+    }
+  ]
+}

@@ -23,7 +23,7 @@ Page({
   createStreamDiagnostics(){
     let device={},account={};try{const d=wx.getDeviceInfo?wx.getDeviceInfo():wx.getSystemInfoSync();device={brand:d.brand,model:d.model,platform:d.platform,system:d.system};}catch(_){}
     try{account=wx.getAccountInfoSync().miniProgram;}catch(_){}
-    this._streamCoreSignature=null;this._streamDiag=new StreamDiagnostics({build:'stream-diagnostics-1',clock:this._clockInfo,device,envVersion:account.envVersion,version:account.version,preview:this._previewBounds,frame:this._frameShape},{save:report=>wx.setStorageSync('fringe-stream-debug',report)});
+    this._streamCoreSignature=null;this._streamDiag=new StreamDiagnostics({build:'stream-diagnostics-2',clock:this._clockInfo,device,envVersion:account.envVersion,version:account.version,preview:this._previewBounds,frame:this._frameShape},{save:report=>wx.setStorageSync('fringe-stream-debug',report)});
     this._streamDiag.event('calibration-begin',{map:this._map});
   },
   copyStreamDiagnostics(){
@@ -33,10 +33,11 @@ Page({
   checkFrameWatchdog(){
     if(!this.isRunning())return;
     try{
-      const now=this._clock(),age=now-this._lastReceive;
-      if(this._streamDiag)this._streamDiag.summary(this.data.phase);
-      if(age>.35){
-        if(this._streamDiag){this._streamDiag.event('watchdog-timeout',{phase:this.data.phase,processedTimestampAgeMs:age*1000,thresholdMs:350,pending:!!(this._pipeline&&this._pipeline.pending),core:this._lastResult?{state:this._lastResult.state,reason:this._lastResult.reason,calibrationFrames:this._lastResult.calibrationFrames}:null});this._streamDiag.persist();}
+      const now=this._clock(),age=now-this._lastCallbackTime;
+      if(this._streamDiag){this._streamDiag.dropped=this._pipeline?this._pipeline.dropped:this._streamDiag.dropped;this._streamDiag.summary(this.data.phase);}
+      const recovering=['calibrating','ready'].includes(this.data.phase)&&now<(this._fitGraceUntil||0);
+      if(age>.35&&!recovering){
+        if(this._streamDiag){this._streamDiag.event('watchdog-timeout',{phase:this.data.phase,callbackAgeMs:age*1000,processedTimestampAgeMs:(now-this._lastReceive)*1000,thresholdMs:350,pending:!!(this._pipeline&&this._pipeline.pending),core:this._lastResult?{state:this._lastResult.state,reason:this._lastResult.reason,calibrationFrames:this._lastResult.calibrationFrames}:null});this._streamDiag.persist();}
         this.interrupt();this.setData({status:'画面已中断 · 不完整'});
       }
     }catch(error){if(this._streamDiag)this._streamDiag.event('clock-error',{message:error.message});this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}
@@ -44,6 +45,9 @@ Page({
   tryCalibration(){
     const started=Date.now();if(this._streamDiag)this._streamDiag.event('calibration-fit-start',{frames:this._core.snapshot().calibrationFrames});
     const success=this._core.start();const ended=Date.now();
+    // Let callbacks queued during synchronous initialization get an event-loop turn.
+    // This applies only to calibration, never an active measurement.
+    this._fitGraceUntil=this._clock()+.15;
     if(this._streamDiag)this._streamDiag.event('calibration-fit-end',{success,fitMs:ended-started,coreState:this._core.snapshot().state,reason:this._core.snapshot().reason});
     return success;
   },
@@ -66,7 +70,7 @@ Page({
     if(!this.data.cameraEnabled)return;this.setData({cameraReady:true});this.measurePreview();
     this._listener=wx.createCameraContext().onCameraFrame(frame=>{
       this._frameShape={width:frame.width,height:frame.height};
-      if(this._pipeline){try{const t=this._clock();if(this._streamDiag)this._streamDiag.arrival(frame,t);this._pipeline.offer(frame,t,this._source++);}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}}
+      if(this._pipeline){try{const t=this._clock();this._lastCallbackTime=t;if(this._streamDiag)this._streamDiag.arrival(frame,t);this._pipeline.offer(frame,t,this._source++);}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}}
     });
     this._listener.start({fail:error=>{this.stopCamera();this.showMessage('相机帧不可用',error.errMsg||'请在手机微信中重试。');}});
   },
@@ -175,7 +179,7 @@ Page({
     if(!this.data.coreReady||!this.data.roiSelected||!this._previewBounds||!this._frameShape)return;
     this.remember();this._map=mapping(this.data.previewRegion,this._previewBounds,this._frameShape);
     this._core.reset(this._map.offsetX,this._map.offsetY);this._hasMeasured=false;this._events=[];this._eventsTruncated=false;this._history=[];this._startedAt=null;this._lastAttempt=-1;
-    this._lastReceive=this._clock();this.setData({phase:'calibrating',status:'标定中',countText:'—',complete:true,mainLabel:'停止',points:[]});
+    this._lastReceive=this._clock();this._lastCallbackTime=this._lastReceive;this._fitGraceUntil=0;this.setData({phase:'calibrating',status:'标定中',countText:'—',complete:true,mainLabel:'停止',points:[]});
     this.createStreamDiagnostics();
     this._pipeline=new LatestFrame(item=>this.processFrame(item),error=>{this.interrupt();this.showMessage('测量已中断',error.message);});
     this._watchdog=setInterval(()=>this.checkFrameWatchdog(),100);

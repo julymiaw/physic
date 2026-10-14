@@ -9,6 +9,8 @@
     "stop-cutoff-with-four-confirmation-frames",
     "stop-result-frozen",
     "reuse-without-recalibration",
+    "initial-calibration-compute-gap",
+    "measurement-gap-still-rejected",
     "ready-gap-rejects-start"
   ],
   "scenarios": [
@@ -43,6 +45,22 @@
       "finalCount": 20,
       "finalCycles": 20.95462921512177,
       "complete": true
+    },
+    {
+      "name": "initial-calibration-compute-gap",
+      "operations": 1213,
+      "maxNativeWasmDifference": 4.973799150320701e-14,
+      "finalCount": 83,
+      "finalCycles": 83.86128830352203,
+      "complete": true
+    },
+    {
+      "name": "measurement-gap-still-rejected",
+      "operations": 52,
+      "maxNativeWasmDifference": 1.4210854715202004e-14,
+      "finalCount": 0,
+      "finalCycles": 0,
+      "complete": false
     },
     {
       "name": "ready-gap-rejects-start",

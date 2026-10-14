@@ -7,7 +7,9 @@
     "calibration-fit-timing",
     "bounded-history",
     "persist-on-failure",
-    "existing-watchdog-processing-time-reproduction"
+    "fresh-callback-prevents-false-timeout",
+    "bounded-calibration-return-grace",
+    "genuine-callback-stall-still-rejected"
   ],
-  "scope": "Diagnostics tested; watchdog policy deliberately unchanged pending physical-device logs."
+  "scope": "Regression follows supplied handset event ordering; phone confirmation after fix remains required."
 }
