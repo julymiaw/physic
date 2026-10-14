@@ -1,7 +1,7 @@
 .page { box-sizing: border-box; display: flex; flex-direction: column; padding: 10px 12px 8px; overflow: hidden; }
 .preview { position: relative; flex: 1; min-height: 80px; overflow: hidden; border-radius: 12px; background: #050907; }
 .camera { width: 100%; height: 100%; }
-.selection-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.selection-layer { position: absolute; top: 0; left: 0; z-index: 2; background-color: rgba(0,0,0,0.01); }
 .selection { position: absolute; border: 1px solid #61977f; box-sizing: border-box; }
 .sample-point { position: absolute; width: 8px; height: 8px; border-radius: 4px; }
 .camera-start { position: absolute; top: 42%; left: 22%; width: 56%; background: #16271e; color: #9bb3a4; }

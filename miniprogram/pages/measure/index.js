@@ -3,15 +3,21 @@ const {mapping,prepare,previewPoint,LatestFrame,receiveClock}=require('../../uti
 const COLORS=['#91a69b','#55aa92','#688bb8','#b5985e','#9982ab'];
 const REASONS={1:'标定画面不足',2:'光屏跟踪失效',3:'相位信号不可靠',4:'接收时间异常',5:'有效帧间隔过大',6:'片尾仍有未确认事件',7:'帧数据无效',8:'标定未获得稳定的单向周期',9:'测量已中断'};
 Page({
-  data:{cameraEnabled:false,cameraReady:false,coreReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[],showSignals:true,helpVisible:false,helpTitle:'使用方法',helpText:'开启相机，拖框选中整个光屏。\n\n点击标定，缓慢、连续地单向移动，使中心暗纹至少出现两次；标定最长10秒。标定方向定义为正方向。\n\n标定完成后，停下旋钮并记录起始读数，再点击“开始测量”。标定过程不计入测量。\n\n沿原方向旋转，正向增加、反向减少；短暂往返按净变化处理。停下旋钮后点击“停止”，再记录终止读数。信号仍有效时可直接“再次测量”。丢失跟踪或中断会冻结计数并标为不完整。\n\n曲线颜色对应画面采样点，相位图显示各路共同暗心零点的相位。点击“信号”可收起。\n\n画面仅在本地处理。',phase:'idle',status:'加载中',countText:'—',complete:true,canBegin:false,mainLabel:'标定',viewportHeight:600,safeBottom:0},
+  data:{cameraEnabled:false,cameraReady:false,coreReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,overlayStyle:'',points:[],showSignals:true,helpVisible:false,helpTitle:'使用方法',helpText:'开启相机，拖动框选整个光屏，也可依次点光屏的两个对角。\n\n点击标定，缓慢、连续地单向移动，使中心暗纹至少出现两次；标定最长10秒。标定方向定义为正方向。\n\n标定完成后，停下旋钮并记录起始读数，再点击“开始测量”。标定过程不计入测量。\n\n沿原方向旋转，正向增加、反向减少；短暂往返按净变化处理。停下旋钮后点击“停止”，再记录终止读数。信号仍有效时可直接“再次测量”。丢失跟踪或中断会冻结计数并标为不完整。\n\n曲线颜色对应画面采样点，相位图显示各路共同暗心零点的相位。点击“信号”可收起。\n\n画面仅在本地处理。',phase:'idle',status:'加载中',countText:'—',complete:true,canBegin:false,mainLabel:'标定',viewportHeight:600,safeBottom:0},
   onLoad(){
     this._active=true;this._source=0;this._history=[];this._lastUI=0;this._events=[];
     const info=wx.getWindowInfo?wx.getWindowInfo():wx.getSystemInfoSync();
     this.setData({viewportHeight:info.windowHeight,safeBottom:Math.max(0,info.screenHeight-(info.safeArea?info.safeArea.bottom:info.screenHeight)),helpVisible:!wx.getStorageSync('fringe-help-v2')});
-    Promise.all([loadCounter(),receiveClock()]).then(([core,clock])=>{
-      if(!this._active){core.destroy();return;}this._core=core;this._clock=clock;
+    this.initializeCore();
+  },
+  async initializeCore(){
+    let core;
+    try{
+      core=await loadCounter();const clock=await receiveClock();
+      if(!this._active){core.destroy();return;}
+      this._core=core;this._clock=clock;this._clockInfo={source:clock.source,unitsPerSecond:clock.unitsPerSecond};
       this.setData({coreReady:true,status:this.data.roiSelected?'待标定':'待圈选'});
-    }).catch(error=>{if(this._active){this.setData({status:'初始化失败'});this.showMessage('无法启动',error.message);}});
+    }catch(error){if(core)core.destroy();if(this._active){this.setData({coreReady:false,status:'初始化失败'});this.showMessage('无法启动',error.message);}}
   },
   onReady(){this.initCanvas();},
   // Invoked only by the development verification entry; never connected to product UI.
@@ -27,38 +33,72 @@ Page({
     this.showMessage('测量状态',(this._lastResult&&!this._hasMeasured?(REASONS[this._lastResult.reason]||this.data.status)+'。尚未开始有效测量。':this._lastResult?`${REASONS[this._lastResult.reason]||this.data.status}。当前净计数：${this._lastResult.count}圈。${this._lastResult.complete?'':'这一段存在丢失信息，重新标定不会补回。'}`:(last?`上一段净计数：${last.count}圈；${last.complete?'完整':'不完整'}。`:'圈选光屏后开始标定。'))+history);
   },
   isRunning(){return ['calibrating','measuring','stopping','ready','review'].includes(this.data.phase);},
-  toggleCamera(){if(this.data.cameraEnabled)this.stopCamera();else this.setData({cameraEnabled:true,cameraReady:false,points:[]});},
+  toggleCamera(){if(this.data.cameraEnabled)this.stopCamera();else this.setData({cameraEnabled:true,cameraReady:false,points:[]},()=>this.measurePreview());},
   onCameraReady(){
     if(!this.data.cameraEnabled)return;this.setData({cameraReady:true});this.measurePreview();
     this._listener=wx.createCameraContext().onCameraFrame(frame=>{
       this._frameShape={width:frame.width,height:frame.height};
-      if(this._pipeline)this._pipeline.offer(frame,this._clock(),this._source++);
+      if(this._pipeline){try{this._pipeline.offer(frame,this._clock(),this._source++);}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}}
     });
     this._listener.start({fail:error=>{this.stopCamera();this.showMessage('相机帧不可用',error.errMsg||'请在手机微信中重试。');}});
   },
-  measurePreview(){this._previewBounds=null;wx.createSelectorQuery().in(this).select('.preview').boundingClientRect(rect=>{if(this.data.cameraEnabled&&rect)this._previewBounds=rect;}).exec();},
+  measurePreview(done){
+    wx.createSelectorQuery().in(this).select('.preview').boundingClientRect(rect=>{
+      if(this.data.cameraEnabled&&rect&&rect.width>0&&rect.height>0){
+        this._previewBounds=rect;this.setData({overlayStyle:`width:${rect.width}px;height:${rect.height}px;`});
+      }
+      if(done)done();
+    }).exec();
+  },
   stopFeed(){if(this._pipeline)this._pipeline.stop();this._pipeline=null;if(this._watchdog)clearInterval(this._watchdog);this._watchdog=null;},
-  remember(){if(this._lastResult&&this._hasMeasured){const saved={mode:'relative-start-phase',startedAt:this._measurementStartedAt,endedAt:this._lastResult.stopTime>=0?this._lastResult.stopTime:this._lastResult.timestamp,cycles:this._lastResult.cycles,count:this._lastResult.count,complete:this._lastResult.complete,reason:this._lastResult.reason,events:this._events.slice(-512),eventsTruncated:!!this._eventsTruncated};wx.setStorageSync('fringe-last-session',saved);if(!saved.complete)wx.setStorageSync('fringe-last-incomplete',saved);}},
+  remember(){if(this._lastResult&&this._hasMeasured){const saved={mode:'relative-start-phase',clock:this._clockInfo,startedAt:this._measurementStartedAt,endedAt:this._lastResult.stopTime>=0?this._lastResult.stopTime:this._lastResult.timestamp,cycles:this._lastResult.cycles,count:this._lastResult.count,complete:this._lastResult.complete,reason:this._lastResult.reason,events:this._events.slice(-512),eventsTruncated:!!this._eventsTruncated};wx.setStorageSync('fringe-last-session',saved);if(!saved.complete)wx.setStorageSync('fringe-last-incomplete',saved);}},
   interrupt(){
     const reviewing=this.data.phase==='review';this.stopFeed();if(this._core&&this.isRunning()){const result=this._core.interrupt();if(reviewing)this._hasMeasured=false;this.display(result,true);if(!reviewing)this.remember();}
   },
   stopCamera(){
-    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._previewBounds=null;this._frameShape=null;
-    this.setData({phase:'idle',mainLabel:'标定',cameraEnabled:false,cameraReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
+    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._corner=null;this._previewBounds=null;this._frameShape=null;
+    this.setData({phase:'idle',mainLabel:'标定',overlayStyle:'',cameraEnabled:false,cameraReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
   },
   onCameraError(event){this.stopCamera();this.showMessage('相机无法开启',(event.detail&&event.detail.errMsg)||'请检查相机权限后重试。');},
   onCameraStop(){if(this.data.cameraEnabled){this.stopCamera();this.setData({status:'相机已中断'});}},
   clearSelection(){
-    this.interrupt();this._dragStart=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
+    this.interrupt();this._dragStart=null;this._corner=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
     if(!this._lastResult||this._lastResult.state===1)this.setData({status:'待圈选'});
   },
-  previewPoint(touch){const rect=this._previewBounds;if(!rect||!touch||!Number.isFinite(touch.clientX)||!Number.isFinite(touch.clientY))return null;return {x:Math.max(0,Math.min(rect.width,touch.clientX-rect.left)),y:Math.max(0,Math.min(rect.height,touch.clientY-rect.top))};},
-  onSelectionStart(event){if(!this.data.cameraReady||this.isRunning())return;this._dragStart=this.previewPoint(event.touches[0]);if(this._dragStart)this.setData({roiSelected:false,previewRegion:null,selectionStyle:'',points:[]});},
-  regionFromTouch(touch){const p=this.previewPoint(touch);if(!p||!this._dragStart)return null;return {x:Math.min(p.x,this._dragStart.x),y:Math.min(p.y,this._dragStart.y),width:Math.abs(p.x-this._dragStart.x),height:Math.abs(p.y-this._dragStart.y)};},
+  previewPoint(touch){
+    const rect=this._previewBounds;if(!rect||!touch)return null;let x,y;
+    if(Number.isFinite(touch.clientX)&&Number.isFinite(touch.clientY)){x=touch.clientX-rect.left;y=touch.clientY-rect.top;}
+    else if(Number.isFinite(touch.pageX)&&Number.isFinite(touch.pageY)){x=touch.pageX-rect.left;y=touch.pageY-rect.top;}
+    else if(Number.isFinite(touch.x)&&Number.isFinite(touch.y)){x=touch.x;y=touch.y;}
+    else return null;
+    return {x:Math.max(0,Math.min(rect.width,x)),y:Math.max(0,Math.min(rect.height,y))};
+  },
+  onSelectionStart(event){
+    if(!this.data.cameraEnabled||this.isRunning())return;
+    const touch=(event.touches&&event.touches[0])||(event.changedTouches&&event.changedTouches[0]);
+    if(!this._previewBounds){this.measurePreview(()=>{if(this._previewBounds)this.onSelectionStart(event);});return;}
+    const p=this.previewPoint(touch);if(!p)return;
+    this._touchInfo={keys:Object.keys(touch),point:p};
+    this._dragStart=this._corner||p;this._fingerStart=p;this._dragCurrent=p;
+    this.setData({roiSelected:false,previewRegion:null,points:[]});
+    if(this._corner)this.drawRegion(this.regionFromPoint(p));else this.drawCorner(p);
+  },
+  regionFromPoint(p){if(!p||!this._dragStart)return null;return {x:Math.min(p.x,this._dragStart.x),y:Math.min(p.y,this._dragStart.y),width:Math.abs(p.x-this._dragStart.x),height:Math.abs(p.y-this._dragStart.y)};},
+  drawCorner(p){const b=this._previewBounds;this.drawRegion({x:Math.max(0,Math.min(b.width-8,p.x-4)),y:Math.max(0,Math.min(b.height-8,p.y-4)),width:8,height:8});},
   drawRegion(region){this.setData({selectionStyle:`left:${region.x}px;top:${region.y}px;width:${region.width}px;height:${region.height}px;`});},
-  onSelectionMove(event){if(this._dragStart){const r=this.regionFromTouch(event.touches[0]);if(r)this.drawRegion(r);}},
+  onSelectionMove(event){
+    if(!this._dragStart)return;const p=this.previewPoint((event.touches&&event.touches[0])||(event.changedTouches&&event.changedTouches[0]));
+    if(p){this._dragCurrent=p;this.drawRegion(this.regionFromPoint(p));}
+  },
   onSelectionEnd(event){
-    const r=this.regionFromTouch(event.changedTouches[0]);this._dragStart=null;if(!r)return;
+    if(!this._dragStart)return;
+    const p=this.previewPoint(event.changedTouches&&event.changedTouches[0])||this._dragCurrent;
+    const r=this.regionFromPoint(p),wasCorner=!!this._corner;
+    const moved=p&&this._fingerStart?Math.hypot(p.x-this._fingerStart.x,p.y-this._fingerStart.y):0;
+    this._dragStart=null;this._dragCurrent=null;
+    if(!r)return;
+    if(!wasCorner&&moved<8){this._corner=p;this.drawCorner(p);this.setData({status:'点另一个对角'});return;}
+    this._corner=null;
     if(r.width<32||r.height<32){this.clearSelection();return;}
     const b=this._previewBounds;this.drawRegion(r);this.setData({roiSelected:true,previewRegion:{x:r.x/b.width,y:r.y/b.height,width:r.width/b.width,height:r.height/b.height},status:'待标定'});
   },
@@ -69,7 +109,8 @@ Page({
       // Include the latest retained observation before latching the starting phase.
       if(this._pipeline&&this._pipeline.pending)this._pipeline.drain();
       if(!['ready','review'].includes(this.data.phase))return;
-      if(this._clock()-this._lastReceive>this._lastResult.gapLimit){this.interrupt();return;}
+      let now;try{now=this._clock();}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');return;}
+      if(now-this._lastReceive>this._lastResult.gapLimit){this.interrupt();return;}
       this.remember();
       if(this._core.beginMeasurement()){
         this._measurementStartedAt=this._lastResult.timestamp;this._hasMeasured=true;this._events=[];this._eventsTruncated=false;
@@ -90,7 +131,7 @@ Page({
     this._core.reset(this._map.offsetX,this._map.offsetY);this._hasMeasured=false;this._events=[];this._eventsTruncated=false;this._history=[];this._startedAt=null;this._lastAttempt=-1;
     this._lastReceive=this._clock();this.setData({phase:'calibrating',status:'标定中',countText:'—',complete:true,mainLabel:'停止',points:[]});
     this._pipeline=new LatestFrame(item=>this.processFrame(item),error=>{this.interrupt();this.showMessage('测量已中断',error.message);});
-    this._watchdog=setInterval(()=>{if(this.isRunning()&&this._clock()-this._lastReceive>.35){this.interrupt();this.setData({status:'画面已中断 · 不完整'});}},100);
+    this._watchdog=setInterval(()=>{try{if(this.isRunning()&&this._clock()-this._lastReceive>.35){this.interrupt();this.setData({status:'画面已中断 · 不完整'});}}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}},100);
   },
   processFrame({frame,t,id}){
     if(!this.isRunning())return;const reviewing=this.data.phase==='review',stopping=this.data.phase==='stopping';this._lastReceive=t;prepare(frame,this._map,this._core.input());let result;
@@ -113,7 +154,7 @@ Page({
   },
   display(result,force){
     const nextPhase=result.stopping?'stopping':{1:'calibrating',2:'measuring',3:'stopped',4:'review',5:'stopped',6:'ready'}[result.state];
-    if(this.data.phase!==nextPhase)force=true;this._lastResult=result;const now=this._clock?this._clock():0;if(!force&&now-this._lastUI<.1&&[1,2,4,6].includes(result.state))return;this._lastUI=now;
+    if(this.data.phase!==nextPhase)force=true;this._lastResult=result;const now=Date.now()/1000;if(!force&&now-this._lastUI<.1&&[1,2,4,6].includes(result.state))return;this._lastUI=now;
     const names={1:'标定中',2:'计数中',3:'不完整',4:'已停止',5:'标定失败',6:'待开始'};
     let status=result.stopping?'确认中':names[result.state];if(result.state===1)status=`标定中 ${Math.min(10,Math.round((this._lastReceive-(this._startedAt===null?this._lastReceive:this._startedAt))*10)/10)}s`;
     const points=this._map&&result.nodes?result.points.map((p,k)=>{const q=previewPoint(p,this._map);return {id:k,color:COLORS[k],style:`left:${q.x-4}px;top:${q.y-4}px;background:${COLORS[k]};`,visible:q.x>=0&&q.y>=0&&q.x<=this._map.previewWidth&&q.y<=this._map.previewHeight};}):[];

@@ -1,0 +1,34 @@
+{
+  "unit": {
+    "passed": true,
+    "checks": [
+      "seconds-ms-us-ns-clocks",
+      "stuck-shim-wall-fallback",
+      "missing-now-fallback",
+      "clock-backwards-rejection",
+      "forward-gap-preserved",
+      "client-coordinates-drag",
+      "page-coordinates-two-tap",
+      "local-coordinates-reverse-drag",
+      "touchend-empty-fallback",
+      "touch-cancel",
+      "measuring-selection-blocked"
+    ]
+  },
+  "templateCompile": true,
+  "styleCompile": true,
+  "ideInitialization": {
+    "coreReady": true,
+    "clockSource": "wx-performance",
+    "unitsPerSecond": 1000,
+    "onePage": true
+  },
+  "ideCamera": {
+    "previewWidth": 366,
+    "previewHeight": 506,
+    "callbackWidth": 480,
+    "callbackHeight": 640,
+    "explicitOverlaySize": true
+  },
+  "scope": "Unit compatibility and IDE component event smoke only. Physical phone touch delivery, coordinate alignment and startup recovery still require user retest. SDK-injected touch coordinates are not evidence of physical handset hit testing."
+}

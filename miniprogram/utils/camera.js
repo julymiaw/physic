@@ -37,14 +37,33 @@ class LatestFrame {
   drain(){this.timer=null;const item=this.pending;this.pending=null;if(!this.active||!item)return;try{this.process(item);}catch(error){this.onError(error);}}
   stop(){this.active=false;this.pending=null;if(this.timer!==null)clearTimeout(this.timer);this.timer=null;}
 }
-// Probe the units of the available monotonic clock once before enabling measurement.
-async function receiveClock() {
-  const candidate=typeof performance!=='undefined'&&typeof performance.now==='function'?performance:wx.getPerformance();
-  if(!candidate||typeof candidate.now!=='function') throw new Error('当前微信不支持可靠计时，请更新微信。');
-  const a=candidate.now(),wall=Date.now();await new Promise(resolve=>setTimeout(resolve,100));
-  const delta=candidate.now()-a,elapsed=Date.now()-wall,ratio=delta/elapsed;
-  const units=ratio>.25&&ratio<4?1000:(ratio>250&&ratio<4000?1000000:0);
-  if(!units)throw new Error('无法确认相机接收时钟，请重试。');
-  const origin=candidate.now();return ()=> (candidate.now()-origin)/units;
+// Remote debugging may expose a shim clock with different units or no progress.
+// Probe available high-resolution clocks; otherwise use explicit guarded wall time.
+function guardedClock(read,units,source){
+  const origin=read();if(!Number.isFinite(origin))throw new Error('接收时钟不可用');let last=origin;
+  const clock=()=>{const value=read();if(!Number.isFinite(value)||value<last)throw new Error('接收时间倒退，请重新开始测量。');last=value;return (value-origin)/units;};
+  clock.source=source;clock.unitsPerSecond=units;return clock;
+}
+async function receiveClock(options={}) {
+  const wall=options.wall||(()=>Date.now()),wait=options.wait||(ms=>new Promise(resolve=>setTimeout(resolve,ms)));
+  let candidates=options.candidates;
+  if(!candidates){
+    candidates=[];
+    // wx.getPerformance().now is not guaranteed by the official mini-program API.
+    try{const native=wx.getPerformance();if(native&&typeof native.now==='function')candidates.push({object:native,source:'wx-performance'});}catch(_){}
+    if(typeof performance!=='undefined'&&typeof performance.now==='function')candidates.push({object:performance,source:'global-performance'});
+  }
+  for(const {object,source} of candidates){
+    try{
+      const read=()=>object.now(),a=read(),start=wall();await wait(100);
+      const delta=read()-a,elapsed=wall()-start,ratio=delta/elapsed;
+      if(!Number.isFinite(ratio)||delta<=0||elapsed<=0)continue;
+      const scale=[.001,1,1000,1000000].find(v=>ratio/v>.75&&ratio/v<1.25);
+      if(scale)return guardedClock(read,scale*1000,source);
+    }catch(_){}
+  }
+  // No fabricated ticks or clamping: backwards values throw; large forward gaps
+  // remain visible to the core continuity gate. This is wall time, not exposure time.
+  return guardedClock(wall,1000,'wall-receive');
 }
 module.exports={mapping,prepare,previewPoint,LatestFrame,receiveClock};
