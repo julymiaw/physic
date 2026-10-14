@@ -129,3 +129,7 @@ data/derived/
 !/tests/phone_compat.cjs
 
 !/tests/stream_diagnostics.cjs
+
+!/tools/make_theory_target.py
+!/tests/theory_camera_target.cjs
+!/experiments/results/theory-camera-target/**

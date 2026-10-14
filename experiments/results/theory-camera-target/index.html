@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>理论条纹 · 相机测试</title>
+<style>body{margin:0;background:#080c09;color:#aabbaf;font:16px system-ui;text-align:center}main{max-width:800px;margin:auto;padding:20px}h1{font-size:21px;font-weight:500}canvas{display:block;width:min(65vh,90vw,600px);height:auto;aspect-ratio:1;margin:16px auto;background:#020302}button{background:#20392b;color:#bed0c3;border:1px solid #3b5343;border-radius:9px;padding:12px 18px;margin:5px;font:inherit;cursor:pointer}button:disabled{opacity:.4}p{line-height:1.6;color:#82958a;font-size:14px}#status{font-size:18px;color:#bccabf}</style>
+<main><h1>理论同心条纹 · 受控拍屏测试</h1><canvas id="target" width="256" height="256"></canvas><div id="status">静止 · 待圈选</div><div><button id="cal">标定图样</button><button id="pause">暂停</button><button id="advance">推进 10.25 圈</button><button id="reset">复位</button></div><p>手机框选整个亮圆盘，点击“标定图样”，再在手机上标定。<br>标定成功后暂停图样，在手机上开始测量，再点击“推进 10.25 圈”。<br>停止后应显示 10 个完整净周期；每轮先停止手机测量，再复位。</p></main>
+<script>
+const N=256,canvas=document.getElementById('target'),ctx=canvas.getContext('2d'),image=ctx.createImageData(N,N),psi=new Float64Array(N*N),mask=new Float64Array(N*N),status=document.getElementById('status');
+for(let y=0;y<N;y++)for(let x=0;x<N;x++){const i=y*N+x,r=Math.hypot((x+.5-N/2)/(N/2),(y+.5-N/2)/(N/2));psi[i]=28*(r/.9)**2;mask[i]=Math.max(0,Math.min(1,(.92-r)/.02));image.data[i*4+3]=255;}
+let base=0,origin=performance.now(),mode='hold',measurementBase=0,last=NaN,lastLabel=0;
+function cycles(now){return base+(mode==='hold'?0:mode==='cal'?(now-origin)/1000:Math.min(10.25,(now-origin)/1000));}
+function hold(){base=cycles(performance.now());mode='hold';}
+document.getElementById('cal').onclick=()=>{hold();mode='cal';origin=performance.now();};document.getElementById('pause').onclick=hold;
+document.getElementById('advance').onclick=()=>{hold();measurementBase=base;mode='advance';origin=performance.now();};document.getElementById('reset').onclick=()=>{mode='hold';base=0;measurementBase=0;};
+function draw(now){const c=cycles(now);if(c!==last){const phase=2*Math.PI*c;for(let i=0;i<N*N;i++){const v=Math.round(255*(.008+(.55+.33*Math.cos(psi[i]+phase)-.008)*mask[i]));image.data[i*4]=image.data[i*4+1]=image.data[i*4+2]=v;}ctx.putImageData(image,0,0);last=c;}
+if(now-lastLabel>100){status.textContent=mode==='cal'?'标定图样 · 单向 1 圈/秒':mode==='advance'?`已推进 ${(c-measurementBase).toFixed(2)} 圈`:'图样静止';document.getElementById('advance').disabled=mode==='cal'||(mode==='advance'&&c-measurementBase<10.25);lastLabel=now;}requestAnimationFrame(draw);}
+requestAnimationFrame(draw);
+</script></html>

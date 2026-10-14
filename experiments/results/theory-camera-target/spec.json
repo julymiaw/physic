@@ -1,0 +1,46 @@
+{
+  "formula": "I=.55+.33*cos(28*(r/.9)^2+2*pi*C(t)) within fixed circular aperture; outside .008",
+  "fps": 30,
+  "resolution": [
+    720,
+    900
+  ],
+  "roi": [
+    60,
+    125,
+    600,
+    600
+  ],
+  "stages": [
+    {
+      "start": 0,
+      "end": 6,
+      "action": "select",
+      "cycles": 0
+    },
+    {
+      "start": 6,
+      "end": 12,
+      "action": "calibrate",
+      "speed_cycles_per_second": 1
+    },
+    {
+      "start": 12,
+      "end": 18,
+      "action": "pause and manually start measurement"
+    },
+    {
+      "start": 18,
+      "end": 28.25,
+      "action": "advance",
+      "cycles": 10.25
+    },
+    {
+      "start": 28.25,
+      "end": 34,
+      "action": "hold and stop",
+      "expected_whole_cycles": 10
+    }
+  ],
+  "scope": "Controlled camera-pipeline experiment; not evidence for real optical robustness. Quarter-cycle remainder intentionally avoids exact-integer hysteresis endpoint ambiguity."
+}

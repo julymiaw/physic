@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "calibration": [
+    6,
+    8.1
+  ],
+  "start": 15,
+  "stop": 31,
+  "truthNetCycles": 10.25,
+  "expectedWholeCycles": 10,
+  "result": {
+    "canBegin": true,
+    "stopping": false,
+    "stopTime": 31,
+    "state": 4,
+    "count": 10,
+    "cycles": 10.24006791519649,
+    "complete": true,
+    "reason": 0,
+    "pending": 0,
+    "calibrationFrames": 64,
+    "nodes": 4,
+    "timestamp": 33.96666666666667,
+    "gapLimit": 0.09999999999999964,
+    "rows": 0,
+    "signals": [
+      -0.08105236944171533,
+      -1.0904440567446911,
+      -1.040026643829206,
+      -0.8551775781687923,
+      -0.8276993900718204
+    ],
+    "phases": [
+      -1.6418740575173008,
+      -1.2109310223993532,
+      -2.0349027137973987,
+      -0.9172255135764731
+    ],
+    "radii": [
+      1.0934522063089613,
+      1.0431801888776255,
+      0.8590099980761324,
+      0.8316584436638516
+    ],
+    "points": [
+      {
+        "x": 47.504662160472684,
+        "y": 47.49308567798521
+      },
+      {
+        "x": 43.11726647608477,
+        "y": 52.87298972366826
+      },
+      {
+        "x": 52.11021472657049,
+        "y": 51.242135744754755
+      },
+      {
+        "x": 52.518828656916014,
+        "y": 41.34462391149032
+      },
+      {
+        "x": 43.66670168872452,
+        "y": 44.3688772890106
+      }
+    ]
+  },
+  "processedFrames": 776,
+  "scope": "Analytic uncompressed target through production RGBA prepare and WASM. Does not cover MP4 compression, monitor display, physical handset capture or its event scheduling."
+}
