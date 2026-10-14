@@ -1,0 +1,11 @@
+{
+  "pages": ["pages/measure/index"],
+  "window": {
+    "navigationBarTitleText": "干涉条纹计数",
+    "navigationBarBackgroundColor": "#f5f7f4",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f7f4"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

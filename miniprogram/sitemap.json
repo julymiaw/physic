@@ -1,0 +1,4 @@
+{
+  "desc": "实验测量工具",
+  "rules": [{ "action": "disallow", "page": "*" }]
+}

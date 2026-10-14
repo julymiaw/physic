@@ -1,0 +1,3 @@
+page { background: #f5f7f4; color: #20392f; font-family: -apple-system, sans-serif; }
+button::after { border: none; }
+button { font-size: 28rpx; border-radius: 18rpx; }

@@ -99,3 +99,9 @@ data/derived/
 !/experiments/results/native-stage-profile/timing-breakdown.svg
 !/experiments/results/native-stage-profile/quality-checkpoints.png
 !/experiments/results/native-stage-profile/quality-checkpoints.svg
+
+# WeChat application source; local IDE settings remain private
+!/miniprogram/**
+/miniprogram/project.private.config.json
+/miniprogram/node_modules/
+!/docs/miniprogram-bootstrap.jpg
