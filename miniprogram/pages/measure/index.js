@@ -3,7 +3,7 @@ const {mapping,prepare,previewPoint,LatestFrame,receiveClock}=require('../../uti
 const COLORS=['#91a69b','#55aa92','#688bb8','#b5985e','#9982ab'];
 const REASONS={1:'标定画面不足',2:'光屏跟踪失效',3:'相位信号不可靠',4:'接收时间异常',5:'有效帧间隔过大',6:'片尾仍有未确认事件',7:'帧数据无效',8:'标定未获得稳定的单向周期',9:'测量已中断'};
 Page({
-  data:{cameraEnabled:false,cameraReady:false,coreReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,overlayStyle:'',points:[],showSignals:true,helpVisible:false,helpTitle:'使用方法',helpText:'开启相机，拖动框选整个光屏，也可依次点光屏的两个对角。\n\n点击标定，缓慢、连续地单向移动，使中心暗纹至少出现两次；标定最长10秒。标定方向定义为正方向。\n\n标定完成后，停下旋钮并记录起始读数，再点击“开始测量”。标定过程不计入测量。\n\n沿原方向旋转，正向增加、反向减少；短暂往返按净变化处理。停下旋钮后点击“停止”，再记录终止读数。信号仍有效时可直接“再次测量”。丢失跟踪或中断会冻结计数并标为不完整。\n\n曲线颜色对应画面采样点，相位图显示各路共同暗心零点的相位。点击“信号”可收起。\n\n画面仅在本地处理。',phase:'idle',status:'加载中',countText:'—',complete:true,canBegin:false,mainLabel:'标定',viewportHeight:600,safeBottom:0},
+  data:{cameraEnabled:false,cameraReady:false,coreReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,overlayStyle:'',points:[],showSignals:true,helpVisible:false,helpTitle:'使用方法',helpText:'开启相机，按住并拖动，框选整个光屏。\n\n点击标定，缓慢、连续地单向移动，使中心暗纹至少出现两次；标定最长10秒。标定方向定义为正方向。\n\n标定完成后，停下旋钮并记录起始读数，再点击“开始测量”。标定过程不计入测量。\n\n沿原方向旋转，正向增加、反向减少；短暂往返按净变化处理。停下旋钮后点击“停止”，再记录终止读数。信号仍有效时可直接“再次测量”。丢失跟踪或中断会冻结计数并标为不完整。\n\n曲线颜色对应画面采样点，相位图显示各路共同暗心零点的相位。点击“信号”可收起。\n\n画面仅在本地处理。',phase:'idle',status:'加载中',countText:'—',complete:true,canBegin:false,mainLabel:'标定',viewportHeight:600,safeBottom:0},
   onLoad(){
     this._active=true;this._source=0;this._history=[];this._lastUI=0;this._events=[];
     const info=wx.getWindowInfo?wx.getWindowInfo():wx.getSystemInfoSync();
@@ -56,13 +56,13 @@ Page({
     const reviewing=this.data.phase==='review';this.stopFeed();if(this._core&&this.isRunning()){const result=this._core.interrupt();if(reviewing)this._hasMeasured=false;this.display(result,true);if(!reviewing)this.remember();}
   },
   stopCamera(){
-    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._corner=null;this._fingerStart=null;this._previewBounds=null;this._frameShape=null;
+    this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._previewBounds=null;this._frameShape=null;
     this.setData({phase:'idle',mainLabel:'标定',overlayStyle:'',cameraEnabled:false,cameraReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
   },
   onCameraError(event){this.stopCamera();this.showMessage('相机无法开启',(event.detail&&event.detail.errMsg)||'请检查相机权限后重试。');},
   onCameraStop(){if(this.data.cameraEnabled){this.stopCamera();this.setData({status:'相机已中断'});}},
   clearSelection(){
-    this.interrupt();this._dragStart=null;this._corner=null;this._fingerStart=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
+    this.interrupt();this._dragStart=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
     if(!this._lastResult||this._lastResult.state===1)this.setData({status:'待圈选'});
   },
   traceTouch(stage,event,point){
@@ -94,9 +94,9 @@ Page({
     if(!this._previewBounds){this.measurePreview(()=>{if(this._previewBounds)this.onSelectionStart(event);});return;}
     const p=this.previewPoint(touch);this.traceTouch('start',event,p);if(!p){this.setData({status:'未收到有效触摸位置'});return;}
     this._touchInfo={keys:Object.keys(touch),point:p};
-    this._dragStart=this._corner||p;this._fingerStart=p;this._dragCurrent=p;
+    this._dragStart=p;this._dragCurrent=p;
     this.setData({roiSelected:false,previewRegion:null,points:[]});
-    if(this._corner)this.drawRegion(this.regionFromPoint(p));else this.drawCorner(p);
+    this.drawCorner(p);
   },
   regionFromPoint(p){if(!p||!this._dragStart)return null;return {x:Math.min(p.x,this._dragStart.x),y:Math.min(p.y,this._dragStart.y),width:Math.abs(p.x-this._dragStart.x),height:Math.abs(p.y-this._dragStart.y)};},
   drawCorner(p){const b=this._previewBounds;this.drawRegion({x:Math.max(0,Math.min(b.width-8,p.x-4)),y:Math.max(0,Math.min(b.height-8,p.y-4)),width:8,height:8});},
@@ -108,23 +108,18 @@ Page({
   onSelectionEnd(event){
     if(!this._dragStart){this.traceTouch('end-without-start',event,null);return;}
     const p=this.previewPoint(event.changedTouches&&event.changedTouches[0])||this._dragCurrent;
-    this.traceTouch('end',event,p);const r=this.regionFromPoint(p),wasCorner=!!this._corner;
-    const moved=p&&this._fingerStart?Math.hypot(p.x-this._fingerStart.x,p.y-this._fingerStart.y):0;
-    this._dragStart=null;this._dragCurrent=null;this._fingerStart=null;
+    this.traceTouch('end',event,p);const r=this.regionFromPoint(p);
+    this._dragStart=null;this._dragCurrent=null;
     if(!r)return;
-    if(!wasCorner&&moved<8){this._corner=p;this.drawCorner(p);this.setData({status:'点另一个对角'});return;}
-    this._corner=null;
+
     if(r.width<32||r.height<32){this.clearSelection();return;}
     const b=this._previewBounds;this.drawRegion(r);this.setData({roiSelected:true,previewRegion:{x:r.x/b.width,y:r.y/b.height,width:r.width/b.width,height:r.height/b.height},status:'待标定'});
   },
   onSelectionCancel(event={}){
     if(this.isRunning())return;
     this.traceTouch('cancel',event,this._dragCurrent||null);
-    // A cancelled native gesture never finalizes an ROI, but should not erase a
-    // previously chosen first corner or a complete selection.
-    const corner=this._corner||this._fingerStart;
     this._dragStart=null;this._dragCurrent=null;
-    if(corner&&!this.data.roiSelected){this._corner=corner;this.drawCorner(corner);this.setData({status:'点另一个对角'});}
+    if(!this.data.roiSelected)this.clearSelection();
   },
   mainAction(){
     if(this.data.phase==='stopping')return;
