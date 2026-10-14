@@ -15,7 +15,7 @@ const {mapping,prepare,previewPoint,LatestFrame}=require('../miniprogram/utils/c
  for(const end of [345,489,684,823,1240]){c=initialized();for(let id=279;id<=end;id++){const f=frame(id);c.input().set(f.pixels);c.push(f.t,id);}result=c.finish();if(!result.complete&&result.reason===6){pendingFound=true;assert(c.rows().some(r=>r[10]===1));}c.destroy();}
  assert(pendingFound,'real prefix must exercise unconfirmed EOF event');
  const map=mapping({x:.2,y:.25,width:.5,height:.5},{width:300,height:300},{width:480,height:640});
- const point=previewPoint({x:16,y:16},map);assert(Math.abs(point.x-60)<1e-9&&Math.abs(point.y-75)<1e-9);
+ const point=previewPoint({x:map.offsetX-.5,y:map.offsetY-.5},map);assert(Math.abs(point.x-60)<1e-9&&Math.abs(point.y-75)<1e-9);
  const rgba=new Uint8Array(480*640*4);for(let i=0;i<rgba.length;i+=4)rgba[i]=128;
  const out=new Float32Array(96*96);prepare({width:480,height:640,data:rgba.buffer},map,out);assert(out.every(v=>Math.abs(v-128/255)<1e-6));
  assert.throws(()=>prepare({width:481,height:640,data:rgba.buffer},map,out));
