@@ -23,7 +23,10 @@ bool solve4(double m[4][5],std::array<double,4>& v){for(int k=0;k<4;++k){int piv
 Image gradient_smooth(const Image& a){std::array<double,5> k{};double total=0;for(int i=-2;i<=2;++i){k[i+2]=std::exp(-i*i/(2*.7*.7));total+=k[i+2];}for(double& v:k)v/=total;Image tmp(4096),b(4096);for(int y=0;y<64;++y)for(int x=0;x<64;++x)for(int j=-2;j<=2;++j)tmp[y*64+x]+=k[j+2]*a[y*64+std::clamp(x+j,0,63)];for(int y=0;y<64;++y)for(int x=0;x<64;++x)for(int j=-2;j<=2;++j)b[y*64+x]+=k[j+2]*tmp[std::clamp(y+j,0,63)*64+x];return b;}
 Point gradient_center(const std::vector<Frame>& frames,int n,double ox,double oy,double& residual){
  struct Equation {std::array<double,4> a;double b,weight;};std::vector<Equation> equations;
- for(const auto& f:frames){Image image(4096);for(int y=0;y<64;++y)for(int x=0;x<64;++x)image[y*64+x]=sample(f,n,x,y,ox,oy);image=gradient_smooth(image);
+ // Center fitting must ignore time-invariant screen texture and illumination.
+ std::vector<Image> aligned;Image temporal_mean(4096);
+ for(const auto& f:frames){Image image(4096);for(int y=0;y<64;++y)for(int x=0;x<64;++x){int p=y*64+x;image[p]=sample(f,n,x,y,ox,oy);temporal_mean[p]+=image[p]/frames.size();}aligned.push_back(std::move(image));}
+ for(auto image:aligned){for(int p=0;p<4096;++p)image[p]-=temporal_mean[p];image=gradient_smooth(image);
   for(int y=10;y<54;++y)for(int x=10;x<54;++x){double r=std::hypot(x-31.5,y-31.5);if(r<4||r>22)continue;double gx=(image[y*64+x+1]-image[y*64+x-1])/2,gy=(image[(y+1)*64+x]-image[(y-1)*64+x])/2;double magnitude=std::hypot(gx,gy);if(magnitude<.02)continue;double xx=(x-31.5)/31.5,yy=(y-31.5)/31.5;equations.push_back({{2*gy*xx+2*gx*yy,2*gy*yy-2*gx*xx,gy,-gx},2*gx*yy,1});}
  }
  if(equations.size()<200)throw std::runtime_error("insufficient calibration gradients");std::array<double,4> v{};

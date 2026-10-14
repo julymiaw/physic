@@ -1,0 +1,21 @@
+{
+  "video": "experiments/results/bilibili-adapt/original-phase-explained.mp4",
+  "frames": 1758,
+  "fps": 24,
+  "duration_seconds": 73.25,
+  "measurement_source_frames": [
+    279,
+    1436
+  ],
+  "final_confirmed_count": 84,
+  "phase_reconstruction_max_error_radians": 1.509903313490213e-14,
+  "normalized_primary_max_error": 2.0539125955565396e-15,
+  "calibration_replay_is_retrospective": true,
+  "trajectory_is_actual_brightness_not_ideal_circle": true,
+  "complete_measurement_replayed": true,
+  "source_results_sha256": "73d9d28e62f1d27fd9e0c1ea252c7cb184a75fbda99ca402c004fb346dd749eb",
+  "model_sha256": "dcaab2f72a028752e069bdbc6e3d60e1669b78dc0e45cb82e14ef36c24b8aaa0",
+  "video_sha256": "e86826ace9f58afb390d37167ddc0dcf9f47a28812d9490ba6b68f880896ba0b",
+  "verified_measurement_source_frames_rendered_once": 1158,
+  "verification": "Encoded length/frame count verified; decoded calibration and ending frames visually inspected; plotted brightness and phase match saved Native observations."
+}

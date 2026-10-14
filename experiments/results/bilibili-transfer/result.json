@@ -1,0 +1,33 @@
+{
+  "initialized": false,
+  "counting_started": false,
+  "measured_coverage": 0,
+  "evaluation_interval": [
+    8.533333,
+    21.2
+  ],
+  "evaluation_frames": 381,
+  "calibration_frames": 256,
+  "candidate_positions_examined": 120,
+  "sufficient_contrast_candidates": 51,
+  "accepted_phase_pairs": 0,
+  "direction_dominance_required": 0.9,
+  "maximum_direction_dominance": 0.820531,
+  "winding_gate_passes": 43,
+  "radius_gate_passes": 30,
+  "estimated_interference_center": [
+    33.9194,
+    31.3056
+  ],
+  "gradient_residual": 0.00713038,
+  "tracking_frames": 637,
+  "tracking_rejected_frames": 0,
+  "tracking_iou_median": 0.9930851063829788,
+  "best_rejected_candidate": {
+    "x": 28.2626,
+    "y": 36.9624,
+    "net_cycles": 3.58174,
+    "direction_dominance": 0.820531
+  },
+  "conclusion": "Current unchanged counting rules fail calibration on this clip. No net count or event accuracy is claimed. Passing contour quality gates does not independently prove physical screen registration."
+}

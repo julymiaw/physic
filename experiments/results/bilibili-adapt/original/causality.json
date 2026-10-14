@@ -1,0 +1,30 @@
+[
+  {
+    "prefix_end": 17.2,
+    "compared_confirmed_frames": 130,
+    "identical": true,
+    "pending_tail_frames": 0,
+    "tail_complete": "1"
+  },
+  {
+    "prefix_end": 29.2,
+    "compared_confirmed_frames": 418,
+    "identical": true,
+    "pending_tail_frames": 4,
+    "tail_complete": "0"
+  },
+  {
+    "prefix_end": 47.2,
+    "compared_confirmed_frames": 850,
+    "identical": true,
+    "pending_tail_frames": 0,
+    "tail_complete": "1"
+  },
+  {
+    "prefix_end": 59.7,
+    "compared_confirmed_frames": 1150,
+    "identical": true,
+    "pending_tail_frames": 0,
+    "tail_complete": "1"
+  }
+]
