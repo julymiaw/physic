@@ -4,6 +4,7 @@ from pathlib import Path
 import cv2,numpy as np
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'experiments/results/native-stage-profile';WORK=ROOT/'experiments/runs/native-stage-profile'
 OLD_COMMIT='c3ae479a0999f263b9365f1f94845e691e55d953'
+PROFILE_COMMIT='436a20b' # Frozen pre-streaming profiling source; timings belong to this revision.
 OLD_NAMES=['red_extract_copy','histograms','screen_segment','roi_views','binary_morphology','edges_find_contours','ring_filter_classification','center_brightness','area_vote_count','embedded_drawing','other']
 NEW_NAMES=['screen_segment','distance_field','motion_fit','tracking_quality','patch_sampling','phase_angles','confirmation','other']
 TIMER=r'''#pragma once
@@ -60,7 +61,7 @@ def instrument_new():
     header=header.replace('auto mask=segment(image,n);auto current=field(mask,n);','prof::mark(0);auto mask=segment(image,n);prof::mark(1);auto current=field(mask,n);prof::mark(2);')
     header=header.replace('double a=area(mask),ratio=a/previous_area;','prof::mark(3);double a=area(mask),ratio=a/previous_area;')
     (WORK/'screen_tracker.h').write_text(header)
-    code=(ROOT/'research/real_pair.cpp').read_text();code='#include "profile_timer.h"\n'+code
+    code=subprocess.check_output(['git','show',f'{PROFILE_COMMIT}:research/real_pair.cpp'],cwd=ROOT).decode();code='#include "profile_timer.h"\n'+code
     code=code.replace(' if(calibration.size()<24)', ' auto init_begin=Clock::now();if(calibration.size()<24)',1)
     code=code.replace(' double center_residual=0;',' auto init_track_end=Clock::now();double center_residual=0;',1)
     code=code.replace('double cx=center[0],cy=center[1];','auto init_center_end=Clock::now();double cx=center[0],cy=center[1];',1)
@@ -114,6 +115,6 @@ def main():
     native=OUT/'native-profile.csv';subprocess.run([str(WORK/'native-profile'),str(fixture),'9.6','11.6','60',str(native),'--timing'],check=True)
     assert native.read_bytes()==(ROOT/'experiments/results/bilibili-adapt/original/frames.csv').read_bytes()
     control=OUT/'native-control.csv';subprocess.run([str(ROOT/'build-native/fringe_count'),str(fixture),'9.6','11.6','60',str(control),'--timing'],check=True);assert native.read_bytes()==control.read_bytes()
-    protocol=dict(machine=subprocess.check_output(['sysctl','-n','machdep.cpu.brand_string']).decode().strip(),old_cpp_commit=OLD_COMMIT,old_cpp_sha256=old_hash,new_cpp_sha256=hashlib.sha256((ROOT/'research/real_pair.cpp').read_bytes()).hexdigest(),opencv=lib.legacy_version().decode(),compiler='AppleClang, C++17 -O3 -DNDEBUG',opencv_threads=1,measurement_frame_interval=[279,1436],measurement_frames=1158,stage_sample_frames=sorted(samples),sample_count=128,old_timing='Full C++ processing on every decoded4320x7680 BGR frame. Fixed128 measurement frames additionally profile a copied pre-frame state; profile and baseline state/count/contours must agree.',new_timing='Current unmodified core control plus generated timing-instrumented copy; both full outputs byte-identical to verified results.',preprocessing='Actual second-stage area resize from existing432x768 red preview to96x96; matches frozen fixture bit-for-bit. Does not include producing that preview.',decode='Separately measured OpenCV full-resolution BGR decode; not an end-to-end Native deployment benchmark.',initialization='Native initialization is compute-only, excluding data acquisition, fixture read, output writes.',wall_seconds=time.perf_counter()-started)
+    protocol=dict(machine=subprocess.check_output(['sysctl','-n','machdep.cpu.brand_string']).decode().strip(),old_cpp_commit=OLD_COMMIT,old_cpp_sha256=old_hash,new_cpp_sha256=hashlib.sha256(subprocess.check_output(['git','show',f'{PROFILE_COMMIT}:research/real_pair.cpp'],cwd=ROOT)).hexdigest(),profile_commit=PROFILE_COMMIT,opencv=lib.legacy_version().decode(),compiler='AppleClang, C++17 -O3 -DNDEBUG',opencv_threads=1,measurement_frame_interval=[279,1436],measurement_frames=1158,stage_sample_frames=sorted(samples),sample_count=128,old_timing='Full C++ processing on every decoded4320x7680 BGR frame. Fixed128 measurement frames additionally profile a copied pre-frame state; profile and baseline state/count/contours must agree.',new_timing='Current unmodified core control plus generated timing-instrumented copy; both full outputs byte-identical to verified results.',preprocessing='Actual second-stage area resize from existing432x768 red preview to96x96; matches frozen fixture bit-for-bit. Does not include producing that preview.',decode='Separately measured OpenCV full-resolution BGR decode; not an end-to-end Native deployment benchmark.',initialization='Native initialization is compute-only, excluding data acquisition, fixture read, output writes.',wall_seconds=time.perf_counter()-started)
     (OUT/'protocol.json').write_text(json.dumps(protocol,indent=2)+'\n');print('Profiling complete',flush=True)
 if __name__=='__main__':main()

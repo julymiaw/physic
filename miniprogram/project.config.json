@@ -29,11 +29,20 @@
   "packOptions": {
     "ignore": [
       {
-        "value": "README.md",
-        "type": "file"
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "folder",
+        "value": "verification"
       }
     ],
-    "include": []
+    "include": [
+      {
+        "type": "folder",
+        "value": "wasm"
+      }
+    ]
   },
   "simulatorPluginLibVersion": {},
   "editorSetting": {}

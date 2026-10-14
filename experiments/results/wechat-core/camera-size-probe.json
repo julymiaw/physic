@@ -1,0 +1,29 @@
+{
+  "scope": "Current Iriun connection in WeChat developer tools simulator; not phone-side native Mini Program camera",
+  "frame_size": "medium",
+  "cases": [
+    {
+      "element_css_pixels": [
+        358,
+        312
+      ],
+      "callback_pixels": [
+        480,
+        640
+      ],
+      "rgba_bytes": 1228800
+    },
+    {
+      "element_css_pixels": [
+        180,
+        160
+      ],
+      "callback_pixels": [
+        480,
+        640
+      ],
+      "rgba_bytes": 1228800
+    }
+  ],
+  "conclusion": "In this configuration resizing the display did not resize raw callbacks. Always read returned width/height. Preview-to-raw-frame mapping is required; other device behavior must be measured."
+}

@@ -1,0 +1,21 @@
+{
+  "engine": "WXWebAssembly in WeChat developer tools 2.02.2608080 on Apple M4",
+  "original": {
+    "passed": true,
+    "frames": 1158,
+    "count": 84,
+    "events": 90,
+    "max_difference_vs_native": 4.529709940470639e-14,
+    "complete": true
+  },
+  "method": "Temporary JSON chunks reproduce frozen float32 pixels exactly. Test-only comparator examines every emitted Native row field. No reference annotation is read by the production core. Temporary fixtures excluded from release.",
+  "phone_real_time_verified": false,
+  "bilibili": {
+    "passed": true,
+    "frames": 381,
+    "count": 6,
+    "events": 6,
+    "max_difference_vs_native": 1.8207657603852567e-14,
+    "complete": true
+  }
+}

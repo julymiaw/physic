@@ -1,0 +1,12 @@
+{
+  "scope": "Current Iriun camera in developer tools, ordinary scene without experiment screen. No images saved.",
+  "frame_shape": [
+    480,
+    640
+  ],
+  "calibration_frames": 256,
+  "terminal_state": 5,
+  "reason": 8,
+  "display": "标定失败 / —",
+  "result": "Live camera frames reached area preprocessing and WASM calibration; no valid fringe model or measurement was invented. Not a phone-side optical accuracy test."
+}

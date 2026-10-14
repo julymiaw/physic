@@ -13,3 +13,6 @@ foreach(target fringe_count fringe_track fringe_prepare_gray)
     target_compile_options(${target} PRIVATE -Wall -Wextra)
   endif()
 endforeach()
+
+# Desktop parity replay uses exactly the same streaming class as the WASM C API.
+add_executable(fringe_live_replay core/replay_live.cpp)

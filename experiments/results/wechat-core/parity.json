@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "emscripten": "6.0.12",
+  "wasm_bytes": 78288,
+  "wasm_sha256": "8c66a4126d1a5ab3b6f7cb136fe8ca4a6dd312006383bdcfa24a26a7beb64f9f",
+  "core_sha256": {
+    "research/phase_core.h": "5f68c43bda66ea7c35ef5a44aa95a97b9b1c17cbf1980fc8c520799415b98a47",
+    "research/screen_tracker.h": "b24e888ce715f4349e677ce1d8deec28ef993dbd4f71a63f7802215ee7173b86",
+    "core/live_counter.h": "d0d4448c25660bd1ab2499b62e81385505057faea732d3fcacfea1929fd9ad12",
+    "core/live_api.cpp": "fdfdcab856a029636b7801b734e685c66f2696271c4c40ace2e3aa0c04fd5b43"
+  },
+  "clips": [
+    {
+      "name": "original",
+      "frames": 1158,
+      "final": 84,
+      "events": 90,
+      "all_reference_fields_exact": true,
+      "integer_and_state_fields_exact": true,
+      "max_wasm_row_difference": 4.529709940470639e-14,
+      "max_wasm_state_difference": 4.973799150320701e-14,
+      "continuous_cycle_difference": 4.973799150320701e-14,
+      "confirmation_delay_max": 4
+    },
+    {
+      "name": "bilibili",
+      "frames": 381,
+      "final": 6,
+      "events": 6,
+      "all_reference_fields_exact": true,
+      "integer_and_state_fields_exact": true,
+      "max_wasm_row_difference": 1.8207657603852567e-14,
+      "max_wasm_state_difference": 1.9345636204093353e-14,
+      "continuous_cycle_difference": 7.993605777301127e-15,
+      "confirmation_delay_max": 4
+    }
+  ],
+  "failure_and_adapter_tests": {
+    "passed": true,
+    "checks": [
+      "real-frame-gap-freeze",
+      "tracking-failure",
+      "repeated-timestamp",
+      "flat-calibration-rejection",
+      "real-prefix-pending-tail",
+      "aspect-fill-map",
+      "area-normalization",
+      "zero-padding",
+      "frame-size-change",
+      "single-pending-frame"
+    ]
+  },
+  "scope": "Fixed-input development replays, not new scene accuracy or phone real-time acceptance. Four processed observation lookahead; gaps are checked using received timestamps. Changes in camera geometry interrupt the segment rather than silently remapping it."
+}

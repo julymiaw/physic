@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "scope": "Cached real red video frames embedded in RGBA and processed by production mapping/area-resize adapter before WASM; fixed manually selected screen ROIs, video timestamps, no real camera exposure timing.",
+  "clips": [
+    {
+      "name": "original",
+      "frames": 1158,
+      "final": 84,
+      "complete": true,
+      "maxPixelDifference": 0,
+      "pixelMismatch": 0,
+      "mapping": {
+        "x": 68,
+        "y": 132,
+        "width": 240,
+        "height": 345,
+        "offsetX": 16,
+        "offsetY": 16.139130434782608,
+        "scale": 0.8472222222222222,
+        "cropX": 0,
+        "cropY": 72.33333333333331,
+        "frameWidth": 432,
+        "frameHeight": 768,
+        "previewWidth": 366,
+        "previewHeight": 506
+      },
+      "integer_event_time_state_exact": true,
+      "max_output_float_difference": 4.529709940470639e-14
+    },
+    {
+      "name": "bilibili",
+      "frames": 381,
+      "final": 6,
+      "complete": true,
+      "maxPixelDifference": 1.7881393432617188e-07,
+      "pixelMismatch": 2166767,
+      "mapping": {
+        "x": 243,
+        "y": -45,
+        "width": 246,
+        "height": 270,
+        "offsetX": 16,
+        "offsetY": 16,
+        "scale": 1.4055555555555554,
+        "cropX": 266.7777777777777,
+        "cropY": -2.842170943040401e-14,
+        "frameWidth": 640,
+        "frameHeight": 360,
+        "previewWidth": 366,
+        "previewHeight": 506
+      },
+      "integer_event_time_state_exact": true,
+      "max_output_float_difference": 1.1190551072459698e-06
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "App-layout simulation, not a phone capture or IDE screen recording. Camera display uses original-video cached red-channel previews. All count, signals, phase and tracked points come from production RGBA camera adapter followed by actual streaming WASM. Its96px images match the frozen input bit-for-bit; calibration is9.6–11.6s. Confirmation uses at most4 processed observations; UI diagnostics/count are refreshed on a simulated0.1s schedule; no future values are displayed.",
+  "video_input_sha256": "cb9d27460bc36a1c8358829134fba396f7e9a92b405a69974afa549fdec94ab1",
+  "wasm_sha256": "8c66a4126d1a5ab3b6f7cb136fe8ca4a6dd312006383bdcfa24a26a7beb64f9f",
+  "rows": 1158,
+  "final_count": 84,
+  "complete": true,
+  "resolution": [
+    540,
+    1170
+  ],
+  "fps": 24,
+  "output_frames": 1254,
+  "duration_seconds": 52.25
+}

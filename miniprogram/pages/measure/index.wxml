@@ -1,43 +1,25 @@
-<view class="page">
-  <view class="heading">
-    <text class="eyebrow">迈克尔逊干涉实验</text>
-    <text class="title">让条纹变化，成为计数。</text>
-    <text class="subtitle">开启相机，将整个光屏放进画面。</text>
-  </view>
-
+<view class="page" style="height:{{viewportHeight}}px;padding-bottom:{{safeBottom}}px;">
   <view class="preview">
-    <camera wx:if="{{cameraEnabled}}" class="camera" device-position="back" flash="off" resolution="medium" bindinitdone="onCameraReady" binderror="onCameraError" bindstop="onCameraStop">
+    <camera wx:if="{{cameraEnabled}}" class="camera" device-position="back" flash="off" resolution="medium" frame-size="medium" bindinitdone="onCameraReady" binderror="onCameraError" bindstop="onCameraStop">
       <cover-view class="selection-layer" catchtouchstart="onSelectionStart" catchtouchmove="onSelectionMove" catchtouchend="onSelectionEnd" catchtouchcancel="onSelectionCancel">
         <cover-view wx:if="{{selectionStyle}}" class="selection" style="{{selectionStyle}}"></cover-view>
-        <cover-view class="preview-hint">{{roiSelected ? '光屏已圈选 · 拖动可重新选择' : '沿光屏外围拖出一个矩形，保留少量余量'}}</cover-view>
+        <cover-view wx:for="{{points}}" wx:key="id" wx:if="{{item.visible}}" class="sample-point" style="{{item.style}}"></cover-view>
       </cover-view>
     </camera>
-    <view wx:else class="placeholder">
-      <view class="ring ring-outer"></view>
-      <view class="ring ring-middle"></view>
-      <view class="ring ring-inner"></view>
-      <text class="placeholder-label">相机尚未开启</text>
-    </view>
+    <button wx:else class="camera-start camera-button" bindtap="toggleCamera">开启相机</button>
   </view>
-
-  <view class="camera-actions">
-    <button class="primary camera-button" bindtap="toggleCamera">{{cameraEnabled ? '关闭相机' : '开启相机'}}</button>
-    <button class="secondary" disabled="{{!roiSelected}}" bindtap="clearSelection">重新圈选</button>
+  <view wx:if="{{showSignals}}" class="signals-panel"><canvas type="2d" id="signals" class="signals"></canvas></view>
+  <view class="readout">
+    <view class="count"><text class="count-value">{{countText}}</text><text class="count-unit">圈</text></view>
+    <button class="status {{complete ? '' : 'incomplete'}}" bindtap="showStatus" disabled="{{phase === 'calibrating' || phase === 'measuring'}}">{{status}}</button>
   </view>
-  <text wx:if="{{cameraError}}" class="error">{{cameraError}}</text>
-  <text wx:if="{{selectionMessage}}" class="selection-message">{{selectionMessage}}</text>
-
-  <view class="measurement-card">
-    <view class="card-top"><text>净计数</text><text class="status">尚未测量</text></view>
-    <view class="count"><text class="count-value">—</text><text class="count-unit">圈</text></view>
-    <text class="measurement-note">当前版本可预览和圈选光屏，测量功能准备中。</text>
-    <button class="primary calibrate-button" disabled="{{true}}">开始标定</button>
+  <view class="controls">
+    <button class="small" disabled="{{!cameraReady}}" bindtap="clearSelection">圈选</button>
+    <button class="main calibrate-button" disabled="{{!coreReady || (!roiSelected && phase !== 'calibrating' && phase !== 'measuring')}}" bindtap="mainAction">{{mainLabel}}</button>
+    <button class="small" disabled="{{phase === 'calibrating' || phase === 'measuring'}}" bindtap="toggleSignals">信号</button>
+    <button class="small help-button" disabled="{{phase === 'calibrating' || phase === 'measuring'}}" bindtap="showHelp">?</button>
   </view>
-
-  <view class="steps">
-    <view class="step"><text class="step-number">01</text><view><text class="step-title">圈选光屏</text><text class="step-text">框住整个亮区，不必寻找每一个圆环。</text></view></view>
-    <view class="step"><text class="step-number">02</text><view><text class="step-title">短暂单向移动</text><text class="step-text">后续标定将建立条纹变化与方向的关系。</text></view></view>
-    <view class="step"><text class="step-number">03</text><view><text class="step-title">读取净计数</text><text class="step-text">正向增加、反向减少，同时显示测量可信状态。</text></view></view>
+  <view wx:if="{{helpVisible}}" class="modal-backdrop" catchtouchmove="noop">
+    <view class="modal"><text class="modal-title">{{helpTitle}}</text><text class="modal-body">{{helpBody || helpText}}</text><button class="main help-close" bindtap="closeHelp">知道了</button></view>
   </view>
-  <text class="footer">当前页面不保存或上传相机画面</text>
 </view>
