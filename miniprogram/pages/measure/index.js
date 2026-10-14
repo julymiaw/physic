@@ -1,5 +1,6 @@
 const {loadCounter}=require('../../utils/counter');
 const {mapping,prepare,previewPoint,LatestFrame,receiveClock}=require('../../utils/camera');
+const {StreamDiagnostics}=require('../../utils/stream-diagnostics');
 const COLORS=['#91a69b','#55aa92','#688bb8','#b5985e','#9982ab'];
 const REASONS={1:'标定画面不足',2:'光屏跟踪失效',3:'相位信号不可靠',4:'接收时间异常',5:'有效帧间隔过大',6:'片尾仍有未确认事件',7:'帧数据无效',8:'标定未获得稳定的单向周期',9:'测量已中断'};
 Page({
@@ -18,6 +19,33 @@ Page({
       this._core=core;this._clock=clock;this._clockInfo={source:clock.source,unitsPerSecond:clock.unitsPerSecond};
       this.setData({coreReady:true,status:this.data.roiSelected?'待标定':'待圈选'});
     }catch(error){if(core)core.destroy();if(this._active){this.setData({coreReady:false,status:'初始化失败'});this.showMessage('无法启动',error.message);}}
+  },
+  createStreamDiagnostics(){
+    let device={},account={};try{const d=wx.getDeviceInfo?wx.getDeviceInfo():wx.getSystemInfoSync();device={brand:d.brand,model:d.model,platform:d.platform,system:d.system};}catch(_){}
+    try{account=wx.getAccountInfoSync().miniProgram;}catch(_){}
+    this._streamCoreSignature=null;this._streamDiag=new StreamDiagnostics({build:'stream-diagnostics-1',clock:this._clockInfo,device,envVersion:account.envVersion,version:account.version,preview:this._previewBounds,frame:this._frameShape},{save:report=>wx.setStorageSync('fringe-stream-debug',report)});
+    this._streamDiag.event('calibration-begin',{map:this._map});
+  },
+  copyStreamDiagnostics(){
+    const report=this._streamDiag?this._streamDiag.snapshot():wx.getStorageSync('fringe-stream-debug');
+    if(report)wx.setClipboardData({data:JSON.stringify(report)});
+  },
+  checkFrameWatchdog(){
+    if(!this.isRunning())return;
+    try{
+      const now=this._clock(),age=now-this._lastReceive;
+      if(this._streamDiag)this._streamDiag.summary(this.data.phase);
+      if(age>.35){
+        if(this._streamDiag){this._streamDiag.event('watchdog-timeout',{phase:this.data.phase,processedTimestampAgeMs:age*1000,thresholdMs:350,pending:!!(this._pipeline&&this._pipeline.pending),core:this._lastResult?{state:this._lastResult.state,reason:this._lastResult.reason,calibrationFrames:this._lastResult.calibrationFrames}:null});this._streamDiag.persist();}
+        this.interrupt();this.setData({status:'画面已中断 · 不完整'});
+      }
+    }catch(error){if(this._streamDiag)this._streamDiag.event('clock-error',{message:error.message});this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}
+  },
+  tryCalibration(){
+    const started=Date.now();if(this._streamDiag)this._streamDiag.event('calibration-fit-start',{frames:this._core.snapshot().calibrationFrames});
+    const success=this._core.start();const ended=Date.now();
+    if(this._streamDiag)this._streamDiag.event('calibration-fit-end',{success,fitMs:ended-started,coreState:this._core.snapshot().state,reason:this._core.snapshot().reason});
+    return success;
   },
   onReady(){this.initCanvas();},
   // Invoked only by the development verification entry; never connected to product UI.
@@ -38,7 +66,7 @@ Page({
     if(!this.data.cameraEnabled)return;this.setData({cameraReady:true});this.measurePreview();
     this._listener=wx.createCameraContext().onCameraFrame(frame=>{
       this._frameShape={width:frame.width,height:frame.height};
-      if(this._pipeline){try{this._pipeline.offer(frame,this._clock(),this._source++);}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}}
+      if(this._pipeline){try{const t=this._clock();if(this._streamDiag)this._streamDiag.arrival(frame,t);this._pipeline.offer(frame,t,this._source++);}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}}
     });
     this._listener.start({fail:error=>{this.stopCamera();this.showMessage('相机帧不可用',error.errMsg||'请在手机微信中重试。');}});
   },
@@ -50,7 +78,7 @@ Page({
       if(done)done();
     }).exec();
   },
-  stopFeed(){if(this._pipeline)this._pipeline.stop();this._pipeline=null;if(this._watchdog)clearInterval(this._watchdog);this._watchdog=null;},
+  stopFeed(){if(this._streamDiag&&this._pipeline){this._streamDiag.summary(this.data.phase,true);this._streamDiag.event('feed-stop',{phase:this.data.phase});this._streamDiag.persist();}if(this._pipeline)this._pipeline.stop();this._pipeline=null;if(this._watchdog)clearInterval(this._watchdog);this._watchdog=null;},
   remember(){if(this._lastResult&&this._hasMeasured){const saved={mode:'relative-start-phase',clock:this._clockInfo,startedAt:this._measurementStartedAt,endedAt:this._lastResult.stopTime>=0?this._lastResult.stopTime:this._lastResult.timestamp,cycles:this._lastResult.cycles,count:this._lastResult.count,complete:this._lastResult.complete,reason:this._lastResult.reason,events:this._events.slice(-512),eventsTruncated:!!this._eventsTruncated};wx.setStorageSync('fringe-last-session',saved);if(!saved.complete)wx.setStorageSync('fringe-last-incomplete',saved);}},
   interrupt(){
     const reviewing=this.data.phase==='review';this.stopFeed();if(this._core&&this.isRunning()){const result=this._core.interrupt();if(reviewing)this._hasMeasured=false;this.display(result,true);if(!reviewing)this.remember();}
@@ -59,8 +87,8 @@ Page({
     this.interrupt();if(this._listener)this._listener.stop();this._listener=null;this._dragStart=null;this._previewBounds=null;this._frameShape=null;
     this.setData({phase:'idle',mainLabel:'标定',overlayStyle:'',cameraEnabled:false,cameraReady:false,roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
   },
-  onCameraError(event){this.stopCamera();this.showMessage('相机无法开启',(event.detail&&event.detail.errMsg)||'请检查相机权限后重试。');},
-  onCameraStop(){if(this.data.cameraEnabled){this.stopCamera();this.setData({status:'相机已中断'});}},
+  onCameraError(event){if(this._streamDiag)this._streamDiag.event('camera-error',{detail:event.detail});this.stopCamera();this.showMessage('相机无法开启',(event.detail&&event.detail.errMsg)||'请检查相机权限后重试。');},
+  onCameraStop(){if(this._streamDiag)this._streamDiag.event('camera-stop');if(this.data.cameraEnabled){this.stopCamera();this.setData({status:'相机已中断'});}},
   clearSelection(){
     this.interrupt();this._dragStart=null;this._dragCurrent=null;this.setData({phase:'idle',mainLabel:'标定',roiSelected:false,selectionStyle:'',previewRegion:null,points:[]});
     if(!this._lastResult||this._lastResult.state===1)this.setData({status:'待圈选'});
@@ -148,21 +176,24 @@ Page({
     this.remember();this._map=mapping(this.data.previewRegion,this._previewBounds,this._frameShape);
     this._core.reset(this._map.offsetX,this._map.offsetY);this._hasMeasured=false;this._events=[];this._eventsTruncated=false;this._history=[];this._startedAt=null;this._lastAttempt=-1;
     this._lastReceive=this._clock();this.setData({phase:'calibrating',status:'标定中',countText:'—',complete:true,mainLabel:'停止',points:[]});
+    this.createStreamDiagnostics();
     this._pipeline=new LatestFrame(item=>this.processFrame(item),error=>{this.interrupt();this.showMessage('测量已中断',error.message);});
-    this._watchdog=setInterval(()=>{try{if(this.isRunning()&&this._clock()-this._lastReceive>.35){this.interrupt();this.setData({status:'画面已中断 · 不完整'});}}catch(error){this.interrupt();this.showMessage('接收时间异常',error.message+'请重新打开小程序。');}},100);
+    this._watchdog=setInterval(()=>this.checkFrameWatchdog(),100);
   },
   processFrame({frame,t,id}){
-    if(!this.isRunning())return;const reviewing=this.data.phase==='review',stopping=this.data.phase==='stopping';this._lastReceive=t;prepare(frame,this._map,this._core.input());let result;
+    if(!this.isRunning())return;const handlerStart=Date.now();const phaseBefore=this.data.phase;const reviewing=this.data.phase==='review',stopping=this.data.phase==='stopping';this._lastReceive=t;prepare(frame,this._map,this._core.input());const prepareEnd=Date.now();let result;
     if(this.data.phase==='calibrating'){
       if(this._startedAt===null)this._startedAt=t;result=this._core.collect(t,id);const elapsed=t-this._startedAt;
-      if(elapsed>=2&&result.state===1&&elapsed-this._lastAttempt>=1){this._lastAttempt=elapsed;if(this._core.start()){this._core.arm();result=this._core.snapshot();}}
-      if(result.state===1&&(elapsed>=9.8||result.calibrationFrames>=256)){if(!this._core.start())result=this._core.endCalibration();else {this._core.arm();result=this._core.snapshot();}}
+      if(elapsed>=2&&result.state===1&&elapsed-this._lastAttempt>=1){this._lastAttempt=elapsed;if(this.tryCalibration()){this._core.arm();result=this._core.snapshot();}}
+      if(result.state===1&&(elapsed>=9.8||result.calibrationFrames>=256)){if(!this.tryCalibration())result=this._core.endCalibration();else {this._core.arm();result=this._core.snapshot();}}
     }else if(this.data.phase==='measuring'||this.data.phase==='stopping')result=this._core.push(t,id);
     else result=this._core.monitor(t,id);
+    const coreEnd=Date.now();
     this.captureEvents();
     if(result.nodes&&[2,4,6].includes(result.state)){this._history.push({t,signals:result.signals.slice()});while(this._history.length>150||(this._history.length>1&&this._history[0].t<t-2))this._history.shift();}
     if(reviewing&&result.state===3)this._hasMeasured=false;
     this._lastResult=result;this.display(result,false);
+    if(this._streamDiag){this._streamDiag.processedFrame({frame:id,timestamp:t,phase:phaseBefore,prepareMs:prepareEnd-handlerStart,coreMs:coreEnd-prepareEnd,totalMs:Date.now()-handlerStart,coreState:result.state,coreReason:result.reason,calibrationFrames:result.calibrationFrames,dropped:this._pipeline?this._pipeline.dropped:0});const signature=[result.state,result.reason,this.data.phase].join(':');if(signature!==this._streamCoreSignature){this._streamDiag.event('core-state',{frame:id,from:phaseBefore,to:this.data.phase,state:result.state,reason:result.reason});this._streamCoreSignature=signature;}this._streamDiag.summary(this.data.phase);}
     if(stopping&&result.state===4)this.remember();
     if(result.state===3||result.state===5){this.stopFeed();this.remember();}
   },
@@ -190,6 +221,6 @@ Page({
     if(result&&result.nodes)for(let k=0;k<result.nodes;k++){const phase=result.phases[k],px=x+r*Math.cos(phase),py=y-r*Math.sin(phase);c.strokeStyle=COLORS[k+1];c.beginPath();c.moveTo(x,y);c.lineTo(px,py);c.stroke();c.fillStyle=COLORS[k+1];c.beginPath();c.arc(px,py,2.5,0,Math.PI*2);c.fill();}
   },
   onResize(){this.interrupt();this.clearSelection();const info=wx.getWindowInfo?wx.getWindowInfo():wx.getSystemInfoSync();this.setData({viewportHeight:info.windowHeight});if(this.data.cameraEnabled)this.measurePreview();this.initCanvas();},
-  onHide(){this.stopCamera();},
+  onHide(){if(this._streamDiag)this._streamDiag.event('page-hide');this.stopCamera();},
   onUnload(){this._active=false;this.stopCamera();if(this._core)this._core.destroy();}
 });

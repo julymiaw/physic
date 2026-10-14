@@ -10,7 +10,7 @@
   <view wx:if="{{showSignals}}" class="signals-panel"><canvas type="2d" id="signals" class="signals"></canvas></view>
   <view class="readout">
     <view class="count"><text class="count-value">{{countText}}</text><text class="count-unit">圈</text></view>
-    <button class="status {{complete ? '' : 'incomplete'}}" bindtap="showStatus" disabled="{{phase === 'calibrating' || phase === 'measuring' || phase === 'stopping'}}">{{status}}</button>
+    <button class="status {{complete ? '' : 'incomplete'}}" bindtap="showStatus" bindlongpress="copyStreamDiagnostics" disabled="{{phase === 'calibrating' || phase === 'measuring' || phase === 'stopping'}}">{{status}}</button>
   </view>
   <view class="controls">
     <button class="small" disabled="{{!cameraReady}}" bindtap="clearSelection">圈选</button>

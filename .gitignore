@@ -127,3 +127,5 @@ data/derived/
 !/tools/prepare_measurement_ide.py
 
 !/tests/phone_compat.cjs
+
+!/tests/stream_diagnostics.cjs

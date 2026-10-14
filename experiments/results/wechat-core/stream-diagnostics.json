@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "metadata-only",
+    "summary-throttled",
+    "callback-vs-processing-ages",
+    "calibration-fit-timing",
+    "bounded-history",
+    "persist-on-failure",
+    "existing-watchdog-processing-time-reproduction"
+  ],
+  "scope": "Diagnostics tested; watchdog policy deliberately unchanged pending physical-device logs."
+}
