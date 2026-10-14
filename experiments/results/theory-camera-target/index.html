@@ -9,7 +9,7 @@ function cycles(now){return base+(mode==='hold'?0:mode==='cal'?(now-origin)/1000
 function hold(){base=cycles(performance.now());mode='hold';}
 document.getElementById('cal').onclick=()=>{hold();mode='cal';origin=performance.now();};document.getElementById('pause').onclick=hold;
 document.getElementById('advance').onclick=()=>{hold();measurementBase=base;mode='advance';origin=performance.now();};document.getElementById('reset').onclick=()=>{mode='hold';base=0;measurementBase=0;};
-function draw(now){const c=cycles(now);if(c!==last){const phase=2*Math.PI*c;for(let i=0;i<N*N;i++){const v=Math.round(255*(.008+(.55+.33*Math.cos(psi[i]+phase)-.008)*mask[i]));image.data[i*4]=image.data[i*4+1]=image.data[i*4+2]=v;}ctx.putImageData(image,0,0);last=c;}
+function draw(now){const c=cycles(now);if(c!==last){const phase=2*Math.PI*c;for(let i=0;i<N*N;i++){const v=Math.round(255*(.008+(.55+.33*Math.cos(psi[i]+phase)-.008)*mask[i]));image.data[i*4]=v;image.data[i*4+1]=image.data[i*4+2]=0;}ctx.putImageData(image,0,0);last=c;}
 if(now-lastLabel>100){status.textContent=mode==='cal'?'标定图样 · 单向 1 圈/秒':mode==='advance'?`已推进 ${(c-measurementBase).toFixed(2)} 圈`:'图样静止';document.getElementById('advance').disabled=mode==='cal'||(mode==='advance'&&c-measurementBase<10.25);lastLabel=now;}requestAnimationFrame(draw);}
 requestAnimationFrame(draw);
 </script></html>

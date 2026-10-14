@@ -7,7 +7,7 @@ const fs=require('fs'),assert=require('assert');const {Counter}=require('../mini
  const map={x:-64,y:-64,width:384,height:384,frameWidth:N,frameHeight:N};const cycles=t=>t<6?0:t<12?t-6:t<18?6:6+Math.min(10.25,t-18);let calibrated=false,begun=false,stopped=false,rows=0;
  for(let id=180;id<1020;id++){
   const t=id/30,phase=2*Math.PI*cycles(t);
-  for(let i=0;i<N*N;i++){const v=Math.round(255*(.008+(.55+.33*Math.cos(spatial[i]+phase)-.008)*mask[i]));rgba[i*4]=rgba[i*4+1]=rgba[i*4+2]=v;}
+  for(let i=0;i<N*N;i++){const v=Math.round(255*(.008+(.55+.33*Math.cos(spatial[i]+phase)-.008)*mask[i]));rgba[i*4]=v;rgba[i*4+1]=rgba[i*4+2]=0;}
   prepare({width:N,height:N,data:rgba.buffer},map,c.input());
   if(t<=8.1)c.collect(t,id);else{
    if(!calibrated){assert(c.start(),c.calibrationError());assert(c.arm());calibrated=true;}

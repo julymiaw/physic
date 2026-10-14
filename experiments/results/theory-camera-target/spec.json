@@ -1,4 +1,6 @@
 {
+  "color": "red",
+  "redChannelUnchanged": true,
   "formula": "I=.55+.33*cos(28*(r/.9)^2+2*pi*C(t)) within fixed circular aperture; outside .008",
   "fps": 30,
   "resolution": [
